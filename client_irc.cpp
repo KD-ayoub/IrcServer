@@ -1,22 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   client_irc.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/03 17:53:34 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/10 14:33:51 by akouame          ###   ########.fr       */
+/*   Created: 2023/06/10 14:55:05 by akouame           #+#    #+#             */
+/*   Updated: 2023/06/10 14:58:08 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_irc.hpp"
+#include "client_irc.hpp"
 
-int main(int ac, char **av)
-{
-    checkArguments(ac, av);
-    IrcServer irc(av[1], av[2]);
-    int sockFd = irc.SetupServer();
-    irc.AccetConnection(sockFd);
+Client_irc::Client_irc(){
+    // std::cout << "Client_irc, default constructor called !" << std::endl;
+
+}
+
+Client_irc::~Client_irc(){
+    // std::cout << "Client_irc, default destructor called !" << std::endl;
     
 }
+

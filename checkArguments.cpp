@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:08:08 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/10 12:54:11 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/10 15:01:57 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void    Error(const char *str)
 {
-    std::cout << str << std::endl;
-    exit(0);
+    std::cerr << str << std::endl;
+    exit(1);
 }
 
 void    checkArguments(int ac, char **av)

@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/10 11:31:52 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/10 15:01:24 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
+#include "client_irc.hpp"
 
 IrcServer::IrcServer()
 {
@@ -120,6 +121,9 @@ void    IrcServer::AccetConnection(int sockFd)
                         fds[i] = fds[numberFd];
                         break;
                     }
+                    Client_irc  clt;
+                    
+                    clt.parse_registration(buf);
                         /////      TO Do     /////////
                     //// function (handle request [buf])
                     //// send reply (connected succesfully)

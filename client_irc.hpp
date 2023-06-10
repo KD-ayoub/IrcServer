@@ -1,22 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   client_irc.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/03 17:53:34 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/10 14:33:51 by akouame          ###   ########.fr       */
+/*   Created: 2023/06/10 14:47:09 by akouame           #+#    #+#             */
+/*   Updated: 2023/06/10 14:59:52 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef CLIENT_IRC_HPP
+#define CLIENT_IRC_HPP
+
 #include "ft_irc.hpp"
 
-int main(int ac, char **av)
+class   Client_irc
 {
-    checkArguments(ac, av);
-    IrcServer irc(av[1], av[2]);
-    int sockFd = irc.SetupServer();
-    irc.AccetConnection(sockFd);
-    
-}
+	std::string	_pass;
+	std::string	_nick;
+	std::string	_user;
+	public:
+		Client_irc();
+		~Client_irc();
+		//--
+		bool	parse_registration(char *buf);
+
+};
+
+#endif
