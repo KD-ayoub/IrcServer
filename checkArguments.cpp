@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checkArguments.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:08:08 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/10 11:43:39 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/10 12:54:11 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,8 @@ bool checkPort(char *str)
     for(int i = 0; str[i]; i++)
         if (!isdigit(str[i]))
             return false;
+    long n = atoi(str);
+    if (n < 0 || n > 65535)
+        return (false);
     return true;
 }
