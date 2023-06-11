@@ -6,11 +6,12 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/10 11:31:52 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/11 16:45:33 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
+#include "ParsingChannelCommands.hpp"
 
 IrcServer::IrcServer()
 {
@@ -77,6 +78,7 @@ int    IrcServer::SetupServer()
 
 void    IrcServer::AccetConnection(int sockFd)
 {
+    Parsing pars;
     int polfd;
     int numberFd = 1;
     std::memset(&this->fds, 0, sizeof(this->fds));
@@ -123,8 +125,10 @@ void    IrcServer::AccetConnection(int sockFd)
                         /////      TO Do     /////////
                     //// function (handle request [buf])
                     //// send reply (connected succesfully)
+                    pars.ParseCmd(buf, recvalue);
+                    //send(fds[i].fd, buf, recvalue, 0);
                     //// trait commands
-                    std::cout << "Recv : " << buf;
+                    //std::cout << "Recv : " << buf;
                     std::memset(&buf, 0, sizeof(buf));
                 }
             }

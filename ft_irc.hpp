@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/10 11:43:47 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/11 15:19:23 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class IrcServer
         void    setPassword(std::string pass);
 
         int    SetupServer();
-        void    AccetConnection(int sockFd);
+        void   AccetConnection(int sockFd);
           
 };
 
