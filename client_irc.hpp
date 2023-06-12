@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:47:09 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/12 12:52:00 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/12 14:05:19 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,10 @@ class   Client_irc
 	std::string	_pass;
 	std::string	_nick;
 	User_parameters	_user;
-	bool	registred;
 	
 	public:
+		bool	registred;
+		//--
 		Client_irc();
 		~Client_irc();
 		//--
@@ -46,6 +47,7 @@ class   Client_irc
 		std::string	get_pass();
 		std::string	get_nick();
 		User_parameters	get_user();
+		bool	get_registred;
 		//--
 		std::string	check_pass_cmd(char *buf, std::string pwd);
 		std::string	check_nick_cmd(char *buf);

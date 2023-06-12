@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/10 17:29:37 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/12 14:06:48 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,10 @@ void    IrcServer::AccetConnection(int sockFd)
                     }
                     Client_irc  clt;
                     
-                    clt.parse_registration(buf, password);
+                    if (clt.registred)
+                        std::cerr << ":You may not reregister" << std::endl;
+                    else
+                        clt.parse_registration(buf, password);
                     
                         /////      TO Do     /////////
                     //// function (handle request [buf])
