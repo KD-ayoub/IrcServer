@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:55:05 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/12 11:46:03 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/12 14:01:21 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 Client_irc::Client_irc(){
     // std::cout << "Client_irc, default constructor called !" << std::endl;
-
+	registred = false;
+	_user.valid = false;
 }
 
 Client_irc::~Client_irc(){
@@ -29,7 +30,11 @@ void	Client_irc::set_nick(std::string	nck){
 	_nick = nck;
 }
 void	Client_irc::set_user(User_parameters	usr){
-	_user = usr;
+	_user.username = usr.username;
+	_user.hostname = usr.hostname;
+	_user.servername = usr.servername;
+	_user.realname = usr.realname;
+	_user.valid = usr.valid;
 }
 //--
 std::string	Client_irc::get_pass(){
@@ -72,7 +77,7 @@ std::string	Client_irc::check_nick_cmd(char *buf)
         nick_cmd[1] += buf[i];
     return (nick_cmd);
 }
-User_parameters	Client_irc::check_user_cmd(char *buf)
+bool	Client_irc::check_user_cmd(char *buf)
 {    
     std::string user_cmd;
 	std::vector<std::string>	user_splited;
@@ -81,10 +86,24 @@ User_parameters	Client_irc::check_user_cmd(char *buf)
     while (buf[++i])
         user_cmd += buf[i];
 	user_splited = split_string(user_cmd, ' ');
-	if ()
-    return (_user);
+	if (user_splited.size() < 4)
+	{
+		std::cerr << "USER" << " :Not enough parameters" << std::endl;
+		return(false);
+	}
+	if (user_splited[3][0] != ':')
+	{
+		std::cerr << "USER" << " :The realname must start with  \':\'" << std::endl;
+		return (false);
+	}
+	_user.username = user_splited[0];
+	_user.hostname = user_splited[1];
+	_user.servername = user_splited[2];
+	for (size_t i = 3; i < user_splited.size(); i++)
+		_user.realname += user_splited[i];
+    return (true);
 }
-
+//--
 bool    Client_irc::parse_registration(char *buf, std::string pwd)
 {
     if (registred)
@@ -97,9 +116,12 @@ bool    Client_irc::parse_registration(char *buf, std::string pwd)
 		tmp += buf[i];
 	if (tmp == "PASS ")
 	{
-		if (check_pass_cmd(buf, pwd).empty())
+		_pass = check_pass_cmd(buf, pwd);
+		if (_pass.empty())
+		{
+			std::cerr << "Empty password !" << std::endl;
 			return (false);
-		set_pass(check_pass_cmd(buf, pwd));
+		}
 		std::cout << "--PASS added succesfully !--" << std::endl;
 	}
 	else if (tmp == "NICK ")
@@ -109,9 +131,9 @@ bool    Client_irc::parse_registration(char *buf, std::string pwd)
 			std::cout << "You must add PASS before !" << std::endl;
 			return (false);
 		}
-		if (check_nick_cmd(buf).empty())
+		_nick = check_nick_cmd(buf);
+		if (_nick.empty())
 			return (false);
-		set_nick(check_nick_cmd(buf));
 		std::cout << "--NICK added succesfully !--" << std::endl;
 	}
 	else if (tmp == "USER ")
@@ -121,12 +143,12 @@ bool    Client_irc::parse_registration(char *buf, std::string pwd)
 			std::cout << "You must add PASS && NICK before !" << std::endl;
 			return (false);	
 		}
-		if (check_user_cmd(buf).empty())
+		if (!check_user_cmd(buf))
 			return (false);
-		set_user(check_user_cmd(buf));
+		_user.valid = true;
 		std::cout << "--USER added succesfully !--" << std::endl;
 	}
-    if (!_pass.empty() && !_nick.empty() && !_user.empty())
+    if (!_pass.empty() && !_nick.empty() && !_user.valid == true)
 		registred = true;
 	if (!registred)
 		return (false);

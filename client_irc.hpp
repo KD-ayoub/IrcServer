@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:47:09 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/12 12:17:25 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/12 12:52:00 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct User_parameters
 	std::string	hostname;
 	std::string	servername;
 	std::string	realname;
+	bool	valid;
 } User_parameters;
 
 class   Client_irc
@@ -48,8 +49,8 @@ class   Client_irc
 		//--
 		std::string	check_pass_cmd(char *buf, std::string pwd);
 		std::string	check_nick_cmd(char *buf);
-		User_parameters	check_user_cmd(char *buf);
-		
+		bool	check_user_cmd(char *buf);
+		//--
 		bool	parse_registration(char *buf, std::string pwd);
 
 };
