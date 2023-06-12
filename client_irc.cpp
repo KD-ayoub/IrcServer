@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:55:05 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/10 19:08:45 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/12 11:46:03 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	Client_irc::set_pass(std::string	pwd){
 void	Client_irc::set_nick(std::string	nck){
 	_nick = nck;
 }
-void	Client_irc::set_user(std::string	usr){
+void	Client_irc::set_user(User_parameters	usr){
 	_user = usr;
 }
 //--
@@ -38,7 +38,7 @@ std::string	Client_irc::get_pass(){
 std::string	Client_irc::get_nick(){
 	return (_nick);
 }
-std::string	Client_irc::get_user(){
+User_parameters	Client_irc::get_user(){
 	return (_user);
 }
 //--
@@ -63,21 +63,26 @@ std::string	Client_irc::check_nick_cmd(char *buf)
     std::string nick_cmd;
     
     if (strlen(buf) < 6)
+	{
+		std::cerr << ":No nickname given" <<std::endl;
         return (NULL);
+	}
     int i = 4;
     while (buf[++i])
         nick_cmd[1] += buf[i];
     return (nick_cmd);
 }
-std::string	Client_irc::check_user_cmd(char *buf)
+User_parameters	Client_irc::check_user_cmd(char *buf)
 {    
     std::string user_cmd;
-
+	std::vector<std::string>	user_splited;
+	
     int i = 4;
     while (buf[++i])
         user_cmd += buf[i];
-	
-    return (user_cmd);
+	user_splited = split_string(user_cmd, ' ');
+	if ()
+    return (_user);
 }
 
 bool    Client_irc::parse_registration(char *buf, std::string pwd)
@@ -101,7 +106,7 @@ bool    Client_irc::parse_registration(char *buf, std::string pwd)
 	{
 		if (_pass.empty())
 		{
-			std::cout << "You must have PASS before !" << std::endl;
+			std::cout << "You must add PASS before !" << std::endl;
 			return (false);
 		}
 		if (check_nick_cmd(buf).empty())
@@ -111,9 +116,9 @@ bool    Client_irc::parse_registration(char *buf, std::string pwd)
 	}
 	else if (tmp == "USER ")
 	{
-		if (_pass.empty() || _pass.empty())
+		if (_nick.empty() || _pass.empty())
 		{
-			std::cout << "You must have PASS && NICK before !" << std::endl;
+			std::cout << "You must add PASS && NICK before !" << std::endl;
 			return (false);	
 		}
 		if (check_user_cmd(buf).empty())

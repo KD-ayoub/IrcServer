@@ -38,4 +38,13 @@
 
 1-	wesh 5as ikon w7d length for PASS, NICK, USER ?
 2-	check if the NICK already taken from other client
-3-	
+3-	nick <nickname> | <hopcount> :The <hopcount> parameter is only used by servers to indicate
+   how far away a nick is from its home server
+4-	   :WiZ NICK Kilroy                ; WiZ changed his nickname to Kilroy.
+5-	Command: USER
+   Parameters: <username> <hostname> <servername> <realname>
+6-	  :testnick USER guest tolmoon tolsun :Ronnie Reagan
+                                   ; message between servers with the
+                                   nickname for which the USER command
+                                   belongs to
+7-

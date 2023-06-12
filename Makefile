@@ -6,7 +6,7 @@ FLAGS = -Wall -Wextra -Werror -std=c++98 -g
 
 RM = rm -rf
 
-src = main.cpp ft_irc.cpp checkArguments.cpp client_irc.cpp
+src = main.cpp ft_irc.cpp checkArguments.cpp client_irc.cpp outils.cpp
 
 obj = $(src:.cpp=.o)
 
