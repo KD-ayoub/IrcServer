@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/10 11:43:47 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/12 20:49:42 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include <arpa/inet.h> //htons()
 #include <sys/select.h> // select()
 #include <sys/poll.h> // poll()
+#include "ParsingChannelCommands.hpp"
+#include "client_irc.hpp"
 
 class IrcServer
 {
