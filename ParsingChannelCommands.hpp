@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 15:10:13 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/11 19:23:16 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/12 11:42:21 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <iostream>
 #include <vector>
 
-class Parsing
+class ParsingChannelCommands
 {
     private :
         std::string _command;

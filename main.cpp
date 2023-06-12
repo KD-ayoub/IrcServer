@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:34 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/11 15:20:08 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/12 11:52:30 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int main(int ac, char **av)
 
     checkArguments(ac, av);
     IrcServer irc(av[1], av[2]);
-    Parsing parse;
     // struct pollfd fds[1024];
     int sockFd = irc.SetupServer();
     /////////////      poll()            ////////////////

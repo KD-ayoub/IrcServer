@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 16:59:19 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/11 20:12:56 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/12 11:40:19 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,6 @@ void SplitString(std::string str, std::vector<std::string> &split)
     while(i < cmd)
     {
         pos = str.find('\n');
-        if (pos == std::string::npos)
-            std::cout << "here\n";
         split.push_back(str.substr(0, pos));
         str.erase(0, pos + 1);
         i++;

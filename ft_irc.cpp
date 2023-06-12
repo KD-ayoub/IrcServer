@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/12 10:37:46 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/12 11:58:21 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int    IrcServer::SetupServer()
 
 void    IrcServer::AccetConnection(int sockFd)
 {
-    Parsing pars;
+    ParsingChannelCommands parser;
     int polfd;
     int numberFd = 1;
     std::memset(&this->fds, 0, sizeof(this->fds));
@@ -129,7 +129,7 @@ void    IrcServer::AccetConnection(int sockFd)
                     //// send reply (connected succesfully)
                     Appendbuffer += std::string(recvbuffer, recvalue);
                     if (Appendbuffer.find("\n") != std::string::npos) {
-                        pars.ParseCmd(&Appendbuffer[0], Appendbuffer.find("\n") + 1);
+                        parser.ParseCmd(&Appendbuffer[0], Appendbuffer.length());
                         Appendbuffer.clear();
                     }
                     //send(fds[i].fd, buf, recvalue, 0);
