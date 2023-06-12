@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 15:10:13 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/12 11:42:21 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/12 12:50:39 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 
 class ParsingChannelCommands
 {
@@ -28,7 +29,7 @@ class ParsingChannelCommands
         
         std::string getCommand();
         std::string getFlag();
-        void    ParseCmd(char *, int);
+        void    ParseCmd(const char *, int);
 };
 
 void SplitString(std::string, std::vector<std::string> &);

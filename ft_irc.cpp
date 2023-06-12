@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/12 11:58:21 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/12 12:53:22 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void    IrcServer::AccetConnection(int sockFd)
     std::memset(&this->fds, 0, sizeof(this->fds));
     fds[0].fd = sockFd;
     fds[0].events = POLLIN;
-    std::string Appendbuffer;
+    std::map<int, std::string> Appendbuffer;
     while (true)
     {
         polfd = poll(fds, numberFd, -1);
@@ -102,6 +102,7 @@ void    IrcServer::AccetConnection(int sockFd)
                         Error("Error in accept");
                     std::cout << "Connected...." << std::endl;
                     std::cout << "client entered\n";
+                    Appendbuffer[clientFd] = "";  //// initialize new buffer for this client
                     fds[numberFd].fd = clientFd;
                     fds[numberFd].events = POLLIN;
                     numberFd++;
@@ -122,16 +123,18 @@ void    IrcServer::AccetConnection(int sockFd)
                         numberFd--;
                         fds[i] = fds[numberFd];
                         std::memset(&recvbuffer, 0, sizeof(recvbuffer));
+                        Appendbuffer.erase(fds[i].fd); /// remove buffer for this client
                         break;
                     }
                         /////      TO Do     /////////
                     //// function (handle request [buf])
                     //// send reply (connected succesfully)
-                    Appendbuffer += std::string(recvbuffer, recvalue);
-                    if (Appendbuffer.find("\n") != std::string::npos) {
-                        parser.ParseCmd(&Appendbuffer[0], Appendbuffer.length());
-                        Appendbuffer.clear();
+                    Appendbuffer[fds[i].fd] += std::string(recvbuffer, recvalue);
+                    if (Appendbuffer[fds[i].fd].find("\n") != std::string::npos) {
+                        parser.ParseCmd(Appendbuffer[fds[i].fd].c_str(), Appendbuffer[fds[i].fd].length());
+                        //Appendbuffer.clear();
                     }
+                    
                     //send(fds[i].fd, buf, recvalue, 0);
                     //// trait commands
                     //std::cout << "Recv : " << buf;

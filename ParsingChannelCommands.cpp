@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 15:16:08 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/12 11:43:15 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/12 12:50:29 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ std::string ParsingChannelCommands::getFlag()
     return this->_flag;
 }
 
-void    ParsingChannelCommands::ParseCmd(char *buffer, int recvalue)
+void    ParsingChannelCommands::ParseCmd(const char *buffer, int recvalue)
 {
     std::string cleanBuff;
     std::vector<std::string> split;
