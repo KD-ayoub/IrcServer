@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 15:10:13 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/11 17:06:34 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/11 19:23:16 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class Parsing
         void    ParseCmd(char *, int);
 };
 
-std::vector<std::string> SplitString(std::string);
+void SplitString(std::string, std::vector<std::string> &);
 int countCmd(std::string str);
 
 #endif

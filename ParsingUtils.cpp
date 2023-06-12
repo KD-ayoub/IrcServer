@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 16:59:19 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/11 17:15:38 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/11 20:12:56 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,18 @@ int countCmd(std::string str)
     return count;
 }
 
-std::vector<std::string> SplitString(std::string str)
+void SplitString(std::string str, std::vector<std::string> &split)
 {
-    std::vector<std::string> ret;
     int cmd = countCmd(str);
     int i = 0;
     size_t pos = 0;
     while(i < cmd)
     {
         pos = str.find('\n');
-        ret.push_back(str.substr(0, pos));
-        str.erase(0, pos);
+        if (pos == std::string::npos)
+            std::cout << "here\n";
+        split.push_back(str.substr(0, pos));
+        str.erase(0, pos + 1);
         i++;
     }
-    return ret;
 }

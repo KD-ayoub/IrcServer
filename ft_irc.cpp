@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/11 16:45:33 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/12 10:37:46 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ void    IrcServer::AccetConnection(int sockFd)
     std::memset(&this->fds, 0, sizeof(this->fds));
     fds[0].fd = sockFd;
     fds[0].events = POLLIN;
+    std::string Appendbuffer;
     while (true)
     {
         polfd = poll(fds, numberFd, -1);
@@ -109,8 +110,8 @@ void    IrcServer::AccetConnection(int sockFd)
                 {
                     /// incoming data for existing connexion
                     //std::cout << "num : " << numberFd << std::endl;
-                    char buf[1024];
-                    int recvalue = recv(fds[i].fd, &buf, sizeof(buf), 0);
+                    char recvbuffer[512];
+                    int recvalue = recv(fds[i].fd, &recvbuffer, sizeof(recvbuffer), 0);
                     std::cout << fds[i].fd << std::endl;
                     if (recvalue == -1)
                         Error("Error in recv");
@@ -120,16 +121,21 @@ void    IrcServer::AccetConnection(int sockFd)
                         close(fds[i].fd);
                         numberFd--;
                         fds[i] = fds[numberFd];
+                        std::memset(&recvbuffer, 0, sizeof(recvbuffer));
                         break;
                     }
                         /////      TO Do     /////////
                     //// function (handle request [buf])
                     //// send reply (connected succesfully)
-                    pars.ParseCmd(buf, recvalue);
+                    Appendbuffer += std::string(recvbuffer, recvalue);
+                    if (Appendbuffer.find("\n") != std::string::npos) {
+                        pars.ParseCmd(&Appendbuffer[0], Appendbuffer.find("\n") + 1);
+                        Appendbuffer.clear();
+                    }
                     //send(fds[i].fd, buf, recvalue, 0);
                     //// trait commands
                     //std::cout << "Recv : " << buf;
-                    std::memset(&buf, 0, sizeof(buf));
+                    std::memset(&recvbuffer, 0, sizeof(recvbuffer));
                 }
             }
         }
