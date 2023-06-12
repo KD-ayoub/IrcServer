@@ -6,12 +6,11 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:34 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/12 11:52:30 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/10 11:31:35 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
-#include "ParsingChannelCommands.hpp"
 
 int main(int ac, char **av)
 {

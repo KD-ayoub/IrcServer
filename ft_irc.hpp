@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/11 15:19:23 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/12 20:49:42 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include <arpa/inet.h> //htons()
 #include <sys/select.h> // select()
 #include <sys/poll.h> // poll()
+#include "ParsingChannelCommands.hpp"
+#include "client_irc.hpp"
 
 class IrcServer
 {
@@ -42,7 +44,7 @@ class IrcServer
         void    setPassword(std::string pass);
 
         int    SetupServer();
-        void   AccetConnection(int sockFd);
+        void    AccetConnection(int sockFd);
           
 };
 
