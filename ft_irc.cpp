@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/12 14:06:48 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/12 16:13:48 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,12 +120,25 @@ void    IrcServer::AccetConnection(int sockFd)
                         fds[i] = fds[numberFd];
                         break;
                     }
-                    Client_irc  clt;
+                    Client_irc  clt(fds[i].fd);
                     
-                    if (clt.registred)
-                        std::cerr << ":You may not reregister" << std::endl;
-                    else
-                        clt.parse_registration(buf, password);
+                    if (clt.get_registred())
+                    {
+                        
+                                std::string msg = ":irc.1337.com 462 " + clt.get_nick()+" :Welcome to Our IRC Server!\r\n" + "If you need any help, just ask.\r\n Have a great time! /~ " +
+                    clt.get_nick() + " ~/" + "\r\n";
+                    clt.send_msg_to_client(msg.c_str());
+                       // std::cerr << ":You may not reregister" << std::endl;
+                    }
+                    else {
+                        if (clt.parse_registration(buf, password))
+                            {
+                                std::string msg = ":irc.1337.com 001 " + clt.get_nick()+" :Welcome to Our IRC Server!\r\n" + "If you need any help, just ask.\r\n Have a great time! /~ " +
+                    clt.get_nick() + " ~/" + "\r\n";
+                    clt.send_msg_to_client(msg.c_str());
+                            }
+                        
+                    }
                     
                         /////      TO Do     /////////
                     //// function (handle request [buf])

@@ -47,4 +47,11 @@
                                    ; message between servers with the
                                    nickname for which the USER command
                                    belongs to
-7-
+7- 483     ERR_CANTKILLSERVER
+                        ":You cant kill a server!"
+
+                - Any attempts to use the KILL command on a server
+                  are to be refused and this error returned directly
+                  to the client.
+8- RPL_AWAY is only
+                  sent by the server to which the client is connected.
