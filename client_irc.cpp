@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:55:05 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/12 14:05:09 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/12 14:29:55 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,14 @@ std::string	Client_irc::check_pass_cmd(char *buf, std::string pwd)
     std::string pass_cmd;
  
     if (strlen(buf) < 6)
-        return (NULL);
+        return ("");
     int i = 4;
     while (buf[++i])
         pass_cmd += buf[i];
     if (pass_cmd != pwd)
     {
         std::cerr << "Incorrect password !" << std::endl;
-        return (NULL);
+        return ("");
     }
     return (pass_cmd);
 }
@@ -70,7 +70,7 @@ std::string	Client_irc::check_nick_cmd(char *buf)
     if (strlen(buf) < 6)
 	{
 		std::cerr << ":No nickname given" <<std::endl;
-        return (NULL);
+        return ("");
 	}
     int i = 4;
     while (buf[++i])
