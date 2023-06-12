@@ -6,12 +6,11 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/10 15:01:24 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/10 17:29:37 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
-#include "client_irc.hpp"
 
 IrcServer::IrcServer()
 {
@@ -123,7 +122,8 @@ void    IrcServer::AccetConnection(int sockFd)
                     }
                     Client_irc  clt;
                     
-                    clt.parse_registration(buf);
+                    clt.parse_registration(buf, password);
+                    
                         /////      TO Do     /////////
                     //// function (handle request [buf])
                     //// send reply (connected succesfully)

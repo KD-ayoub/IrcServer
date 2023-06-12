@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/10 11:43:47 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/10 21:40:01 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include <arpa/inet.h> //htons()
 #include <sys/select.h> // select()
 #include <sys/poll.h> // poll()
+
+#include "client_irc.hpp"
 
 class IrcServer
 {
@@ -46,7 +48,7 @@ class IrcServer
           
 };
 
-bool checkPort(char *str);
+bool    checkPort(char *str);
 void    Error(const char *str);
 void    checkArguments(int ac, char **av);
 

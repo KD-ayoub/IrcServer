@@ -6,16 +6,18 @@ FLAGS = -Wall -Wextra -Werror -std=c++98 -g
 
 RM = rm -rf
 
-src = main.cpp ft_irc.cpp checkArguments.cpp
+src = main.cpp ft_irc.cpp checkArguments.cpp client_irc.cpp
 
 obj = $(src:.cpp=.o)
+
+hdr = ft_irc.hpp client_irc.hpp
 
 all : $(NAME)
 
 $(NAME) : $(obj)
 	$(CC) $(FLAGS) $(obj) -o $(NAME)
 
-%.o : %.cpp  ft_irc.hpp
+%.o : %.cpp  $(hdr)
 	$(CC) $(FLAGS) $< -c
 clean :
 	$(RM) $(obj)

@@ -35,3 +35,7 @@
 13-	
 
 -----------------------------------------------------
+
+1-	wesh 5as ikon w7d length for PASS, NICK, USER ?
+2-	check if the NICK already taken from other client
+3-	
