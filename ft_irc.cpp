@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/10 11:31:52 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/12 20:46:06 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,13 @@ int    IrcServer::SetupServer()
 
 void    IrcServer::AccetConnection(int sockFd)
 {
+    ParsingChannelCommands parser;
     int polfd;
     int numberFd = 1;
     std::memset(&this->fds, 0, sizeof(this->fds));
     fds[0].fd = sockFd;
     fds[0].events = POLLIN;
+    std::map<int, std::string> Appendbuffer;
     while (true)
     {
         polfd = poll(fds, numberFd, -1);
@@ -99,6 +101,7 @@ void    IrcServer::AccetConnection(int sockFd)
                         Error("Error in accept");
                     std::cout << "Connected...." << std::endl;
                     std::cout << "client entered\n";
+                    Appendbuffer[clientFd] = "";  //// initialize new buffer for this client
                     fds[numberFd].fd = clientFd;
                     fds[numberFd].events = POLLIN;
                     numberFd++;
@@ -107,8 +110,8 @@ void    IrcServer::AccetConnection(int sockFd)
                 {
                     /// incoming data for existing connexion
                     //std::cout << "num : " << numberFd << std::endl;
-                    char buf[1024];
-                    int recvalue = recv(fds[i].fd, &buf, sizeof(buf), 0);
+                    char recvbuffer[512];
+                    int recvalue = recv(fds[i].fd, &recvbuffer, sizeof(recvbuffer), 0);
                     std::cout << fds[i].fd << std::endl;
                     if (recvalue == -1)
                         Error("Error in recv");
@@ -118,14 +121,23 @@ void    IrcServer::AccetConnection(int sockFd)
                         close(fds[i].fd);
                         numberFd--;
                         fds[i] = fds[numberFd];
+                        std::memset(&recvbuffer, 0, sizeof(recvbuffer));
+                        Appendbuffer.erase(fds[i].fd); /// remove buffer for this client
                         break;
                     }
                         /////      TO Do     /////////
                     //// function (handle request [buf])
                     //// send reply (connected succesfully)
+                    Appendbuffer[fds[i].fd] += std::string(recvbuffer, recvalue);
+                    if (Appendbuffer[fds[i].fd].find("\n") != std::string::npos) {
+                        parser.ParseCmd(Appendbuffer[fds[i].fd].c_str(), Appendbuffer[fds[i].fd].length());
+                        //Appendbuffer.clear();
+                    }
+                    
+                    //send(fds[i].fd, buf, recvalue, 0);
                     //// trait commands
-                    std::cout << "Recv : " << buf;
-                    std::memset(&buf, 0, sizeof(buf));
+                    //std::cout << "Recv : " << buf;
+                    std::memset(&recvbuffer, 0, sizeof(recvbuffer));
                 }
             }
         }
