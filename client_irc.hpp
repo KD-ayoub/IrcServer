@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client_irc.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:47:09 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/12 20:26:14 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/12 20:53:57 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 #define ERR_NORECIPIENT	":No recipient given (<command>)"
 #define ERR_NOTEXTTOSEND	":No text to send"
-#define ERR_UNKNOWNCOMMAND	"<command> :Unknown command"
+#define ERR_UNKNOWNCOMMAND	"<command> :Unknown command\n"
 #define ERR_NONICKNAMEGIVEN	":No nickname given"
 #define	ERR_NICKNAMEINUSE "<nick> :Nickname is already in use"
 #define	ERR_NICKCOLLISION	"<nick> :Nickname collision KILL"

@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/12 20:46:06 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/12 20:51:38 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,25 @@ void    IrcServer::AccetConnection(int sockFd)
                         std::memset(&recvbuffer, 0, sizeof(recvbuffer));
                         Appendbuffer.erase(fds[i].fd); /// remove buffer for this client
                         break;
+                    }
+                    Client_irc  clt(fds[i].fd);
+                    
+                    if (clt.get_registred())
+                    {
+                        
+                                std::string msg = ":irc.1337.com 462 " + clt.get_nick()+" :Welcome to Our IRC Server!\r\n" + "If you need any help, just ask.\r\n Have a great time! /~ " +
+                    clt.get_nick() + " ~/" + "\r\n";
+                    clt.send_msg_to_client(msg.c_str());
+                       // std::cerr << ":You may not reregister" << std::endl;
+                    }
+                    else {
+                        if (clt.parse_registration(recvbuffer, password))
+                            {
+                                std::string msg = ":irc.1337.com 001 " + clt.get_nick()+" :Welcome to Our IRC Server!\r\n" + "If you need any help, just ask.\r\n Have a great time! /~ " +
+                    clt.get_nick() + " ~/" + "\r\n";
+                    clt.send_msg_to_client(msg.c_str());
+                            }
+                        
                     }
                         /////      TO Do     /////////
                     //// function (handle request [buf])
