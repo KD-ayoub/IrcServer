@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:47:09 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/12 18:58:29 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/12 20:26:14 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@
 #define	ERR_NEEDMOREPARAMS	"<command> :Not enough parameters"
 #define	ERR_ALREADYREGISTRED	 ":You may not reregister"
 #define	ERR_PASSWDMISMATCH	":Password incorrect"
-#define	
 
 #include "ft_irc.hpp"
 
