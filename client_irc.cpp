@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:55:05 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/13 17:35:42 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/13 19:36:17 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ std::string	Client_irc::check_pass_cmd(char *buf, std::string pwd)
     while (buf[++i])
         pass_cmd += buf[i];
 		// this line just for check buffer !
-	std::cout << "pass_cmd = " << pass_cmd << "|" << std::endl;
+	// std::cout << "pass_cmd = " << pass_cmd << "|" << std::endl;
 		//-----
 	if (pass_cmd.empty())
 	{
@@ -125,14 +125,14 @@ std::string	Client_irc::check_nick_cmd(char *buf)
     
     if (strlen(buf) < 6)
 	{
-		msg = ":No nickname given";
+		msg = "ircserv ERROR :No nickname given\r\n";
 		send_msg_to_client();
         return ("");
 	}
     int i = 4;
     while (buf[++i])
         nick_cmd += buf[i];
-	std::cout << "this is nock cmd : " << nick_cmd << std::endl;
+	// std::cout << "this is nock cmd : " << nick_cmd << std::endl;
     return (nick_cmd);
 }
 bool	Client_irc::check_user_cmd(char *buf)
@@ -146,13 +146,13 @@ bool	Client_irc::check_user_cmd(char *buf)
 	user_splited = split_string(user_cmd, ' ');
 	if (user_splited.size() < 4)
 	{
-		msg = "USER :Not enough parameters\r\n";
+		msg = "ircserv ERROR :USER :Not enough parameters\r\n";
 		send_msg_to_client();
 		return(false);
 	}
 	if (user_splited[3][0] != ':')
 	{
-		msg = "USER :The realname must start with  \':\'";
+		msg = "ircserv ERROR: USER :The realname must start with  \':\'";
 		send_msg_to_client();
 		return (false);
 	}
@@ -181,34 +181,34 @@ bool    Client_irc::parse_registration(char *buf, std::string pwd)
 		_pass = check_pass_cmd(buf, pwd);
 		if (_pass.empty())
 			return (false);
-		msg = "--PASS added succesfully--\r\n";
+		msg = "ircserv 001 :--PASS added succesfully--\r\n";
 		send_msg_to_client(); // check if i will send it like this or not !
-		std::cout << "mohahaha 1= " << _pass << std::endl;
+		// std::cout << "mohahaha 1= " << _pass << std::endl;
 	}
 	else if (cmd == "NICK ")
 	{
-		std::cout << "pass 2= " << _pass << std::endl;
+		// std::cout << "pass 2= " << _pass << std::endl;
 		if (_pass.empty())
 		{
 			msg = ":server ERROR * :You must add PASS before !\r\n";
 			send_msg_to_client();
 			return (false);
 		}
-		std::cout << "buff = " << buf << std::endl;
+		// std::cout << "buff = " << buf << std::endl;
 		_nick = check_nick_cmd(buf);
-		std::cout << "nick 1= " << _nick << std::endl;
+		// std::cout << "nick 1= " << _nick << std::endl;
 		if (_nick.empty())
 			return (false);
-		msg = "--NICK added succesfully--";
+		msg = "ircserv 001 :--NICK added succesfully--\r\n";
 		send_msg_to_client();
 		// std::cout << "--NICK added succesfully !--" << std::endl;
 	}
 	else if (cmd == "USER ")
 	{
-		std::cout << "nick 2= " << _nick << std::endl;
+		// std::cout << "nick 2= " << _nick << std::endl;
 		if (_nick.empty() || _pass.empty())
 		{
-			msg = "You must add PASS && NICK before !";
+			msg = "ircserv ERROR :You must add PASS && NICK before !\r\n";
 			send_msg_to_client();
 			// std::cout << "You must add PASS && NICK before !" << std::endl;
 			return (false);	
@@ -216,7 +216,7 @@ bool    Client_irc::parse_registration(char *buf, std::string pwd)
 		if (check_user_cmd(buf) == false)
 			return (false);
 		_user.valid = true;
-		msg = "--USER added succesfully--";
+		msg = "ircserv 001 :--USER added succesfully--\r\n";
 		send_msg_to_client();
 		// std::cout << "--USER added succesfully !--" << std::endl;
 	}

@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/13 17:34:26 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/13 19:33:34 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ void    IrcServer::Authentification(int i)
     if (mapclients.at(fds[i].fd).get_registered())
     {
         
-            mapclients.at(fds[i].fd).msg = ":irc.1337.com 462  1 " + mapclients.at(fds[i].fd).get_nick()+" :Welcome to Our IRC Server!\r\n" \
+            mapclients.at(fds[i].fd).msg = ":irc.1337.com 001  1 " + mapclients.at(fds[i].fd).get_nick()+" :Welcome to Our IRC Server!\r\n" \
         + "If you need any help, just ask.\r\n Have a great time! /~ " +\
         mapclients.at(fds[i].fd).get_nick() + " ~/" + "\r\n";
         mapclients.at(fds[i].fd).send_msg_to_client();
@@ -164,7 +164,7 @@ void    IrcServer::Authentification(int i)
         {
             if (mapclients.at(fds[i].fd).parse_registration((char*)mapclients.at(fds[i].fd).get_commands()[0].c_str(), password) == true)// attention
             {
-                mapclients.at(fds[i].fd).msg = ":irc.1337.com 462 2 " + mapclients.at(fds[i].fd).get_nick()+" :Welcome to Our IRC Server!\r\n" \
+                mapclients.at(fds[i].fd).msg = ":irc.1337.com 001 2 " + mapclients.at(fds[i].fd).get_nick()+" :Welcome to Our IRC Server!\r\n" \
             + "If you need any help, just ask.\r\n Have a great time! /~ " +\
             mapclients.at(fds[i].fd).get_nick() + " ~/" + "\r\n";
             mapclients.at(fds[i].fd).send_msg_to_client();
@@ -177,7 +177,7 @@ void    IrcServer::Authentification(int i)
             if (mapclients.at(fds[i].fd).get_registered())
            {
         
-                mapclients.at(fds[i].fd).msg = ":irc.1337.com 462 3  " + mapclients.at(fds[i].fd).get_nick()+" :Welcome to Our IRC Server!\r\n" \
+                mapclients.at(fds[i].fd).msg = ":irc.1337.com 001 3  " + mapclients.at(fds[i].fd).get_nick()+" :Welcome to Our IRC Server!\r\n" \
                  + "If you need any help, just ask.\r\n Have a great time! /~ " +\
                 mapclients.at(fds[i].fd).get_nick() + " ~/" + "\r\n";
                 mapclients.at(fds[i].fd).send_msg_to_client();
