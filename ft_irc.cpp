@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/13 13:05:04 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/13 14:33:00 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,9 +116,9 @@ int    IrcServer::RecieveIncomingData(int *numberFd, int i)
         std::cout << "Disonnected...." << std::endl;
         close(fds[i].fd);
         *numberFd-=1;
+        mapclients.erase(fds[i].fd);
         fds[i] = fds[*numberFd];
         std::memset(&recvbuffer, 0, sizeof(recvbuffer));
-        mapclients.erase(fds[i].fd);
         //Appendbuffer.erase(fds[i].fd); /// remove buffer for this client
         return 0;
     }
@@ -170,6 +170,7 @@ void    IrcServer::RunServer(int sockFd)
                 else
                 {
                     RemoveCRLF(i);
+                    //Authentification()
                     std::cout << mapclients[fds[i].fd].get_stringtoappend();
                 }
                     /// incoming data for existing connexion
