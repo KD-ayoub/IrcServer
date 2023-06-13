@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: akouame <akouame@student.42.fr>            +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2023/06/13 16:11:29 by akouame           #+#    #+#              #
+#    Updated: 2023/06/13 16:11:30 by akouame          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = ircserv
 
 CC = c++
@@ -11,7 +23,8 @@ src = main.cpp ft_irc.cpp checkArguments.cpp outils.cpp client_irc.cpp ParsingCh
 obj = $(src:.cpp=.o)
 
 hdr = ft_irc.hpp client_irc.hpp ParsingChannelCommands.hpp
-all : $(NAME) 
+
+all : $(NAME)
 
 $(NAME) : $(obj)
 	$(CC) $(FLAGS) $(obj) -o $(NAME)

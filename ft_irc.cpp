@@ -6,9 +6,10 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/13 15:40:39 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/13 17:34:26 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "ft_irc.hpp"
 
@@ -39,7 +40,7 @@ std::string IrcServer::getPassword() const
     return this->password;
 }
 
-Client_irc IrcServer::getClient(int fd)
+Client_irc &IrcServer::getClient(int fd)
 {
     return this->mapclients.at(fd);
 }
@@ -57,8 +58,6 @@ void    IrcServer::setPassword(std::string pass)
 int    IrcServer::SetupServer()
 {
     int sockFd, sockoptValue = 1;
-    // struct addrinfo hints;
-    // struct addrinfo *result;
     std::memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
@@ -96,7 +95,6 @@ void    IrcServer::AcceptNewConnection(int sockFd, int *numberFd)
     std::cout << "Connected...." << std::endl;
     std::cout << "client entered\n";
     mapclients[clientFd] = Client_irc();
-    //Appendbuffer[clientFd] = "";  //// initialize new buffer for this client
     fds[*numberFd].fd = clientFd;
     fds[*numberFd].events = POLLIN;
     *numberFd+= 1;
@@ -104,7 +102,7 @@ void    IrcServer::AcceptNewConnection(int sockFd, int *numberFd)
 
 int    IrcServer::RecieveIncomingData(int *numberFd, int i)
 {
-    Client_irc client;
+    Client_irc &client = getClient(fds[i].fd);
     std::string append;
     char recvbuffer[512];
     int recvalue = recv(fds[i].fd, &recvbuffer, sizeof(recvbuffer), 0);
@@ -119,7 +117,6 @@ int    IrcServer::RecieveIncomingData(int *numberFd, int i)
         mapclients.erase(fds[i].fd);
         fds[i] = fds[*numberFd];
         std::memset(&recvbuffer, 0, sizeof(recvbuffer));
-        //Appendbuffer.erase(fds[i].fd); /// remove buffer for this client
         return 0;
     }
     append += std::string(recvbuffer, recvalue);
@@ -132,7 +129,7 @@ int    IrcServer::RecieveIncomingData(int *numberFd, int i)
 
 void    IrcServer::RemoveCRLF(int i)
 {
-    Client_irc client = getClient(fds[i].fd);
+    Client_irc &client = getClient(fds[i].fd);
     std::vector<std::string> split;
     int count = countCmd(mapclients[fds[i].fd].get_stringtoappend());
     if (count == 1)
@@ -143,9 +140,51 @@ void    IrcServer::RemoveCRLF(int i)
     else
     {
         SplitString(client.get_stringtoappend(), split, count);
+        for(size_t i = 0; i < split.size(); i++)
+            client.buffer += split[i] + " ";
         client.set_commands(split);
     }
     mapclients[fds[i].fd] = client;
+}
+
+void    IrcServer::Authentification(int i)
+{
+    //Client_irc &clt = getClient(fds[i].fd);
+    if (mapclients.at(fds[i].fd).get_registered())
+    {
+        
+            mapclients.at(fds[i].fd).msg = ":irc.1337.com 462  1 " + mapclients.at(fds[i].fd).get_nick()+" :Welcome to Our IRC Server!\r\n" \
+        + "If you need any help, just ask.\r\n Have a great time! /~ " +\
+        mapclients.at(fds[i].fd).get_nick() + " ~/" + "\r\n";
+        mapclients.at(fds[i].fd).send_msg_to_client();
+        // std::cerr << ":You may not reregister" << std::endl;
+    }
+    else {
+        if (mapclients.at(fds[i].fd).get_commands().size() == 1)
+        {
+            if (mapclients.at(fds[i].fd).parse_registration((char*)mapclients.at(fds[i].fd).get_commands()[0].c_str(), password) == true)// attention
+            {
+                mapclients.at(fds[i].fd).msg = ":irc.1337.com 462 2 " + mapclients.at(fds[i].fd).get_nick()+" :Welcome to Our IRC Server!\r\n" \
+            + "If you need any help, just ask.\r\n Have a great time! /~ " +\
+            mapclients.at(fds[i].fd).get_nick() + " ~/" + "\r\n";
+            mapclients.at(fds[i].fd).send_msg_to_client();
+            }
+        }
+        else
+        {
+            for (size_t i = 0; i < mapclients.at(fds[i].fd).get_commands().size(); i++)
+                mapclients.at(fds[i].fd).parse_registration((char*)mapclients.at(fds[i].fd).get_commands()[i].c_str(), password);
+            if (mapclients.at(fds[i].fd).get_registered())
+           {
+        
+                mapclients.at(fds[i].fd).msg = ":irc.1337.com 462 3  " + mapclients.at(fds[i].fd).get_nick()+" :Welcome to Our IRC Server!\r\n" \
+                 + "If you need any help, just ask.\r\n Have a great time! /~ " +\
+                mapclients.at(fds[i].fd).get_nick() + " ~/" + "\r\n";
+                mapclients.at(fds[i].fd).send_msg_to_client();
+              // std::cerr << ":You may not reregister" << std::endl;
+             }
+        }
+    }
 }
 
 void    IrcServer::RunServer(int sockFd)
@@ -170,8 +209,18 @@ void    IrcServer::RunServer(int sockFd)
                 else
                 {
                     RemoveCRLF(i);
-                    //Authentification()
-                    std::cout << mapclients[fds[i].fd].get_stringtoappend();
+                    Authentification(i);
+                  
+                    // Client_irc  mapclients.at(fds[i].fd)(fds[i].fd);
+                    
+                    
+                    
+                        /////      TO Do     /////////
+                    //// function (handle request [buf])
+                    //// send reply (connected succesfully)
+                    //// trait commands
+                    // std::cout << "Recv : " << buf;
+                    // std::memset(&buf, 0, sizeof(buf));
                 }
     
             }

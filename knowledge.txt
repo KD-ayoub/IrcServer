@@ -1,0 +1,59 @@
+1-	int sockfd = socket(domain, type, protocol)
+
+2-	For communicating between processes on different hosts
+     connected by IPV4, we use AF_INET and AF_I NET 6 for processes
+      connected by IPV6.
+
+3-	SOCK_STREAM: TCP(reliable, connection oriented)
+	SOCK_DGRAM: UDP(unreliable, connectionless)
+
+4-	sockaddr_in is a structure used in C and C++ programming 
+	languages to represent an IPv4 socket address.
+
+5-	sockaddr_in is a structure used in C and C++ programming languages to 
+      represent an IPv4 socket address.
+
+6-  you can check if a client is disconnected from your server by using the select().
+
+7-	Using a library like 'select', 'poll', or 'epoll' to set up an event loop that will 
+    monitor multiple sockets for different events (such as incoming connections or data availability).
+
+8-	accept function to accept the connection 
+
+9-	use the recv function to read the data from the client. 
+
+10-	use the send function to send the data over the client socket.
+
+11-	Close client connections: If a client connection is closed by the client or an error occurs
+	, remove the client socket from the event loop and close the socket using the close function.
+
+12-	fd_set is a data structure used in C programming for managing sets of file descriptors.
+	 It is typically used in conjunction with functions like select(), pselect(), FD_SET()
+	 , FD_CLR(), FD_ISSET(), and FD_ZERO() to perform I/O multiplexing and handle multiple file 
+	descriptors efficiently.
+
+13-	
+
+-----------------------------------------------------
+
+1-	wesh 5as ikon w7d length for PASS, NICK, USER ?
+2-	check if the NICK already taken from other client
+3-	nick <nickname> | <hopcount> :The <hopcount> parameter is only used by servers to indicate
+   how far away a nick is from its home server
+4-	   :WiZ NICK Kilroy                ; WiZ changed his nickname to Kilroy.
+5-	Command: USER
+   Parameters: <username> <hostname> <servername> <realname>
+6-	  :testnick USER guest tolmoon tolsun :Ronnie Reagan
+                                   ; message between servers with the
+                                   nickname for which the USER command
+                                   belongs to
+7- 483     ERR_CANTKILLSERVER
+                        ":You cant kill a server!"
+
+                - Any attempts to use the KILL command on a server
+                  are to be refused and this error returned directly
+                  to the client.
+8- RPL_AWAY is only
+                  sent by the server to which the client is connected.
+9-    std::string msg = ":irc.1337.com 462 * :You may not reregister\r\n";
+                     send_msg_to_client(msg.c_str());

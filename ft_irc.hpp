@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/13 12:47:29 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/13 17:01:45 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class IrcServer
 
         std::string getPort() const ;
         std::string  getPassword() const ;
-        Client_irc  getClient(int);
+        Client_irc  &getClient(int);
 
         void    setPort(std::string port);
         void    setPassword(std::string pass);
@@ -52,13 +52,14 @@ class IrcServer
         void    InitPollfd(int);
         void    AcceptNewConnection(int , int *);
         int     RecieveIncomingData(int *, int);
+        void    Authentification(int);
         /////////////////////
         void    RemoveCRLF(int);
         
           
 };
 
-bool checkPort(char *str);
+bool    checkPort(char *str);
 void    Error(const char *str);
 void    checkArguments(int ac, char **av);
 
