@@ -6,22 +6,39 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:55:05 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/12 20:04:09 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/13 15:34:37 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "client_irc.hpp"
 
+void	Client_irc::set_msg_error()
+{
+	error_msg.ERR_NORECIPIENT = ":ircserv 411 * :No recipient given "+cmd+"\r\n";
+	error_msg.ERR_UNKNOWNCOMMAND = ":ircserv 421 * :"+cmd+" Unknown command\r\n";
+	error_msg.ERR_NICKNAMEINUSE = ":ircserv 433 * :"+_nick+" Nickname is already in use\r\n";
+	error_msg.ERR_NICKCOLLISION = ":ircserv ERROR * :"+_nick+" Nickname collision KILL\r\n";
+	error_msg.ERR_NEEDMOREPARAMS = ":ircserv 461 * :"+cmd+" Not enough parameters\r\n";
+	error_msg.ERR_NOTEXTTOSEND = ":ircserv 412 * :No text to send\r\n";
+	error_msg.ERR_NONICKNAMEGIVEN = ":ircserv 431 * :No nickname given\r\n";
+	error_msg.ERR_NOTREGISTERED = ":ircserv 451 * :You have not registered\r\n";
+	error_msg.ERR_ALREADYREGISTRED = ":ircserv 462 * :You may not reregister\r\n";
+	error_msg.ERR_PASSWDMISMATCH = ":ircserv 464 * :Password incorrect\r\n";
+}
+			// msg = ":server ERROR * :You must add PASS before !\r\n";
+
 Client_irc::Client_irc(){
     // std::cout << "Client_irc, default constructor called !" << std::endl;
-	registred = false;
+	registered = false;
 	_user.valid = false;
+	set_msg_error();
+	
 }
 Client_irc::Client_irc(int fd_clt): fd_client(fd_clt){
 	// std::cout << "Client_irc, parameter constructor called !" << std::endl;
-	registred = false;
+	registered = false;
 	_user.valid = false;
-	
+	set_msg_error();
 }
 Client_irc::~Client_irc(){
     // std::cout << "Client_irc, default destructor called !" << std::endl;
@@ -41,8 +58,8 @@ void	Client_irc::set_user(User_parameters	usr){
 	_user.realname = usr.realname;
 	_user.valid = usr.valid;
 }
-void	Client_irc::set_registred(bool valid){
-	registred = valid;
+void	Client_irc::set_registered(bool valid){
+	registered = valid;
 }
 //--
 std::string	Client_irc::get_pass(){
@@ -54,8 +71,8 @@ std::string	Client_irc::get_nick(){
 User_parameters	Client_irc::get_user(){
 	return (_user);
 }
-bool	Client_irc::get_registred(){
-	return (registred);
+bool	Client_irc::get_registered(){
+	return (registered);
 }
 
 //--
@@ -63,12 +80,10 @@ std::string	Client_irc::check_pass_cmd(char *buf, std::string pwd)
 {
     std::string pass_cmd;
 
-	
-		  std::string msg = ":irc.1337.com 462 * :You may not reregister\r\n";
-                    send_msg_to_client(msg.c_str());
     if (strlen(buf) < 6)
 	{
-		send_msg_to_client(":Password Incorrect");
+		msg = error_msg.ERR_PASSWDMISMATCH;
+		send_msg_to_client();
         return ("");
 	}
     int i = 4;
@@ -79,12 +94,15 @@ std::string	Client_irc::check_pass_cmd(char *buf, std::string pwd)
 		//-----
 	if (pass_cmd.empty())
 	{
-		send_msg_to_client(":You may not reregister");
+		msg = error_msg.ERR_PASSWDMISMATCH;
+		send_msg_to_client();
 		return ("");
 	}
     if (pass_cmd != pwd)
     {
-		send_msg_to_client(":You may not reregister");
+		msg = error_msg.ERR_PASSWDMISMATCH;
+        send_msg_to_client();
+		// send_msg_to_client(error_msg.ERR_PASSWDMISMATCH.c_str());
         return ("");
     }
     return (pass_cmd);
@@ -95,7 +113,8 @@ std::string	Client_irc::check_nick_cmd(char *buf)
     
     if (strlen(buf) < 6)
 	{
-		send_msg_to_client(":No nickname given");
+		msg = ":No nickname given";
+		send_msg_to_client();
         return ("");
 	}
     int i = 4;
@@ -114,12 +133,14 @@ bool	Client_irc::check_user_cmd(char *buf)
 	user_splited = split_string(user_cmd, ' ');
 	if (user_splited.size() < 4)
 	{
-		send_msg_to_client("USER :Not enough parameters");
+		msg = "USER :Not enough parameters\r\n";
+		send_msg_to_client();
 		return(false);
 	}
 	if (user_splited[3][0] != ':')
 	{
-		send_msg_to_client("USER :The realname must start with  \':\'");
+		msg = "USER :The realname must start with  \':\'";
+		send_msg_to_client();
 		return (false);
 	}
 	_user.username = user_splited[0];
@@ -133,60 +154,70 @@ bool	Client_irc::check_user_cmd(char *buf)
 //--
 bool    Client_irc::parse_registration(char *buf, std::string pwd)
 {
-    if (registred)
+    if (registered)
     {
-		send_msg_to_client(":You may not reregister");
+		msg = error_msg.ERR_ALREADYREGISTRED;
+		send_msg_to_client();
         return (true);
     }
-    std::string tmp;
+	cmd.clear();
 	for (int i = 0; i < 5; i++)
-		tmp += buf[i];
-	if (tmp == "PASS ")
+		cmd += buf[i];
+	if (cmd == "PASS ")
 	{
 		_pass = check_pass_cmd(buf, pwd);
 		if (_pass.empty())
 			return (false);
-		send_msg_to_client("--PASS added succesfully--");
-		// std::cout << "--PASS added succesfully !--" << std::endl;
+		msg = "--PASS added succesfully--";
+		send_msg_to_client(); // check if i will send it like this or not !
 	}
-	else if (tmp == "NICK ")
+	else if (cmd == "NICK ")
 	{
 		if (_pass.empty())
 		{
-			send_msg_to_client("You must add PASS before !");
+			msg = ":server ERROR * :You must add PASS before !\r\n";
+			send_msg_to_client();
 			return (false);
 		}
 		_nick = check_nick_cmd(buf);
 		if (_nick.empty())
 			return (false);
-		send_msg_to_client("--NICK added succesfully--");
+		msg = "--NICK added succesfully--";
+		send_msg_to_client();
 		// std::cout << "--NICK added succesfully !--" << std::endl;
 	}
-	else if (tmp == "USER ")
+	else if (cmd == "USER ")
 	{
 		if (_nick.empty() || _pass.empty())
 		{
-			send_msg_to_client("You must add PASS && NICK before !");
+			msg = "You must add PASS && NICK before !";
+			send_msg_to_client();
 			// std::cout << "You must add PASS && NICK before !" << std::endl;
 			return (false);	
 		}
 		if (!check_user_cmd(buf))
 			return (false);
 		_user.valid = true;
-		send_msg_to_client("--USER added succesfully--");
+		msg = "--USER added succesfully--";
+		send_msg_to_client();
 		// std::cout << "--USER added succesfully !--" << std::endl;
 	}
-	else
-		send_msg_to_client(ERR_UNKNOWNCOMMAND);// "<command> :Unknown command"
+	// else
+		// send_msg_to_client(ERR_UNKNOWNCOMMAND(cmd));// "<command> :Unknown command"
     if (!_pass.empty() && !_nick.empty() && !_user.valid == true)
-		registred = true;
-	if (!registred)
+		registered = true;
+	if (!registered)
 		return (false);
 	return (true);
 }
 //--
-void	Client_irc::send_msg_to_client(const char *msg)
+void	Client_irc::send_msg_to_client()
 {
-	if (send(fd_client, msg, strlen(msg),0) == -1)
+	std::cout << "msg = |" << msg << "|" << std::endl;
+	// std::cout << "this is fd ==  " << fd_client << std::endl;
+	if (send(fd_client, msg.c_str(), msg.length(),0) == -1)
 			std::perror("send");
 }
+
+//   std::string msg = ":irc.1337.com 462 * :You may not reregister\r\n";
+//                     send_msg_to_client(msg.c_str());

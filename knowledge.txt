@@ -55,3 +55,5 @@
                   to the client.
 8- RPL_AWAY is only
                   sent by the server to which the client is connected.
+9-    std::string msg = ":irc.1337.com 462 * :You may not reregister\r\n";
+                     send_msg_to_client(msg.c_str());
