@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/13 14:33:00 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/13 15:40:39 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,40 +173,7 @@ void    IrcServer::RunServer(int sockFd)
                     //Authentification()
                     std::cout << mapclients[fds[i].fd].get_stringtoappend();
                 }
-                    /// incoming data for existing connexion
-                    //std::cout << "num : " << numberFd << std::endl;
-                    // Client_irc  clt(fds[i].fd);
-                    
-                    // if (clt.get_registred())
-                    // {
-                        
-                    //             std::string msg = ":irc.1337.com 462 " + clt.get_nick()+" :Welcome to Our IRC Server!\r\n" + "If you need any help, just ask.\r\n Have a great time! /~ " +
-                    // clt.get_nick() + " ~/" + "\r\n";
-                    // clt.send_msg_to_client(msg.c_str());
-                    //    // std::cerr << ":You may not reregister" << std::endl;
-                    // }
-                    // else {
-                    //     if (clt.parse_registration(recvbuffer, password))
-                    //         {
-                    //             std::string msg = ":irc.1337.com 001 " + clt.get_nick()+" :Welcome to Our IRC Server!\r\n" + "If you need any help, just ask.\r\n Have a great time! /~ " +
-                    // clt.get_nick() + " ~/" + "\r\n";
-                    // clt.send_msg_to_client(msg.c_str());
-                    //         }
-                        
-                    // }
-                    //     /////      TO Do     /////////
-                    // //// function (handle request [buf])
-                    // //// send reply (connected succesfully)
-                    // Appendbuffer[fds[i].fd] += std::string(recvbuffer, recvalue);
-                    // if (Appendbuffer[fds[i].fd].find("\n") != std::string::npos) {
-                    //     parser.ParseCmd(Appendbuffer[fds[i].fd].c_str(), Appendbuffer[fds[i].fd].length());
-                    //     //Appendbuffer.clear();
-                    // }
-                    
-                    //send(fds[i].fd, buf, recvalue, 0);
-                    //// trait commands
-                    //std::cout << "Recv : " << buf;
-                    
+    
             }
         }
     }
