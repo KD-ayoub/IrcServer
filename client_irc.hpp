@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:47:09 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/12 20:53:57 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/13 12:49:09 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ class   Client_irc
 	std::string	_nick;
 	User_parameters	_user;
 	bool	registred;
-	
+	std::string _stringtoappend;
+	std::vector<std::string> _commands;
 	public:
 		int	fd_client;
 		char	*msg;
@@ -58,9 +59,12 @@ class   Client_irc
 		void	set_nick(std::string nck);
 		void	set_user(User_parameters usr);
 		void	set_registred(bool valid);
+		void	set_stringtoappend(std::string);
+		void	set_commands(std::vector<std::string> &);
 		//--
 		std::string	get_pass();
 		std::string	get_nick();
+		std::string get_stringtoappend();
 		User_parameters	get_user();
 		bool	get_registred();
 		//--

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client_irc.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:55:05 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/12 20:04:09 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/13 12:49:00 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,12 @@ void	Client_irc::set_user(User_parameters	usr){
 void	Client_irc::set_registred(bool valid){
 	registred = valid;
 }
+void	Client_irc::set_stringtoappend(std::string str){
+	_stringtoappend = str;
+}
+void	Client_irc::set_commands(std::vector<std::string> &cmd){
+	_commands = cmd;
+}
 //--
 std::string	Client_irc::get_pass(){
 	return (_pass);
@@ -51,13 +57,15 @@ std::string	Client_irc::get_pass(){
 std::string	Client_irc::get_nick(){
 	return (_nick);
 }
+std::string Client_irc::get_stringtoappend(){
+	return (_stringtoappend);
+}
 User_parameters	Client_irc::get_user(){
 	return (_user);
 }
 bool	Client_irc::get_registred(){
 	return (registred);
 }
-
 //--
 std::string	Client_irc::check_pass_cmd(char *buf, std::string pwd)
 {

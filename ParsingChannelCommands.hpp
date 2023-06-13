@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 15:10:13 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/12 12:50:39 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/13 13:02:50 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,10 @@ class ParsingChannelCommands
         void    ParseCmd(const char *, int);
 };
 
-void SplitString(std::string, std::vector<std::string> &);
-int countCmd(std::string str);
+void            SplitString(std::string, std::vector<std::string> &, int);
+std::string     TrimString(std::string);
+std::string Rtrim(const std::string &str);
+std::string Ltrim(const std::string &str);
+int             countCmd(std::string str);
 
 #endif

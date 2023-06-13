@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:34 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/10 11:31:35 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/13 10:07:43 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int main(int ac, char **av)
     int sockFd = irc.SetupServer();
     /////////////      poll()            ////////////////
     //int maxFd = sockFd;
-    irc.AccetConnection(sockFd);
+    irc.RunServer(sockFd);
     ////////////       select()         ///////////////
     // fd_set  fdset;
 

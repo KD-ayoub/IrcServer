@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/12 20:49:42 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/13 12:47:29 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 #include "ParsingChannelCommands.hpp"
 #include "client_irc.hpp"
 
+class Client_irc;
+
 class IrcServer
 {
     private :
@@ -32,6 +34,7 @@ class IrcServer
         struct pollfd fds[1024];
         struct addrinfo hints;
         struct addrinfo *result;
+        std::map<int, Client_irc> mapclients;
     public :
         IrcServer();
         ~IrcServer();
@@ -39,12 +42,19 @@ class IrcServer
 
         std::string getPort() const ;
         std::string  getPassword() const ;
+        Client_irc  getClient(int);
 
         void    setPort(std::string port);
         void    setPassword(std::string pass);
-
-        int    SetupServer();
-        void    AccetConnection(int sockFd);
+        //// server ///////
+        int     SetupServer();
+        void    RunServer(int);
+        void    InitPollfd(int);
+        void    AcceptNewConnection(int , int *);
+        int     RecieveIncomingData(int *, int);
+        /////////////////////
+        void    RemoveCRLF(int);
+        
           
 };
 

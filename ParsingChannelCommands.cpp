@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 15:16:08 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/12 12:50:29 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/13 13:01:41 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void    ParsingChannelCommands::ParseCmd(const char *buffer, int recvalue)
     std::vector<std::string> split;
     for(int i = 0; i < recvalue; i++)
         cleanBuff.push_back(buffer[i]);
-    SplitString(cleanBuff, split);
+    //SplitString(cleanBuff, split);
     for(size_t i = 0; i < split.size(); i++)
         std::cout << split[i] << std::endl;
 }
