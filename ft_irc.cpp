@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/13 19:33:34 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/14 17:26:27 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,7 @@ void    IrcServer::RemoveCRLF(int i)
     mapclients[fds[i].fd] = client;
 }
 
+
 void    IrcServer::Authentification(int i)
 {
     //Client_irc &clt = getClient(fds[i].fd);
@@ -160,8 +161,11 @@ void    IrcServer::Authentification(int i)
         // std::cerr << ":You may not reregister" << std::endl;
     }
     else {
-        if (mapclients.at(fds[i].fd).get_commands().size() == 1)
+		int size = mapclients.at(fds[i].fd).get_commands().size();
+		std::cout << "size = " << size << std::endl;
+        if (size == 1)
         {
+			std::cout << "mapclients.at(fds[i].fd).get_commands().size() = "<< mapclients.at(fds[i].fd).get_commands().size() << std::endl;
             if (mapclients.at(fds[i].fd).parse_registration((char*)mapclients.at(fds[i].fd).get_commands()[0].c_str(), password) == true)// attention
             {
                 mapclients.at(fds[i].fd).msg = ":irc.1337.com 001 2 " + mapclients.at(fds[i].fd).get_nick()+" :Welcome to Our IRC Server!\r\n" \
@@ -172,6 +176,8 @@ void    IrcServer::Authentification(int i)
         }
         else
         {
+            if (mapclients.at(fds[i].fd).get_commands().size() == 3)
+				mapclients.at(fds[i].fd).setup_user();
             for (size_t i = 0; i < mapclients.at(fds[i].fd).get_commands().size(); i++)
                 mapclients.at(fds[i].fd).parse_registration((char*)mapclients.at(fds[i].fd).get_commands()[i].c_str(), password);
             if (mapclients.at(fds[i].fd).get_registered())
@@ -209,6 +215,7 @@ void    IrcServer::RunServer(int sockFd)
                 else
                 {
                     RemoveCRLF(i);
+                    // std::cout << "vector[2] = " << mapclients[0].get_commands()[2] << std::endl;
                     Authentification(i);
                   
                     // Client_irc  mapclients.at(fds[i].fd)(fds[i].fd);

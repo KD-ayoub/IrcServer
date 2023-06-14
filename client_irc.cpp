@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:55:05 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/13 19:36:17 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/14 17:15:27 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,24 @@ std::string	Client_irc::check_nick_cmd(char *buf)
 	// std::cout << "this is nock cmd : " << nick_cmd << std::endl;
     return (nick_cmd);
 }
+//--
+void    Client_irc::setup_user()
+{
+    std::string user_cmd;
+	std::vector<std::string>	user_splited;
+	
+	user_cmd = _commands[2];
+    
+	std::cout << "command [2] = " << _commands[2] <<std::endl;
+	user_splited = split_string(user_cmd, ' ');
+	user_splited[4].insert(0, 1, ':');
+	_commands[2].clear();
+	for (size_t i = 0; i < user_splited.size(); i++)
+		_commands[2] += user_splited[i];
+}
+
+
+//--
 bool	Client_irc::check_user_cmd(char *buf)
 {    
     std::string user_cmd;
@@ -181,7 +199,7 @@ bool    Client_irc::parse_registration(char *buf, std::string pwd)
 		_pass = check_pass_cmd(buf, pwd);
 		if (_pass.empty())
 			return (false);
-		msg = "ircserv 001 :--PASS added succesfully--\r\n";
+		msg = "ircserv ERROR :--PASS added succesfully--\r\n";
 		send_msg_to_client(); // check if i will send it like this or not !
 		// std::cout << "mohahaha 1= " << _pass << std::endl;
 	}
@@ -190,7 +208,7 @@ bool    Client_irc::parse_registration(char *buf, std::string pwd)
 		// std::cout << "pass 2= " << _pass << std::endl;
 		if (_pass.empty())
 		{
-			msg = ":server ERROR * :You must add PASS before !\r\n";
+			msg = ":ircserv ERROR :You must add PASS before !\r\n";
 			send_msg_to_client();
 			return (false);
 		}
@@ -199,7 +217,7 @@ bool    Client_irc::parse_registration(char *buf, std::string pwd)
 		// std::cout << "nick 1= " << _nick << std::endl;
 		if (_nick.empty())
 			return (false);
-		msg = "ircserv 001 :--NICK added succesfully--\r\n";
+		msg = "ircserv ERROR :--NICK added succesfully--\r\n";
 		send_msg_to_client();
 		// std::cout << "--NICK added succesfully !--" << std::endl;
 	}
@@ -216,12 +234,15 @@ bool    Client_irc::parse_registration(char *buf, std::string pwd)
 		if (check_user_cmd(buf) == false)
 			return (false);
 		_user.valid = true;
-		msg = "ircserv 001 :--USER added succesfully--\r\n";
+		msg = "ircserv ERROR :--USER added succesfully--\r\n";
 		send_msg_to_client();
 		// std::cout << "--USER added succesfully !--" << std::endl;
 	}
-	// else
-		// send_msg_to_client(ERR_UNKNOWNCOMMAND(cmd));// "<command> :Unknown command"
+	else
+	{
+		msg = error_msg.ERR_UNKNOWNCOMMAND;
+		send_msg_to_client();// "<command> :Unknown command"
+	}
     if (!_pass.empty() && !_nick.empty() && _user.valid == true)
 		registered = true;
 	if (registered == false)
