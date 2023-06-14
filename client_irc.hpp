@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:47:09 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/13 16:28:44 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/14 18:47:01 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,10 @@ class   Client_irc
 	std::string	_nick;
 	User_parameters	_user;
 	bool	registered;
-	std::string _stringtoappend;
 	std::vector<std::string> _commands;
 	public:
+	std::string _stringtoappend;
+	int size_cmds;
 		std::string				buffer;
 		int	fd_client;
 		std::string	cmd;
@@ -76,6 +77,7 @@ class   Client_irc
 		std::string get_stringtoappend();
 		User_parameters	get_user();
 		bool	get_registered();
+		int	get_size_cmds();
 		std::vector<std::string>	get_commands();
 		//--
 		std::string	check_pass_cmd(char *buf, std::string pwd);
@@ -85,7 +87,8 @@ class   Client_irc
 		bool	parse_registration(char *buf, std::string pwd);
 		//--
 		void	send_msg_to_client();
-
+		//--
+		void	setup_user();
 };
 std::vector<std::string> split_string(const std::string &str, char delimiter);
 

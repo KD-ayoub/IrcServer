@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/12 11:28:15 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/12 12:44:41 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/14 18:08:06 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,4 +26,10 @@ std::vector<std::string> split_string(const std::string &str, char delimiter)
     }
 
     return (tokens);
+}
+
+void    display_vct_str(std::vector<std::string> vct)
+{
+    for (size_t i = 0; i < vct.size(); i++)
+        std::cout << vct[i] << std::endl;
 }

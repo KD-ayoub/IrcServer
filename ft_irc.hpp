@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/13 17:01:45 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/14 18:07:12 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,6 @@ class IrcServer
 bool    checkPort(char *str);
 void    Error(const char *str);
 void    checkArguments(int ac, char **av);
-
+void    display_vct_str(std::vector<std::string> vct);
 
 #endif
