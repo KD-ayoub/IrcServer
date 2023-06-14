@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/14 19:28:37 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/14 23:05:49 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,11 +119,17 @@ int    IrcServer::RecieveIncomingData(int *numberFd, int i)
         return 0;
     }
     append += std::string(recvbuffer, recvalue);
-    client.set_stringtoappend(append);
-    client.fd_client = fds[i].fd;
-    mapclients[fds[i].fd] = client;
-    std::memset(&recvbuffer, 0, sizeof(recvbuffer));
-    return 1;
+    if (append.find("\r\n") != std::string::npos)
+    {
+        client.set_stringtoappend(append);
+        client.fd_client = fds[i].fd;
+        mapclients[fds[i].fd] = client;
+        std::memset(&recvbuffer, 0, sizeof(recvbuffer));
+        return 1;
+    }
+    else
+        RecieveIncomingData(numberFd, i);
+    return 0;
 }
 
 void    IrcServer::RemoveCRLF(int i)
@@ -143,8 +149,9 @@ void    IrcServer::Authentification(int i)
 {
     if (mapclients.at(fds[i].fd).get_registered())
     {
-		mapclients.at(fds[i].fd).msg = ":ircserv ERROR :YOUSSEF A DIR 5DAMTEK !!\r\n";
-		mapclients.at(fds[i].fd).send_msg_to_client();
+         mapclients.at(fds[i].fd).set_commands(split_string(mapclients.at(fds[i].fd).get_commands()[0], ' '));
+         display_vct_str(mapclients.at(fds[i].fd).get_commands());
+		// execute_command(const std::vector<std::string> &command, Client &client)
     }
     else 
 	{

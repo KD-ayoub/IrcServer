@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/14 18:07:12 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/14 21:16:41 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ class IrcServer
         struct addrinfo hints;
         struct addrinfo *result;
         std::map<int, Client_irc> mapclients;
+        std::map<std::string, std::map<int, Client_irc> > mapchannels;
     public :
         IrcServer();
         ~IrcServer();

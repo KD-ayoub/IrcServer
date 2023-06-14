@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client_irc.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:55:05 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/14 19:17:19 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/14 21:29:57 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	Client_irc::set_user(User_parameters	usr){
 void	Client_irc::set_stringtoappend(std::string str){
 	_stringtoappend = str;
 }
-void	Client_irc::set_commands(std::vector<std::string> &cmd){
+void	Client_irc::set_commands(const std::vector<std::string> &cmd){
 	_commands = cmd;
 }
 
@@ -80,7 +80,7 @@ bool	Client_irc::get_registered(){
 std::string Client_irc::get_stringtoappend(){
 	return (_stringtoappend);
 }
-std::vector<std::string>	Client_irc::get_commands(){
+std::vector<std::string>	&Client_irc::get_commands(){
 	return(_commands);
 }
 int	Client_irc::get_size_cmds(){
