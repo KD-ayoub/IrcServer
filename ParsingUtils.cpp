@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ParsingUtils.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 16:59:19 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/13 13:02:11 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/14 18:44:39 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int countCmd(std::string str)
     for(size_t i = 0; i < str.size(); i++)
         if (str[i] == '\n')
             count++;
+    std::cout << "count = " << count << std::endl;
     return count;
 }
 

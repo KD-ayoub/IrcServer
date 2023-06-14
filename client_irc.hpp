@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:47:09 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/14 17:30:10 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/14 18:47:01 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,10 @@ class   Client_irc
 	std::string	_nick;
 	User_parameters	_user;
 	bool	registered;
-	std::string _stringtoappend;
 	std::vector<std::string> _commands;
 	public:
+	std::string _stringtoappend;
+	int size_cmds;
 		std::string				buffer;
 		int	fd_client;
 		std::string	cmd;

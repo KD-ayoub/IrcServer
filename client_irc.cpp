@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:55:05 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/14 17:15:27 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/14 18:59:37 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,9 @@ std::string Client_irc::get_stringtoappend(){
 std::vector<std::string>	Client_irc::get_commands(){
 	return(_commands);
 }
+int	Client_irc::get_size_cmds(){
+	return (_commands.size());
+}
 //--
 std::string	Client_irc::check_pass_cmd(char *buf, std::string pwd)
 {
@@ -148,7 +151,10 @@ void    Client_irc::setup_user()
 	user_splited[4].insert(0, 1, ':');
 	_commands[2].clear();
 	for (size_t i = 0; i < user_splited.size(); i++)
+	{
+		user_splited[i] += " ";
 		_commands[2] += user_splited[i];
+	}
 }
 
 
@@ -168,18 +174,18 @@ bool	Client_irc::check_user_cmd(char *buf)
 		send_msg_to_client();
 		return(false);
 	}
-	if (user_splited[3][0] != ':')
-	{
-		msg = "ircserv ERROR: USER :The realname must start with  \':\'";
-		send_msg_to_client();
-		return (false);
-	}
+	// if (user_splited[3][0] != ':')
+	// {
+	// 	msg = "ircserv ERROR: USER :The realname must start with  \':\'";
+	// 	send_msg_to_client();
+	// 	return (false);
+	// }
 	_user.username = user_splited[0];
 	_user.hostname = user_splited[1];
 	_user.servername = user_splited[2];
 	for (size_t i = 3; i < user_splited.size(); i++)
 		_user.realname += user_splited[i];
-	_user.realname.erase(0, 1);
+	// _user.realname.erase(0, 1);
     return (true);
 }
 //--
@@ -252,7 +258,7 @@ bool    Client_irc::parse_registration(char *buf, std::string pwd)
 //--
 void	Client_irc::send_msg_to_client()
 {
-	std::cout << "msg = |" << msg << "|" << std::endl;
+	// std::cout << "msg = |" << msg << "|" << std::endl;
 	// std::cout << "this is fd ==  " << fd_client << std::endl;
 	if (send(fd_client, msg.c_str(), msg.length(),0) == -1)
 			std::perror("send");
