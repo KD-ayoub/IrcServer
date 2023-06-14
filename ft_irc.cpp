@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/14 18:55:29 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/14 19:28:37 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ void    IrcServer::InitPollfd(int sockFd)
 
 void    IrcServer::AcceptNewConnection(int sockFd, int *numberFd)
 {
-    //// accept new connexion
     int clientFd = accept(sockFd, result->ai_addr, &result->ai_addrlen);
     if (clientFd < 0)
         Error("Error in accept");
@@ -124,8 +123,6 @@ int    IrcServer::RecieveIncomingData(int *numberFd, int i)
     client.fd_client = fds[i].fd;
     mapclients[fds[i].fd] = client;
     std::memset(&recvbuffer, 0, sizeof(recvbuffer));
-	std::cout << " RECIv :"<< mapclients.at(fds[i].fd).get_stringtoappend() << "\n";
-
     return 1;
 }
 
@@ -138,56 +135,26 @@ void    IrcServer::RemoveCRLF(int i)
         split.push_back(TrimString(client.get_stringtoappend()));
     else
         SplitString(client.get_stringtoappend(), split, count);
-	// std::cout << "----SPLIT------- \n";
-    // display_vct_str(split);
 	client.set_commands(split);
     mapclients[fds[i].fd] = client;
 }
 
-
 void    IrcServer::Authentification(int i)
 {
-    //Client_irc &clt = getClient(fds[i].fd);
     if (mapclients.at(fds[i].fd).get_registered())
     {
-        
-            mapclients.at(fds[i].fd).msg = ":irc.1337.com 001  1 " + mapclients.at(fds[i].fd).get_nick()+" :Welcome to Our IRC Server!\r\n" \
-        + "If you need any help, just ask.\r\n Have a great time! /~ " +\
-        mapclients.at(fds[i].fd).get_nick() + " ~/" + "\r\n";
-        mapclients.at(fds[i].fd).send_msg_to_client();
-        // std::cerr << ":You may not reregister" << std::endl;
+		mapclients.at(fds[i].fd).msg = ":ircserv ERROR :YOUSSEF A DIR 5DAMTEK !!\r\n";
+		mapclients.at(fds[i].fd).send_msg_to_client();
     }
-    else {
-		int size = mapclients.at(fds[i].fd).get_size_cmds();
-		// std::cout << "mapclients.at(fds[i].fd).get_size_cmds()[2] = " << mapclients.at(fds[i].fd).get_commands()[2] << std::endl;
-        if (size == 1)
-        {
-				// mapclients.at(fds[i].fd).setup_user();
-
-			// std::cout << "mapclients.at(fds[i].fd).get_commands().size() = "<< mapclients.at(fds[i].fd).get_commands().size() << std::endl;
-            if (mapclients.at(fds[i].fd).parse_registration((char*)mapclients.at(fds[i].fd).get_commands()[0].c_str(), password) == true)// attention
-            {
-                mapclients.at(fds[i].fd).msg = ":irc.1337.com 001 2 " + mapclients.at(fds[i].fd).get_nick()+" :Welcome to Our IRC Server!\r\n" \
-            + "If you need any help, just ask.\r\n Have a great time! /~ " +\
-            mapclients.at(fds[i].fd).get_nick() + " ~/" + "\r\n";
-            mapclients.at(fds[i].fd).send_msg_to_client();
-            }
-        }
-        else
-        {
-            if (mapclients.at(fds[i].fd).get_commands().size() == 3)
-            for (size_t i = 0; i < mapclients.at(fds[i].fd).get_commands().size(); i++)
-                mapclients.at(fds[i].fd).parse_registration((char*)mapclients.at(fds[i].fd).get_commands()[i].c_str(), password);
-            if (mapclients.at(fds[i].fd).get_registered())
-           {
-        
-                mapclients.at(fds[i].fd).msg = ":irc.1337.com 001 3  " + mapclients.at(fds[i].fd).get_nick()+" :Welcome to Our IRC Server!\r\n" \
-                 + "If you need any help, just ask.\r\n Have a great time! /~ " +\
-                mapclients.at(fds[i].fd).get_nick() + " ~/" + "\r\n";
-                mapclients.at(fds[i].fd).send_msg_to_client();
-              // std::cerr << ":You may not reregister" << std::endl;
-             }
-        }
+    else 
+	{
+		if (mapclients.at(fds[i].fd).parse_registration((char*)mapclients.at(fds[i].fd).get_commands()[0].c_str(), password) == true)// attention
+		{
+			mapclients.at(fds[i].fd).msg = ":ircserv 001 :" + mapclients.at(fds[i].fd).get_nick()+" :Welcome to Our IRC Server!\r\n" \
+			+ "If you need any help, just ask.\r\n Have a great time! /~ " +\
+			mapclients.at(fds[i].fd).get_nick() + " ~/" + "\r\n";
+			mapclients.at(fds[i].fd).send_msg_to_client();
+		}
     }
 }
 
@@ -212,26 +179,8 @@ void    IrcServer::RunServer(int sockFd)
                     break;
                 else
                 {
-
-					// std::cout << "before\n";
-					// display_vct_str(mapclients.at(fds[i].fd).get_commands());
                     RemoveCRLF(i);
-					// std::cout << "after\n";
-                    // std::cout << "vector[2] = " << mapclients[0].get_commands()[2] << std::endl;
-					// display_vct_str(mapclients.at(fds[i].fd).get_commands());
-                    
 					Authentification(i);
-                  
-                    // Client_irc  mapclients.at(fds[i].fd)(fds[i].fd);
-                    
-                    
-                    
-                        /////      TO Do     /////////
-                    //// function (handle request [buf])
-                    //// send reply (connected succesfully)
-                    //// trait commands
-                    // std::cout << "Recv : " << buf;
-                    // std::memset(&buf, 0, sizeof(buf));
                 }
     
             }
