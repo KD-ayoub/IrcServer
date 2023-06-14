@@ -6,7 +6,7 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 23:20:42 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/12 18:35:52 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/14 17:17:44 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ class Channel {
         
     private:
 
-        std::string                      name;
+        std::string                      name; // channel name
         std::string                      owner; // channel creator
         std::vector<std::string>         operators; // list of operators
         std::string                      topic; 
