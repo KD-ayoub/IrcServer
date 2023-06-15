@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/14 19:28:37 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/14 22:40:13 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,11 +119,17 @@ int    IrcServer::RecieveIncomingData(int *numberFd, int i)
         return 0;
     }
     append += std::string(recvbuffer, recvalue);
-    client.set_stringtoappend(append);
-    client.fd_client = fds[i].fd;
-    mapclients[fds[i].fd] = client;
-    std::memset(&recvbuffer, 0, sizeof(recvbuffer));
-    return 1;
+    if (append.find("\n") != std::string::npos)
+    {
+        client.set_stringtoappend(append);
+        client.fd_client = fds[i].fd;
+        mapclients[fds[i].fd] = client;
+        std::memset(&recvbuffer, 0, sizeof(recvbuffer));
+        return 1;
+    }
+    else
+        RecieveIncomingData(numberFd, i);
+    return 0;
 }
 
 void    IrcServer::RemoveCRLF(int i)
