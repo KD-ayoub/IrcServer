@@ -6,7 +6,7 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:47:09 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/14 21:30:32 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/15 01:09:54 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ class   Client_irc
 		void	set_stringtoappend(std::string);
 		void	set_commands(const std::vector<std::string> &);
 		void	set_msg_error();
+		void	set_operator(bool);
 		//--
 		std::string	get_pass();
 		std::string	get_nick();
@@ -80,7 +81,7 @@ class   Client_irc
 		bool	get_registered();
 		int	get_size_cmds();
 		std::vector<std::string>	&get_commands();
-		bool	is_op(); 
+		bool	get_operator(); 
 		//--
 		std::string	check_pass_cmd(char *buf, std::string pwd);
 		std::string	check_nick_cmd(char *buf);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:34 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/13 15:52:33 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/15 01:23:16 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 int main(int ac, char **av)
 {
+    
     checkArguments(ac, av);
     IrcServer irc(av[1], av[2]);
     int sockFd = irc.SetupServer();

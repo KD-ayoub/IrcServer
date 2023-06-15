@@ -6,7 +6,7 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/14 21:16:41 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/15 01:25:26 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,10 @@
 #include <sys/poll.h> // poll()
 #include "ParsingChannelCommands.hpp"
 #include "client_irc.hpp"
+#include "Channel.hpp"
 
 class Client_irc;
+class Channel;
 
 class IrcServer
 {
@@ -35,18 +37,20 @@ class IrcServer
         struct addrinfo hints;
         struct addrinfo *result;
         std::map<int, Client_irc> mapclients;
-        std::map<std::string, std::map<int, Client_irc> > mapchannels;
+        std::map<std::string, Channel> mapchannels;
     public :
         IrcServer();
         ~IrcServer();
         IrcServer(std::string port, std::string pass);
-
+        std::vector<Channel>    chanel;
         std::string getPort() const ;
         std::string  getPassword() const ;
         Client_irc  &getClient(int);
+        std::map<int, Client_irc> &getMapclient();
 
         void    setPort(std::string port);
         void    setPassword(std::string pass);
+        void    setMapclients(const std::map<int, Client_irc> &);
         //// server ///////
         int     SetupServer();
         void    RunServer(int);
@@ -54,6 +58,7 @@ class IrcServer
         void    AcceptNewConnection(int , int *);
         int     RecieveIncomingData(int *, int);
         void    Authentification(int);
+        void    execute_command(const std::vector<std::string> &command, Client_irc &client);
         /////////////////////
         void    RemoveCRLF(int);
         

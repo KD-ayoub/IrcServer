@@ -6,17 +6,21 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/14 17:05:16 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/15 00:11:05 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
-#include "Client.hpp"
+#include "client_irc.hpp"
 
-Channel::Channel(std::string ch_name, Client &c) : name (ch_name)   
+Channel::Channel(){
+    
+}
+
+Channel::Channel(std::string ch_name, Client_irc &c) : name (ch_name)   
 {
-    this->clients.insert(std::pair<std::string, Client*>(c.getNickname(), &c));
-    this->owner = c.getNickname();
+    // this->clients.insert(std::pair<std::string, Client*>(c.getNickname(), &c));
+    this->owner = c.get_nick();
     this->invite_only = false;
     is_private = false;
     is_secret = false;
@@ -36,17 +40,17 @@ Channel &Channel::operator=(const Channel &c)
 
 int Channel::broadcast(std::string message, int sender) // send message to all clients
 {
-    std::map<std::string, Client*>::iterator it;
+    std::map<std::string, Client_irc>::iterator it;
     
     for (it = clients.begin(); it != clients.end(); it++)
     {
-        if (sender != it->second->getFd())
-            send(it->second->getFd(), message.c_str(), message.length(), 0);
+        if (sender != it->second.fd_client)
+            send(it->second.fd_client, message.c_str(), message.length(), 0);
     }
     return (0);
 }
 
-int Channel::connect(Client &c) // add client to channel
+int Channel::connect(Client_irc &c) // add client to channel
 {
     if(this->invite_only)
     {
@@ -54,13 +58,13 @@ int Channel::connect(Client &c) // add client to channel
         if(it == invited_users.end())
             return;
     }
-    clients.insert(std::pair<std::string, Client*>(c.getNickname(), &c));
+    clients[c.get_nick()] = c;
     return(0);
 }
 
-int Channel::disconnect(Client &c) // remove client from channel
+int Channel::disconnect(Client_irc &c) // remove client from channel
 {
-    clients.erase(c.getNickname());
+    clients.erase(c.get_nick());
     if (clients.empty())
         return (1);
     return(0);
@@ -74,10 +78,10 @@ int Channel::disconnect(std::string nickname) // remove client from channel
     return (0);
 }
 
-int Channel::client_count() // return number of clients in channel
-{
-    return(clients.size());
-}
+// int Channel::client_count() // return number of clients in channel
+// {
+//     return(clients.size());
+// }
 
 int Channel::cmd_kick(std::string nickname) // kick client from channel
 
@@ -296,32 +300,32 @@ bool Channel::is_invited(std::string nick) // check if user is invited
 
 /********************************/
 
-int Channel::cmd_names(Client &sender) // send lsit of clients in channel
-{
-    if (get_is_secret())
-    {
-        if (!is_member(sender.getNickname())) // check if user is member of channel
-        {
-            return (-4); // user not in channel
-        }
-    }
-    std::string listusers = ":IRC 353 " + sender.getNickname() + " = " + get_name() + " :"; 
-    for (std::map<std::string, Client*>::iterator it = clients.begin(); it != clients.end(); it++) // loop through clients
-    {
-        if (is_operator(it->second->getNickname())) // check if client is operator
-            listusers += "@";
-        listusers += it->second->getNickname();
-        std::map<std::string, Client*>:: iterator it2 = it;
-        if ((++it2) != clients.end()) // check if next client is not the last
-            listusers += " ";
-    }
-    listusers += "\r\n";
-    send(sender.getFd(), listusers.c_str(), listusers.length(), 0); // send list of clients 
-    std::string endmsg = ":IRC 366 " + sender.getNickname() + " " + get_name() + " end of /NAMES list. \r\n";   // end of names list
-    send(sender.getFd(), endmsg.c_str(), endmsg.length(),0); // send end of list
+// int Channel::cmd_names(Client &sender) // send lsit of clients in channel
+// {
+//     if (get_is_secret())
+//     {
+//         if (!is_member(sender.getNickname())) // check if user is member of channel
+//         {
+//             return (-4); // user not in channel
+//         }
+//     }
+//     std::string listusers = ":IRC 353 " + sender.getNickname() + " = " + get_name() + " :"; 
+//     for (std::map<std::string, Client*>::iterator it = clients.begin(); it != clients.end(); it++) // loop through clients
+//     {
+//         if (is_operator(it->second->getNickname())) // check if client is operator
+//             listusers += "@";
+//         listusers += it->second->getNickname();
+//         std::map<std::string, Client*>:: iterator it2 = it;
+//         if ((++it2) != clients.end()) // check if next client is not the last
+//             listusers += " ";
+//     }
+//     listusers += "\r\n";
+//     send(sender.getFd(), listusers.c_str(), listusers.length(), 0); // send list of clients 
+//     std::string endmsg = ":IRC 366 " + sender.getNickname() + " " + get_name() + " end of /NAMES list. \r\n";   // end of names list
+//     send(sender.getFd(), endmsg.c_str(), endmsg.length(),0); // send end of list
     
-    return (0);
-}
+//     return (0);
+// }
 /************************************************/
 
 
@@ -351,20 +355,20 @@ std::string Channel::channel_modes() // return channel modes
     return (modes);
 }
 
-int Channel::cmd_who(Client &sender) // send list of clients in channel
-{
-    for (std::map<std::string, Client*>::iterator it = clients.begin(); it != clients.end(); it++)
-    {
-        std::string listuser = ":IRC 352 " + sender.getNickname() +  " " + get_name() +  " " + it->second->getUsername() + " localhost IRC " + it->second->getNickname() + " H";
-        if ( is_operator(it->second->getNickname()))
-            listuser += "*";listuser += " @";
-        listuser += " :0 " + it->second->getRealname() + "\r\n";
-        send(sender.getFd(), listuser.c_str(), listuser.length(), 0); 
-    }
-    std::string msg = ":IRC 315 " + sender.getNickname() + " " + get_name() + " :End of /WHO list\r\n";
-    send(sender.getFd(), msg.c_str(), msg.length(), 0);
-    return (0);
-}
+// int Channel::cmd_who(Client &sender) // send list of clients in channel
+// {
+//     for (std::map<std::string, Client*>::iterator it = clients.begin(); it != clients.end(); it++)
+//     {
+//         std::string listuser = ":IRC 352 " + sender.getNickname() +  " " + get_name() +  " " + it->second->getUsername() + " localhost IRC " + it->second->getNickname() + " H";
+//         if ( is_operator(it->second->getNickname()))
+//             listuser += "*";listuser += " @";
+//         listuser += " :0 " + it->second->getRealname() + "\r\n";
+//         send(sender.getFd(), listuser.c_str(), listuser.length(), 0); 
+//     }
+//     std::string msg = ":IRC 315 " + sender.getNickname() + " " + get_name() + " :End of /WHO list\r\n";
+//     send(sender.getFd(), msg.c_str(), msg.length(), 0);
+//     return (0);
+// }
 
 
 bool Channel::is_operator(std::string nick) // check if user is operator

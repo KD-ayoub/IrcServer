@@ -6,7 +6,7 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/14 23:05:49 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/15 01:28:58 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,10 @@ std::string IrcServer::getPassword() const
     return this->password;
 }
 
+std::map<int, Client_irc> &IrcServer::getMapclient(){
+    return this->mapclients;
+}
+
 Client_irc &IrcServer::getClient(int fd)
 {
     return this->mapclients.at(fd);
@@ -53,6 +57,10 @@ void    IrcServer::setPort(std::string port)
 void    IrcServer::setPassword(std::string pass)
 {
     this->password = pass;
+}
+
+void    IrcServer::setMapclients(const std::map<int, Client_irc> &mapcl){
+    this->mapclients = mapcl;
 }
 
 int    IrcServer::SetupServer()
@@ -145,13 +153,14 @@ void    IrcServer::RemoveCRLF(int i)
     mapclients[fds[i].fd] = client;
 }
 
+
 void    IrcServer::Authentification(int i)
 {
     if (mapclients.at(fds[i].fd).get_registered())
     {
-         mapclients.at(fds[i].fd).set_commands(split_string(mapclients.at(fds[i].fd).get_commands()[0], ' '));
-         display_vct_str(mapclients.at(fds[i].fd).get_commands());
-		// execute_command(const std::vector<std::string> &command, Client &client)
+        mapclients.at(fds[i].fd).set_commands(split_string(mapclients.at(fds[i].fd).get_commands()[0], ' '));
+        display_vct_str(mapclients.at(fds[i].fd).get_commands());
+		execute_command(mapclients.at(fds[i].fd).get_commands(), mapclients.at(fds[i].fd));
     }
     else 
 	{
@@ -195,4 +204,20 @@ void    IrcServer::RunServer(int sockFd)
     }
     close(sockFd);
     freeaddrinfo(this->result);
+}
+
+
+void IrcServer::execute_command(const std::vector<std::string> &command, Client_irc &client)
+{
+    if (command[0] == "JOIN")
+        mapchannels["empty"].join_command(command, client);
+    // if (command[0] == "KICK") {
+    //     kick_cmd(command, client);
+    // } else if (command[0] == "INVITE") {
+    //     Channel::cmd_invite(command[1]);
+    // } else if (command[0] == "TOPIC") {
+    //     Channel::cmd_topic(command[1]);
+    // } else if (command[0] == "MODE") 
+    // {
+    // }
 }
