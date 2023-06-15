@@ -6,17 +6,19 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/15 19:31:32 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/15 23:02:10 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 #include "client_irc.hpp"
 
-Channel::Channel(){
+
+
+Channel::Channel()
+{
     
 }
-
 Channel::~Channel()
 {
     
@@ -32,8 +34,9 @@ Channel::Channel(std::string ch_name, Client_irc &c) : name (ch_name)
     op_topic = false;
     no_msg = false;
     moderated = false;
-    user_limit = 10000;
+    user_limit = 256;
     key = "";
+    clients.insert(std::make_pair(c.get_nick(), &c));
 }
 
     

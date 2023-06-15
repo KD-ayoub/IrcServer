@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 23:20:42 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/15 19:30:09 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/15 22:23:20 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ class Channel {
         std::string                      owner; // channel creator
         std::vector<std::string>         operators; // list of operators
         std::string                      topic; 
-        std::map<std::string, Client_irc> clients; // list of clients in channel  
         bool                             invite_only; // if true, only invited users can join
         std::vector<std::string>         invited_users; // list of users invited to channel
         bool                             is_private; // if true, only invited users can join
@@ -49,6 +48,7 @@ class Channel {
         Channel(std::string name, Client_irc &c);
         ~Channel();
         Channel &operator=(const Channel &c);
+        std::map<std::string, Client_irc*> clients; // list of clients in channel  
 
         
         // int     broadcast(std::string message, int sender); // send message to all Client_ircs

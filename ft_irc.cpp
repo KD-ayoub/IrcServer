@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/15 19:48:53 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/15 23:20:58 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,9 @@ void    IrcServer::kick_command(const std::vector<std::string> &command, Client_
 {
     (void)command;
     (void)client;
-    std::cout << "sdfdsf\n";
+    Channel chan(command[1], client);
+    mapchannels.insert(std::make_pair(command[1], chan));
+    //mapchannels[command[1]].clients.insert(std::make_pair(client.get_nick(), &client));
 }
 
 
@@ -236,7 +238,7 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
             {
                 for (size_t i = 0; i < chanel_names.size(); i++)
                 {
-                       mapchannels[chanel_names[i]] = Channel();
+                       mapchannels[chanel_names[i]] = Channel(chanel_names[i], client);
 					   if (!chanel_keys[i].empty())
 							mapchannels[chanel_names[i]].set_key(chanel_keys[i]);
                 }
