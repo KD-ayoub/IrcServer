@@ -6,12 +6,13 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/15 18:03:57 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/15 22:45:56 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "ft_irc.hpp"
+std::map<std::string, Channel> mapchannels;
 
 IrcServer::IrcServer()
 {
@@ -164,7 +165,7 @@ void    IrcServer::Authentification(int i)
     }
     else 
 	{
-		if (mapclients.at(fds[i].fd).parse_registration((char*)mapclients.at(fds[i].fd).get_commands()[0].c_str(), password) == true)// attention
+		if (mapclients.at(fds[i].fd).parse_registration((char*)mapclients.at(fds[i].fd).get_commands()[0].c_str(), password, mapclients) == true)// attention
 		{
 			mapclients.at(fds[i].fd).msg = ":ircserv 001 :" + mapclients.at(fds[i].fd).get_nick()+" :Welcome to Our IRC Server!\r\n" \
 			+ "If you need any help, just ask.\r\n Have a great time! /~ " +\
@@ -208,6 +209,7 @@ void    IrcServer::RunServer(int sockFd)
 
 void IrcServer::execute_command(const std::vector<std::string> &command, Client_irc &client)
 {
+
     if (command[0] == "JOIN")
     {
         if (command[1].find(','))
@@ -229,15 +231,25 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
                     int count_exist = mapchannels.count(chanel_names[i]);
                     if (count_exist > 0)
                     {
-                        client.msg = "Error: " + chanel_names[i] + " already exist\r\n";
-                        client.send_msg_to_client();
+                        if (mapchannels[chanel_names[i]].get_key() == chanel_keys[i])
+                            mapchannels[chanel_names[i]].clients.insert(std::make_pair(chanel_names[i], &client));
+                        else
+                        {
+                            client.msg = client.error_msg.ERR_PASSWDMISMATCH;
+                            client.send_msg_to_client();
+                        }
                     }
                     else
                     {
-                        mapchannels[chanel_names[i]] = Channel();
+                        std::cout << "ana d5lt hna 1\n";
+                        mapchannels[chanel_names[i]] = Channel(chanel_names[i], client);
+                        // mapchannels[chanel_names[i]].clients.at(client.get_nick())->set_operator(true);
                         if (!chanel_keys[i].empty())
+                        {
                             mapchannels[chanel_names[i]].set_key(chanel_keys[i]);
-                        mapchannels[chanel_names[i]].clients.insert(std::make_pair(client.get_nick(), client));
+                            std::cout << "ana d5lt hna 2\n";
+
+                        }
                     }
                 }
             }

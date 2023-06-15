@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 23:20:42 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/15 18:04:58 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/15 20:17:58 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include "ft_irc.hpp"
 
 class IrcServer;
+class Client_irc;
 
 class Channel {
     private :
@@ -47,7 +48,7 @@ class Channel {
         Channel(std::string name, Client_irc &c);
         ~Channel();
         Channel &operator=(const Channel &c);
-        std::map<std::string, Client_irc> clients; // list of clients in channel  
+        std::map<std::string, Client_irc*> clients; // list of clients in channel  
 
         
         // int     broadcast(std::string message, int sender); // send message to all Client_ircs
@@ -102,7 +103,7 @@ class Channel {
         // std::vector<std::string>     get_invited_user() const; // return list of invited users
         // std::vector<std::string>     get_operators() const; //  return list of operators
         // std::string                  channel_modes();  // return channel modes 
-        
+        std::string		get_key();
 };
 
 #endif 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client_irc.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:55:05 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/14 23:22:27 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/15 22:02:07 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,10 +120,10 @@ std::string	Client_irc::check_pass_cmd(char *buf, std::string pwd)
     }
     return (pass_cmd);
 }
-std::string	Client_irc::check_nick_cmd(char *buf)
+std::string	Client_irc::check_nick_cmd(char *buf, std::map<int, Client_irc>  &map_clients)
 {
     std::string nick_cmd;
-    
+	
     if (strlen(buf) < 6)
 	{
 		msg = "ircserv ERROR :No nickname given\r\n";
@@ -133,6 +133,15 @@ std::string	Client_irc::check_nick_cmd(char *buf)
     int i = 4;
     while (buf[++i])
         nick_cmd += buf[i];
+	for(std::map<int, Client_irc>::iterator it = map_clients.begin(); it != map_clients.end(); it++)
+	{
+		if (it->second.get_nick() == nick_cmd)
+		{
+			msg = "ircserv 433 :" + nick_cmd + " is already in use\r\n";
+			send_msg_to_client();
+			return ("");
+		}
+	}
     return (nick_cmd);
 }
 //--
@@ -177,7 +186,7 @@ bool	Client_irc::check_user_cmd(char *buf)
     return (true);
 }
 //--
-bool    Client_irc::parse_registration(char *buf, std::string pwd)
+bool	Client_irc::parse_registration(char *buf, std::string pwd, std::map<int, Client_irc> &map_clients)
 {
     if (registered)
     {
@@ -204,7 +213,7 @@ bool    Client_irc::parse_registration(char *buf, std::string pwd)
 			send_msg_to_client();
 			return (false);
 		}
-		_nick = check_nick_cmd(buf);
+		_nick = check_nick_cmd(buf, map_clients);
 		if (_nick.empty())
 			return (false);
 		msg = "ircserv ERROR :--NICK added succesfully--\r\n";

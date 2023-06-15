@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/15 18:04:55 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/15 20:18:23 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 #include "client_irc.hpp"
 
 Channel::Channel(){
+    
+}
+
+Channel::~Channel(){
     
 }
 
@@ -424,4 +428,8 @@ Channel &Channel::operator=(const Channel &c)
 //--
 void    Channel::set_key(std::string    k){
     key = k;
+}
+//--
+std::string Channel::get_key(){
+    return (key);
 }

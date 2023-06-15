@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client_irc.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:47:09 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/15 01:09:54 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/15 21:33:57 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,10 +84,10 @@ class   Client_irc
 		bool	get_operator(); 
 		//--
 		std::string	check_pass_cmd(char *buf, std::string pwd);
-		std::string	check_nick_cmd(char *buf);
+		std::string	check_nick_cmd(char *buf, std::map<int, Client_irc> &map_clients);
 		bool	check_user_cmd(char *buf);
 		//--
-		bool	parse_registration(char *buf, std::string pwd);
+		bool	parse_registration(char *buf, std::string pwd, std::map<int, Client_irc> &map_clients);
 		//--
 		void	send_msg_to_client();
 		//--

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/15 16:27:57 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/15 19:56:35 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 class Client_irc;
 class Channel;
 
-std::map<std::string, Channel> mapchannels;
+extern std::map<std::string, Channel> mapchannels;
 
 class IrcServer
 {
