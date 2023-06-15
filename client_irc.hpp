@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client_irc.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:47:09 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/14 18:47:01 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/15 01:09:54 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ class   Client_irc
 {
 	std::string	_pass;
 	std::string	_nick;
+	bool	_operator;
 	User_parameters	_user;
 	bool	registered;
 	std::vector<std::string> _commands;
@@ -69,8 +70,9 @@ class   Client_irc
 		void	set_user(User_parameters usr);
 		void	set_registered(bool valid);
 		void	set_stringtoappend(std::string);
-		void	set_commands(std::vector<std::string> &);
+		void	set_commands(const std::vector<std::string> &);
 		void	set_msg_error();
+		void	set_operator(bool);
 		//--
 		std::string	get_pass();
 		std::string	get_nick();
@@ -78,7 +80,8 @@ class   Client_irc
 		User_parameters	get_user();
 		bool	get_registered();
 		int	get_size_cmds();
-		std::vector<std::string>	get_commands();
+		std::vector<std::string>	&get_commands();
+		bool	get_operator(); 
 		//--
 		std::string	check_pass_cmd(char *buf, std::string pwd);
 		std::string	check_nick_cmd(char *buf);

@@ -6,12 +6,14 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/14 22:40:13 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/15 19:48:53 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "ft_irc.hpp"
+
+std::map<std::string, Channel> mapchannels;
 
 IrcServer::IrcServer()
 {
@@ -40,6 +42,10 @@ std::string IrcServer::getPassword() const
     return this->password;
 }
 
+std::map<int, Client_irc> &IrcServer::getMapclient(){
+    return this->mapclients;
+}
+
 Client_irc &IrcServer::getClient(int fd)
 {
     return this->mapclients.at(fd);
@@ -53,6 +59,10 @@ void    IrcServer::setPort(std::string port)
 void    IrcServer::setPassword(std::string pass)
 {
     this->password = pass;
+}
+
+void    IrcServer::setMapclients(const std::map<int, Client_irc> &mapcl){
+    this->mapclients = mapcl;
 }
 
 int    IrcServer::SetupServer()
@@ -119,7 +129,7 @@ int    IrcServer::RecieveIncomingData(int *numberFd, int i)
         return 0;
     }
     append += std::string(recvbuffer, recvalue);
-    if (append.find("\n") != std::string::npos)
+    if (append.find("\r\n") != std::string::npos)
     {
         client.set_stringtoappend(append);
         client.fd_client = fds[i].fd;
@@ -145,12 +155,14 @@ void    IrcServer::RemoveCRLF(int i)
     mapclients[fds[i].fd] = client;
 }
 
+
 void    IrcServer::Authentification(int i)
 {
     if (mapclients.at(fds[i].fd).get_registered())
     {
-		mapclients.at(fds[i].fd).msg = ":ircserv ERROR :YOUSSEF A DIR 5DAMTEK !!\r\n";
-		mapclients.at(fds[i].fd).send_msg_to_client();
+        mapclients.at(fds[i].fd).set_commands(split_string(mapclients.at(fds[i].fd).get_commands()[0], ' '));
+        display_vct_str(mapclients.at(fds[i].fd).get_commands());
+		execute_command(mapclients.at(fds[i].fd).get_commands(), mapclients.at(fds[i].fd));
     }
     else 
 	{
@@ -194,4 +206,55 @@ void    IrcServer::RunServer(int sockFd)
     }
     close(sockFd);
     freeaddrinfo(this->result);
+}
+
+void    IrcServer::kick_command(const std::vector<std::string> &command, Client_irc &client)
+{
+    (void)command;
+    (void)client;
+    std::cout << "sdfdsf\n";
+}
+
+
+void IrcServer::execute_command(const std::vector<std::string> &command, Client_irc &client)
+{
+    if (command[0] == "JOIN")
+    {
+        if (command[1].find(','))
+        {
+            std::vector<std::string>    chanel_names;
+            std::vector<std::string>    chanel_keys;
+			
+            chanel_names = split_string(command[1], ',');
+            chanel_keys = split_string(command[2], ',');
+            if (chanel_keys.size() > chanel_names.size())
+            {
+                client.msg = "Error: to much passwords for a chennl\r\n";
+                client.send_msg_to_client();
+            }
+            else
+            {
+                for (size_t i = 0; i < chanel_names.size(); i++)
+                {
+                       mapchannels[chanel_names[i]] = Channel();
+					   if (!chanel_keys[i].empty())
+							mapchannels[chanel_names[i]].set_key(chanel_keys[i]);
+                }
+            }
+        }
+    }
+    else if (command[0] == "KICK")
+    {
+        kick_command(command, client);
+    }
+        // mapchannels["empty"].join_command(command, client);
+    // if (command[0] == "KICK") {
+    //     kick_cmd(command, client);
+    // } else if (command[0] == "INVITE") {
+    //     Channel::cmd_invite(command[1]);
+    // } else if (command[0] == "TOPIC") {
+    //     Channel::cmd_topic(command[1]);
+    // } else if (command[0] == "MODE") 
+    // {
+    // }
 }
