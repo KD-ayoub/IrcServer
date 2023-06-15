@@ -6,7 +6,7 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/15 01:25:26 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/15 16:27:57 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 class Client_irc;
 class Channel;
 
+std::map<std::string, Channel> mapchannels;
+
 class IrcServer
 {
     private :
@@ -37,7 +39,6 @@ class IrcServer
         struct addrinfo hints;
         struct addrinfo *result;
         std::map<int, Client_irc> mapclients;
-        std::map<std::string, Channel> mapchannels;
     public :
         IrcServer();
         ~IrcServer();
