@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 23:20:42 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/15 16:53:50 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/15 18:04:58 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ class Channel {
         std::string                      owner; // channel creator
         std::vector<std::string>         operators; // list of operators
         std::string                      topic; 
-        std::map<std::string, Client_irc*> clients; // list of clients in channel  
         bool                             invite_only; // if true, only invited users can join
         std::vector<std::string>         invited_users; // list of users invited to channel
         bool                             is_private; // if true, only invited users can join
@@ -48,6 +47,7 @@ class Channel {
         Channel(std::string name, Client_irc &c);
         ~Channel();
         Channel &operator=(const Channel &c);
+        std::map<std::string, Client_irc> clients; // list of clients in channel  
 
         
         // int     broadcast(std::string message, int sender); // send message to all Client_ircs
@@ -103,7 +103,6 @@ class Channel {
         // std::vector<std::string>     get_operators() const; //  return list of operators
         // std::string                  channel_modes();  // return channel modes 
         
-    :
 };
 
 #endif 

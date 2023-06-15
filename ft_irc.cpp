@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/15 16:56:40 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/15 18:03:57 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,6 @@ void    IrcServer::RunServer(int sockFd)
     freeaddrinfo(this->result);
 }
 
-
 void IrcServer::execute_command(const std::vector<std::string> &command, Client_irc &client)
 {
     if (command[0] == "JOIN")
@@ -227,9 +226,19 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
             {
                 for (size_t i = 0; i < chanel_names.size(); i++)
                 {
-                       mapchannels[chanel_names[i]] = Channel();
-					   if (!chanel_keys[i].empty())
-							mapchannels[chanel_names[i]].set_key(chanel_keys[i]);
+                    int count_exist = mapchannels.count(chanel_names[i]);
+                    if (count_exist > 0)
+                    {
+                        client.msg = "Error: " + chanel_names[i] + " already exist\r\n";
+                        client.send_msg_to_client();
+                    }
+                    else
+                    {
+                        mapchannels[chanel_names[i]] = Channel();
+                        if (!chanel_keys[i].empty())
+                            mapchannels[chanel_names[i]].set_key(chanel_keys[i]);
+                        mapchannels[chanel_names[i]].clients.insert(std::make_pair(client.get_nick(), client));
+                    }
                 }
             }
         }
