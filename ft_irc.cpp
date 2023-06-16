@@ -6,12 +6,14 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/15 16:56:40 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/16 00:29:21 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "ft_irc.hpp"
+
+std::map<std::string, Channel> mapchannels;
 
 IrcServer::IrcServer()
 {
@@ -206,6 +208,13 @@ void    IrcServer::RunServer(int sockFd)
     freeaddrinfo(this->result);
 }
 
+void    IrcServer::kick_command(const std::vector<std::string> &command, Client_irc &client)
+{
+    (void)command;
+    (void)client;
+    std::cout << "sdfdsf\n";
+}
+
 
 void IrcServer::execute_command(const std::vector<std::string> &command, Client_irc &client)
 {
@@ -233,8 +242,133 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
                 }
             }
         }
-
     }
+    
+    else if (command[0] == "KICK")
+    {
+        kick_command(command, client);
+    }
+
+
+
+    else if (command[0] == "INVITE")
+    {
+        if (command.size() < 3)
+        {
+            client.msg = "Error: INVITE command requires 2 arguments\r\n";
+            client.send_msg_to_client();
+        }
+        // the following condition is to check if its an operator
+        else if (mapchannels[command[1]].is_operator(client.get_nick()))
+        {
+            client.msg = "Error: you are not an operator\r\n";
+            client.send_msg_to_client();
+        }
+        else
+        {
+            if (mapchannels.find(command[1]) == mapchannels.end())
+            {
+                client.msg = "Error: channel doesn't exist\r\n";
+                client.send_msg_to_client();
+            }
+            else
+            {
+                const std::vector<std::string> &invitedUsers = mapchannels[command[1]].get_invited_user();
+                bool isInvited = false;
+                for (std::vector<std::string>::const_iterator it = invitedUsers.begin(); it != invitedUsers.end(); ++it)
+                {
+                       if (*it == client.get_nick())
+                       {
+                            isInvited = true;
+                            break;
+                       }
+                }
+
+                if (mapchannels[command[1]].get_invite_only() && !isInvited) // if channel is invite only and user is not invited
+                {
+                       client.msg = "Error: you are not invited to this channel\r\n";
+                       client.send_msg_to_client();
+                }
+                else
+                {
+                       if (mapclients.find(client.fd_client) == mapclients.end()) // if user doesn't exist
+                       {
+                            client.msg = "Error: user doesn't exist\r\n";
+                            client.send_msg_to_client();
+                       }
+                       else // if user is invited to channel and user exists send invite message to user
+                       {
+                            std::string message = ":" + client.get_nick() + " INVITE " + command[2] + " " + command[1] + "\r\n";
+                            mapclients.insert(std::make_pair(client.fd_client, Client_irc())).first->second.msg = message;
+                            mapclients[client.fd_client].send_msg_to_client();
+                       }
+                }
+            }
+        }
+    }
+
+    else if(command[0] == "TOPIC") // TOPIC <channel> [<topic>]
+    {
+        if(command.size() == 2)
+        {
+            if(mapchannels.find(command[1]) == mapchannels.end())
+            {
+                client.msg = "Error: channel doesn't exist\r\n";
+                client.send_msg_to_client();
+            }
+            else
+            {
+                if(mapchannels[command[1]].get_op_topic() && !mapchannels[command[1]].is_operator(client.get_nick()))
+                {
+                    client.msg = "Error: you are not an operator\r\n";
+                    client.send_msg_to_client();
+                }
+                else
+                {
+                    client.msg = ":" + client.get_nick() + " TOPIC " + command[1] + " :" + mapchannels[command[1]].get_topic() + "\r\n";
+                    client.send_msg_to_client();
+                }
+            }
+        }
+        else if(command.size() == 3)
+        {
+            if(mapchannels.find(command[1]) == mapchannels.end())
+            {
+                client.msg = "Error: channel doesn't exist\r\n";
+                client.send_msg_to_client();
+            }
+            else
+            {
+                if(mapchannels[command[1]].get_op_topic() && !mapchannels[command[1]].is_operator(client.get_nick()))
+                {
+                    client.msg = "Error: you are not an operator\r\n";
+                    client.send_msg_to_client();
+                }
+                else
+                {
+                    mapchannels[command[1]].set_topic(command[2]);
+                    client.msg = ":" + client.get_nick() + " TOPIC " + command[1] + " :" + mapchannels[command[1]].get_topic() + "\r\n";
+                    client.send_msg_to_client();
+                }
+            }
+        }
+        else
+        {
+            client.msg = "Error: TOPIC command requires 1 or 2 arguments\r\n";
+            client.send_msg_to_client();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
         // mapchannels["empty"].join_command(command, client);
     // if (command[0] == "KICK") {
     //     kick_cmd(command, client);

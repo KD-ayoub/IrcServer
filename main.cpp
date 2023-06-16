@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:34 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/15 01:23:16 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/15 19:35:59 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,5 @@ int main(int ac, char **av)
     IrcServer irc(av[1], av[2]);
     int sockFd = irc.SetupServer();
     irc.RunServer(sockFd);
-    
+
 }

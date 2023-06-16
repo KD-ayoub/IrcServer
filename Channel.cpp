@@ -6,7 +6,7 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/15 16:54:43 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/15 22:41:03 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 #include "client_irc.hpp"
 
 Channel::Channel(){
+    
+}
+
+Channel::~Channel()
+{
     
 }
 
@@ -96,16 +101,16 @@ Channel &Channel::operator=(const Channel &c)
 //     return(0);
 // }
 
-// int Channel::cmd_topic(std::string top) // change channel topic
-// {
-//     this->topic = top;
-//     return (0);
-// }
+int Channel::set_topic(std::string top) // change channel topic
+{
+    this->topic = top;
+    return (0);
+}
 
-// bool    Channel::get_invite_only() const    // return invite only status
-// {
-//     return (invite_only);
-// }
+bool    Channel::get_invite_only() const    // return invite only status
+{
+    return (invite_only);
+}
 
 // bool    Channel::get_is_private() const     // return private status
 // {
@@ -113,10 +118,10 @@ Channel &Channel::operator=(const Channel &c)
 // }
 
 
-// bool    Channel::get_op_topic() const     // return topic privacy status
-// {
-//     return(op_topic);
-// }
+bool    Channel::get_op_topic() const     // return topic privacy status
+{
+    return(op_topic);
+}
 
 // bool    Channel::get_no_msg() const     // return message privacy status
 // {
@@ -151,15 +156,15 @@ Channel &Channel::operator=(const Channel &c)
 //     return (true);
 // }
 
-// std::vector<std::string>  Channel::get_invited_user() const // return list of invited users
-// {
-//     return (invited_users);
-// }
+std::vector<std::string>  Channel::get_invited_user() const // return list of invited users
+{
+    return (invited_users);
+}
 
-// std::vector<std::string> Channel::get_operators() const // return list of operators
-// {
-//     return (operators);
-// }
+std::vector<std::string> Channel::get_operators() const // return list of operators
+{
+    return (operators);
+}
 
 
 // int Channel::add_operator(std::string nick) // add operator to channel
@@ -371,22 +376,22 @@ Channel &Channel::operator=(const Channel &c)
 // // }
 
 
-// bool Channel::is_operator(std::string nick) // check if user is operator
-// {
-//     for (std::vector<std::string>::iterator p  = operators.begin(); p != operators.end(); p++)
-//     {
-//         if (nick == *p)
-//             return (true);
-//     } 
-//     if (nick == owner)
-//         return (true);
-//     return (false);
-// }
+bool Channel::is_operator(std::string nick) // check if user is operator
+{
+    for (std::vector<std::string>::iterator p  = operators.begin(); p != operators.end(); p++)
+    {
+        if (nick == *p)
+            return (true);
+    } 
+    if (nick == owner)
+        return (true);
+    return (false);
+}
 
-// std::string Channel::get_topic()
-// {
-//     return (topic);
-// }
+std::string Channel::get_topic()
+{
+    return (topic);
+}
 
 // std::string Channel::get_name() const
 // {

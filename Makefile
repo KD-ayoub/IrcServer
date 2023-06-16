@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: akouame <akouame@student.42.fr>            +#+  +:+       +#+         #
+#    By: akadi <akadi@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/13 16:11:29 by akouame           #+#    #+#              #
-#    Updated: 2023/06/13 16:11:30 by akouame          ###   ########.fr        #
+#    Updated: 2023/06/15 19:30:37 by akadi            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,11 +18,11 @@ FLAGS = -Wall -Wextra -Werror -std=c++98 -g
 
 RM = rm -rf
 
-src = main.cpp ft_irc.cpp checkArguments.cpp outils.cpp client_irc.cpp ParsingChannelCommands.cpp ParsingUtils.cpp
+src = main.cpp ft_irc.cpp checkArguments.cpp outils.cpp client_irc.cpp ParsingChannelCommands.cpp ParsingUtils.cpp Channel.cpp
 
 obj = $(src:.cpp=.o)
 
-hdr = ft_irc.hpp client_irc.hpp ParsingChannelCommands.hpp
+hdr = ft_irc.hpp client_irc.hpp ParsingChannelCommands.hpp Channel.hpp
 
 all : $(NAME)
 

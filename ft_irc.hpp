@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/15 16:27:57 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/15 19:48:22 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@
 #include "client_irc.hpp"
 #include "Channel.hpp"
 
-class Client_irc;
 class Channel;
+class Client_irc;
 
-std::map<std::string, Channel> mapchannels;
+extern std::map<std::string, Channel> mapchannels;
 
 class IrcServer
 {
@@ -62,6 +62,8 @@ class IrcServer
         void    execute_command(const std::vector<std::string> &command, Client_irc &client);
         /////////////////////
         void    RemoveCRLF(int);
+        //////////////////////    channel commands ///////////////////////
+        void    kick_command(const std::vector<std::string> &, Client_irc &);
         
           
 };
