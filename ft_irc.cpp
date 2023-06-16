@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/16 20:51:04 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/16 21:16:38 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,7 +318,7 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
             }
             else
             {
-                const std::vector<std::string> &invitedUsers = mapchannels[command[1]].get_invited_user();
+                const std::vector<std::string> &invitedUsers = mapchannels[command[2]].get_invited_user();
                 bool isInvited = false;
                 for (std::vector<std::string>::const_iterator it = invitedUsers.begin(); it != invitedUsers.end(); ++it)
                 {
@@ -329,7 +329,7 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
                        }
                 }
 
-                if (mapchannels[command[1]].get_invite_only() && !isInvited) // if channel is invite only and user is not invited
+                if (mapchannels[command[2]].get_invite_only() && !isInvited) // if channel is invite only and user is not invited
                 {
                        client->msg = "Error: you are not invited to this channel\r\n";
                        client->send_msg_to_client();
