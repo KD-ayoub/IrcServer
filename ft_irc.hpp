@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/15 19:56:35 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/16 18:06:22 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,11 @@ class IrcServer
         void    AcceptNewConnection(int , int *);
         int     RecieveIncomingData(int *, int);
         void    Authentification(int);
-        void    execute_command(const std::vector<std::string> &command, Client_irc &client);
+        void    execute_command(const std::vector<std::string> &command, Client_irc *client);
         /////////////////////
         void    RemoveCRLF(int);
+        //--
+        void    check_Join_cmd(const std::vector<std::string> &command, Client_irc *client);
         
           
 };

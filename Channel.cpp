@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/15 20:18:23 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/16 16:56:19 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,18 @@ Channel::~Channel(){
     
 }
 
-Channel::Channel(std::string ch_name, Client_irc &c) : name (ch_name)   
+Channel::Channel(std::string ch_name, Client_irc *c) : name (ch_name)   
 {
-    // this->clients.insert(std::pair<std::string, Client*>(c.getNickname(), &c));
-    this->owner = c.get_nick();
+    this->owner = c->get_nick();
     this->invite_only = false;
     is_private = false;
     is_secret = false;
     op_topic = false;
     no_msg = false;
     moderated = false;
-    user_limit = 10000;
+    user_limit = 256;
     key = "";
+    this->clients.insert(std::make_pair(c->get_nick(), c));
 }
 
     
