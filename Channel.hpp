@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 23:20:42 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/16 17:24:54 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/16 18:28:46 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,9 @@ class Channel {
         Channel();
         Channel(std::string name, Client_irc *c);
         ~Channel();
+		
         Channel &operator=(const Channel &c);
+		
         std::map<std::string, Client_irc*> clients; // list of clients in channel  
 
         
@@ -77,7 +79,7 @@ class Channel {
         // int     change_invite(std::string sign); // change invite only status
         // int     change_who_speaks_on_moderated(std::string sign, std::string user); // change who can speak on moderated channel
         void        set_key(std::string);
-
+        void		set_invite_only(bool valid);
         // //getters
 
         // std::string                  get_topic(); // return channel topic
@@ -104,6 +106,7 @@ class Channel {
         // std::vector<std::string>     get_operators() const; //  return list of operators
         // std::string                  channel_modes();  // return channel modes 
         std::string		get_key();
+		bool			get_invite_only();
 };
 
 #endif 

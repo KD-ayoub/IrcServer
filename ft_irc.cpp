@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/16 18:07:10 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/16 18:33:32 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,7 @@ void    IrcServer::RunServer(int sockFd)
     close(sockFd);
     freeaddrinfo(this->result);
 }
-
+//--
 void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Client_irc *client)
 {
     if (command[1].find(','))
@@ -234,8 +234,8 @@ void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Clien
                     int count_exist = mapchannels.count(chanel_names[i]);
                     if (count_exist > 0)
                     {
-                        std::cout << "ana d5lt hna 1\n";
-                        if (mapchannels[chanel_names[i]].get_key() == chanel_keys[i])
+                        std::cout << "ana d5lt hna 1\n";//Dlt
+                        if (mapchannels[chanel_names[i]].get_key() == chanel_keys[i] && mapchannels[chanel_names[i]].get_invite_only() == false)
                         {
                             if (mapchannels[chanel_names[i]].clients.find(client->get_nick()) == mapchannels[chanel_names[i]].clients.end())
                             {
@@ -262,15 +262,15 @@ void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Clien
                         mapchannels.insert(std::make_pair(chanel_names[i], chnl));
                         client->msg = "ircserv :You are join this channel succesfully 2!\r\n";
                         client->send_msg_to_client();
-                        std::cout << "ana d5lt hna 2\n";
+                        std::cout << "ana d5lt hna 2\n";//Dlt
                         // mapchannels[chanel_names[i]].clients.at(client.get_nick())->set_operator(true);
                         if (!chanel_keys[i].empty())
                         {
                             mapchannels[chanel_names[i]].set_key(chanel_keys[i]);
-                            std::cout << "ana d5lt hna 3\n";
+                            std::cout << "ana d5lt hna 3\n";//Dlt
                         }
                         else
-                            std::cout << "ana dkhlt hna 4\n";
+                            std::cout << "ana dkhlt hna 4\n";//Dlt
                     }
                 }
             }
