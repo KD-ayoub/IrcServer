@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/16 18:22:34 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/16 20:31:21 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ Channel::Channel(){
     
 }
 
-Channel::~Channel(){
+Channel::~Channel()
+{
     
 }
 
@@ -42,17 +43,17 @@ Channel &Channel::operator=(const Channel &c)
     return (*this);
 }
 
-// int Channel::broadcast(std::string message, int sender) // send message to all clients
-// {
-//     std::map<std::string, Client_irc>::iterator it;
+int Channel::broadcast(std::string message, int sender) // send message to all clients
+{
+    std::map<std::string, Client_irc*>::iterator it;
     
-//     for (it = clients.begin(); it != clients.end(); it++)
-//     {
-//         if (sender != it->second.fd_client)
-//             send(it->second.fd_client, message.c_str(), message.length(), 0);
-//     }
-//     return (0);
-// }
+    for (it = clients.begin(); it != clients.end(); it++)
+    {
+        if (sender != it->second->fd_client)
+            send(it->second->fd_client, message.c_str(), message.length(), 0);
+    }
+    return (0);
+}
 
 // int Channel::connect(Client_irc &c) // add client to channel
 // {
@@ -100,16 +101,16 @@ Channel &Channel::operator=(const Channel &c)
 //     return(0);
 // }
 
-// int Channel::cmd_topic(std::string top) // change channel topic
-// {
-//     this->topic = top;
-//     return (0);
-// }
+int Channel::set_topic(std::string top) // change channel topic
+{
+    this->topic = top;
+    return (0);
+}
 
-// bool    Channel::get_invite_only() const    // return invite only status
-// {
-//     return (invite_only);
-// }
+bool    Channel::get_invite_only() const    // return invite only status
+{
+    return (invite_only);
+}
 
 // bool    Channel::get_is_private() const     // return private status
 // {
@@ -117,10 +118,10 @@ Channel &Channel::operator=(const Channel &c)
 // }
 
 
-// bool    Channel::get_op_topic() const     // return topic privacy status
-// {
-//     return(op_topic);
-// }
+bool    Channel::get_op_topic() const     // return topic privacy status
+{
+    return(op_topic);
+}
 
 // bool    Channel::get_no_msg() const     // return message privacy status
 // {
@@ -155,22 +156,30 @@ Channel &Channel::operator=(const Channel &c)
 //     return (true);
 // }
 
-// std::vector<std::string>  Channel::get_invited_user() const // return list of invited users
-// {
-//     return (invited_users);
-// }
+std::vector<std::string>  Channel::get_invited_user() const // return list of invited users
+{
+    return (invited_users);
+}
 
-// std::vector<std::string> Channel::get_operators() const // return list of operators
-// {
-//     return (operators);
-// }
+std::vector<std::string> Channel::get_operators() const // return list of operators
+{
+    return (operators);
+}
 
 
-// int Channel::add_operator(std::string nick) // add operator to channel
-// {
-//     this->operators.push_back(nick);
-//     return (0);
-// }
+int Channel::add_operator(std::string nick) // add operator to channel
+{
+    this->operators.push_back(nick);
+    return (0);
+}
+
+int Channel::remove_operator(std::string nick) // remove operator from channel
+{
+    std::vector<std::string>::iterator it = std::find(operators.begin(), operators.end(), nick);
+    if (it != operators.end())
+        operators.erase(it);
+    return (0);
+}
 
 // int Channel::change_operator(std::string sign, std::string nick)    // change operator status
 // {
@@ -206,15 +215,15 @@ Channel &Channel::operator=(const Channel &c)
 //     return(0);
 // }
 
-// int Channel::change_optopic(std::string sign) // change topic privacy
-// {
-//     std::cout << "change optopic" << std::endl;
-//     if (sign == "-")
-//         op_topic = false;
-//     else if (sign == "+")
-//         op_topic = true;
-//     return(0);
-// }
+int Channel::change_optopic(std::string sign) // change topic privacy
+{
+    std::cout << "change optopic" << std::endl;
+    if (sign == "-")
+        op_topic = false;
+    else if (sign == "+")
+        op_topic = true;
+    return(0);
+}
 
 // int Channel::change_nomsg(std::string sign) // change message privacy
 // {
@@ -236,35 +245,35 @@ Channel &Channel::operator=(const Channel &c)
 // 	return (0);
 // }
 
-// int		Channel::change_userlimits(std::string sign, std::size_t limit) // change user limit
-// {
-// 	std::cout<<"change user limits"<<std::endl;
-// 	if (sign == "-")
-// 		user_limit = 10000;
-// 	else if (sign == "+")
-// 		user_limit = limit;
-// 	return (0);
-// }
+int		Channel::change_userlimits(std::string sign, std::size_t limit) // change user limit
+{
+	std::cout<<"change user limits"<<std::endl;
+	if (sign == "-")
+		user_limit = 10000;
+	else if (sign == "+")
+		user_limit = limit;
+	return (0);
+}
 
-// int		Channel::change_password(std::string sign, std::string key) // change channel password
-// {
-// 	std::cout<<"change password"<<std::endl;
-// 	if (sign == "-")
-// 		password = "";
-// 	else if (sign == "+")
-// 		password = key;
-// 	return (0);
-// }
+int		Channel::change_password(std::string sign, std::string password) // change channel password
+{
+	std::cout<<"change password"<<std::endl;
+	if (sign == "-")
+		key = "";
+	else if (sign == "+")
+		key = password;
+	return (0);
+}
 
-// int		Channel::change_invite(std::string sign) // change invite only status
-// {
-// 	std::cout<<"change invite"<<std::endl;
-// 	if (sign == "-")
-// 		invite_only = false;
-// 	else if (sign == "+")
-// 		invite_only = true;
-// 	return (0);
-// }
+int		Channel::change_invite(std::string sign) // change invite only status
+{
+	std::cout<<"change invite"<<std::endl;
+	if (sign == "-")
+		invite_only = false;
+	else if (sign == "+")
+		invite_only = true;
+	return (0);
+}
 
 // int Channel::change_who_speaks_on_moderated(std::string sign, std::string user) // change who can speak on moderated channel
 // {
@@ -375,22 +384,22 @@ Channel &Channel::operator=(const Channel &c)
 // // }
 
 
-// bool Channel::is_operator(std::string nick) // check if user is operator
-// {
-//     for (std::vector<std::string>::iterator p  = operators.begin(); p != operators.end(); p++)
-//     {
-//         if (nick == *p)
-//             return (true);
-//     } 
-//     if (nick == owner)
-//         return (true);
-//     return (false);
-// }
+bool Channel::is_operator(std::string nick) // check if user is operator
+{
+    for (std::vector<std::string>::iterator p  = operators.begin(); p != operators.end(); p++)
+    {
+        if (nick == *p)
+            return (true);
+    } 
+    if (nick == owner)
+        return (true);
+    return (false);
+}
 
-// std::string Channel::get_topic()
-// {
-//     return (topic);
-// }
+std::string Channel::get_topic()
+{
+    return (topic);
+}
 
 // std::string Channel::get_name() const
 // {
