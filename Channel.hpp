@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 23:20:42 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/16 20:15:30 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/16 20:46:48 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,8 @@ class Channel {
     private :
         std::string                      name; // channel name
         std::string                      owner; // channel creator
-        std::vector<std::string>         operators; // list of operators
-        std::string                      topic; 
-        std::map<std::string, Client_irc> clients; // list of clients in channel  
+        std::string                      topic;
+        // std::map<std::string, Client_irc> clients; // list of clients in channel  
         bool                             invite_only; // if true, only invited users can join
         std::vector<std::string>         invited_users; // list of users invited to channel
         bool                             is_private; // if true, only invited users can join
@@ -46,9 +45,13 @@ class Channel {
               
     public:
         Channel();
-        Channel(std::string name, Client_irc &c);
+        Channel(std::string name, Client_irc *c);
         ~Channel();
+		
         Channel &operator=(const Channel &c);
+		
+        std::vector<std::string>         operators; // list of operators
+        std::map<std::string, Client_irc*> clients; // list of clients in channel  
 
         
         int        broadcast(std::string message, int sender); // send message to all Client_ircs
@@ -80,7 +83,7 @@ class Channel {
         int        change_invite(std::string sign); // change invite only status
         // int     change_who_speaks_on_moderated(std::string sign, std::string user); // change who can speak on moderated channel
         void        set_key(std::string);
-
+        void		set_invite_only(bool valid);
         // //getters
 
         std::string                     get_topic(); // return channel topic
@@ -107,6 +110,8 @@ class Channel {
         std::vector<std::string>        get_operators() const; //  return list of operators
         // std::string                  channel_modes();  // return channel modes 
         
+        std::string		get_key();
+	bool			get_invite_only();
 };
 
 #endif 

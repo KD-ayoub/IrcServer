@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/16 20:18:02 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/16 20:31:21 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,18 @@ Channel::~Channel()
     
 }
 
-Channel::Channel(std::string ch_name, Client_irc &c) : name (ch_name)   
+Channel::Channel(std::string ch_name, Client_irc *c) : name (ch_name)   
 {
-    // this->clients.insert(std::pair<std::string, Client*>(c.getNickname(), &c));
-    this->owner = c.get_nick();
+    this->owner = c->get_nick();
     this->invite_only = false;
     is_private = false;
     is_secret = false;
     op_topic = false;
     no_msg = false;
     moderated = false;
-    user_limit = 10000;
+    user_limit = 256;
     key = "";
+    this->clients.insert(std::make_pair(c->get_nick(), c));
 }
 
     
@@ -45,12 +45,12 @@ Channel &Channel::operator=(const Channel &c)
 
 int Channel::broadcast(std::string message, int sender) // send message to all clients
 {
-    std::map<std::string, Client_irc>::iterator it;
+    std::map<std::string, Client_irc*>::iterator it;
     
     for (it = clients.begin(); it != clients.end(); it++)
     {
-        if (sender != it->second.fd_client)
-            send(it->second.fd_client, message.c_str(), message.length(), 0);
+        if (sender != it->second->fd_client)
+            send(it->second->fd_client, message.c_str(), message.length(), 0);
     }
     return (0);
 }
@@ -437,4 +437,16 @@ std::string Channel::get_topic()
 //--
 void    Channel::set_key(std::string    k){
     key = k;
+}
+
+void    Channel::set_invite_only(bool   valid){
+    invite_only = valid;
+}
+//--
+std::string Channel::get_key(){
+    return (key);
+}
+
+bool    Channel::get_invite_only(){
+    return (invite_only);
 }
