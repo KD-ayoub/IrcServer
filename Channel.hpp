@@ -6,7 +6,7 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 23:20:42 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/15 22:44:30 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/16 20:15:30 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ class Channel {
         Channel &operator=(const Channel &c);
 
         
-        // int     broadcast(std::string message, int sender); // send message to all Client_ircs
+        int        broadcast(std::string message, int sender); // send message to all Client_ircs
         // int     connect(Client_irc &c); // add Client_irc to channel
         // int     disconnect(Client_irc &c); // remove Client_irc from channel
         // int     disconnect(std::string nickname); // remove Client_irc from channel
@@ -60,7 +60,8 @@ class Channel {
         int        set_topic(std::string topic); // change channel topic
         // int     cmd_names(Client_irc &sender); // send list of Client_ircs in channel
         // int     cmd_who(Client_irc &sender); // send list of Client_ircs in channel 
-        // int     add_operator(std::string nick); // add operator to channel
+        int        add_operator(std::string nick); // add operator to channel
+        int        remove_operator(std::string nick); // remove operator from channel
         // int     change_operator(std::string sign, std::string nick); // change operator status
         // int     Client_irc_count(); // return number of Client_ircs in channel 
         // int     list_cmd(Client_irc &sender); // send list of command available in channel
@@ -71,12 +72,12 @@ class Channel {
         
         // int     change_to_private(std::string sign); // change channel privacy
         // int     change_to_secret(std::string sign);  // change channel privacy
-        // int     change_optopic(std::string sign); // change topic privacy
+        int        change_optopic(std::string sign); // change topic privacy
         // int     change_nomsg(std::string sign); // change message privacy
         // int     change_moderated(std::string sign);     // change moderated status
-        // int     change_userlimits(std::string sign, std::size_t limit); // change user limit
-        // int     change_password(std::string sign, std::string key); // change channel password
-        // int     change_invite(std::string sign); // change invite only status
+        int        change_userlimits(std::string sign, std::size_t limit); // change user limit
+        int        change_password(std::string sign, std::string key); // change channel password
+        int        change_invite(std::string sign); // change invite only status
         // int     change_who_speaks_on_moderated(std::string sign, std::string user); // change who can speak on moderated channel
         void        set_key(std::string);
 

@@ -6,14 +6,14 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/16 00:29:21 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/16 20:22:37 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "ft_irc.hpp"
 
-std::map<std::string, Channel> mapchannels;
+std::map<std::string , Channel> mapchannels;
 
 IrcServer::IrcServer()
 {
@@ -249,7 +249,7 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
         kick_command(command, client);
     }
 
-
+    /*#########################################################################################*/
 
     else if (command[0] == "INVITE")
     {
@@ -259,7 +259,7 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
             client.send_msg_to_client();
         }
         // the following condition is to check if its an operator
-        else if (mapchannels[command[1]].is_operator(client.get_nick()))
+        else if (mapchannels[command[2]].is_operator(client.get_nick())) // command[2]
         {
             client.msg = "Error: you are not an operator\r\n";
             client.send_msg_to_client();
@@ -306,6 +306,8 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
             }
         }
     }
+    
+    /*##############################################################################*/
 
     else if(command[0] == "TOPIC") // TOPIC <channel> [<topic>]
     {
@@ -358,6 +360,101 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
             client.send_msg_to_client();
         }
     }
+    
+/*#########################################################################################*/
+    
+else if (command[0] == "MODE")
+{
+    if (command.size() < 3)
+    {
+        client.msg = "Error: MODE command requires 2 arguments\r\n";
+        client.send_msg_to_client();
+    }
+    else if (mapchannels.find(command[1]) == mapchannels.end())
+    {
+        client.msg = "Error: channel doesn't exist\r\n";
+        client.send_msg_to_client();
+    }
+    else if (!mapchannels[command[1]].is_operator(client.get_nick()))
+    {
+        client.msg = "Error: you are not an operator\r\n";
+        client.send_msg_to_client();
+    }
+    else
+    {
+        std::string mode = command[2];
+        bool addMode = true;
+        std::string::iterator it = mode.begin();
+        while (it != mode.end())
+        {
+            if (*it == '+')
+            {
+                addMode = true;
+            }
+            else if (*it == '-')
+            {
+                addMode = false;
+            }
+            else if (*it == 'o')
+            {
+                if (addMode)
+                {
+                    mapchannels[command[1]].add_operator(command[3]);
+                }
+                else
+                {
+                    mapchannels[command[1]].remove_operator(command[3]);
+                }
+            }
+            else if (*it == 'i')
+            {
+                if (addMode)
+                    mapchannels[command[1]].change_invite("+");
+                    
+                else
+                    mapchannels[command[1]].change_invite("-");
+            }
+            else if (*it == 't')
+            {
+                if (addMode)
+                    mapchannels[command[1]].change_optopic("+");
+                else
+                    mapchannels[command[1]].change_optopic("-");
+            }
+            else if (*it == 'l')
+            {
+                if (addMode)
+                {
+                    mapchannels[command[1]].change_userlimits("+", std::stoi(command[3]) );
+                }
+                else
+                {
+                    mapchannels[command[1]].change_userlimits("-", std::stoi(command[3]));
+                }
+            }
+            else if (*it == 'k')
+            {
+                if (addMode)
+                {
+                    mapchannels[command[1]].change_password("+", command[3]);
+                }
+                else
+                {
+                    mapchannels[command[1]].change_password("-", command[3]);
+                }
+            }
+            else
+            {
+                client.msg = "Error: invalid mode\r\n";
+                client.send_msg_to_client();
+                return;
+            }
+            ++it;
+        }
+        std::string message = ":" + client.get_nick() + " MODE " + command[1] + " " + command[2] + "\r\n";
+        mapchannels[command[1]].broadcast(message, client.fd_client);
+    }
+}
 
 
 
