@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   outils.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/12 11:28:15 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/14 21:29:31 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/17 15:56:23 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ std::vector<std::string> split_string(const std::string &str, char delimiter)
         if (!token.empty())
             tokens.push_back(token);
     }
-
     return (tokens);
 }
 
