@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/17 13:44:19 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/17 15:34:34 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,11 +226,11 @@ void    IrcServer::kick_command(const std::vector<std::string> &command, Client_
     // std::cout << "arg2 " << command[2] << std::endl;
     if (mapchannels.find(command[1]) != mapchannels.end())
     {
-        for(std::map<std::string, Client_irc*>::iterator it = mapchannels.at(command[1]).clients.begin() ; it != mapchannels.at(command[1]).clients.begin(); it++)
+        for(std::map<std::string, Client_irc*>::iterator it = mapchannels.at(command[1]).clients.begin() ; it != mapchannels.at(command[1]).clients.end(); it++)
         {
-            if ((it->second->get_user().username == command[2]) && client->get_operator())
+            if ((it->second->get_nick() == command[2]) && client->get_operator())
             {
-                mapchannels.at(command[1]).clients.erase(client->get_user().username);
+                mapchannels.at(command[1]).clients.erase(command[2]);
                 client->msg = "Client kicked from channel\r\n";
                 client->send_msg_to_client();
                 return ;
@@ -377,9 +377,9 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
                        else // if user is invited to channel and user exists send invite message to user
                        {
                             std::string message = ":" + client->get_nick() + " INVITE " + command[2] + " " + command[1] + "\r\n";
-                            function (chercher for command[1] in mapclients)
-                            mapclients.at(fd)
-                            mapchannels.at(comman[2]).clients.insert(command[1], )
+                            // function (chercher for command[1] in mapclients)
+                            // mapclients.at(fd)
+                            // mapchannels.at(comman[2]).clients.insert(command[1], )
                             mapclients[client->fd_client].send_msg_to_client();
                        }
                 }
