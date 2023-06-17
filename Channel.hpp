@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 23:20:42 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/16 20:46:48 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/17 17:56:50 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,8 @@ class Channel {
         bool                             op_topic; // if true, only operator can change topic
         bool                             no_msg; // if true, only operator can send message
         bool                             moderated; // if true, only users in who_speak_on_moderated can speak
-        std::size_t                      user_limit; // max number of users in channel
         std::string                      key; // password to join channel
         std::vector<std::string>         who_speak_on_moderated; // list of users who can speak on moderated channel
-              
     public:
         Channel();
         Channel(std::string name, Client_irc *c);
@@ -50,8 +48,10 @@ class Channel {
 		
         Channel &operator=(const Channel &c);
 		
-        std::vector<std::string>         operators; // list of operators
-        std::map<std::string, Client_irc*> clients; // list of clients in channel  
+        std::vector<std::string>         			operators; // list of operators
+        std::map<std::string, Client_irc*>			clients; // list of clients in channel  
+        std::size_t                                 user_limit; // max number of users in channel
+        std::size_t						    		number_of_users; 
 
         
         int        broadcast(std::string message, int sender); // send message to all Client_ircs

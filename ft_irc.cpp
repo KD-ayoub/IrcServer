@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/17 15:59:51 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/17 18:36:52 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,97 +221,123 @@ void    IrcServer::kick_command(const std::vector<std::string> &command, Client_
 
 void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Client_irc *client)
 {
-        std::vector<std::string>    chanel_names;
-        std::vector<std::string>    chanel_keys;
-        
-        if (command.size() < 2)
-		{
-			client->cmd = "JOIN";
-			client->msg = client->error_msg.ERR_NEEDMOREPARAMS;
-			client->send_msg_to_client();
-			return ;
-		}
-        chanel_names = split_string(command[1], ',');
-		if (command.size() > 2)
-        	chanel_keys = split_string(command[2], ',');
-		else
-			chanel_keys.push_back("");
-        if (chanel_keys.size() > chanel_names.size())
+    std::vector<std::string>    chanel_names;
+    std::vector<std::string>    chanel_keys;
+    
+    if (command.size() < 2)
+    {
+        client->cmd = "JOIN";
+        client->msg = client->error_msg.ERR_NEEDMOREPARAMS;
+        client->send_msg_to_client();
+        return ;
+    }
+    chanel_names = split_string(command[1], ',');
+    if (command.size() > 2)
+        chanel_keys = split_string(command[2], ',');
+    else
+        chanel_keys.push_back("");
+    if (chanel_keys.size() > chanel_names.size())
+    {
+        client->msg = "Error: to much passwords for a chennl\r\n";
+        client->send_msg_to_client();
+    }
+    else
+    {
+        for (size_t i = 0; i < chanel_names.size(); i++)
         {
-            client->msg = "Error: to much passwords for a chennl\r\n";
-            client->send_msg_to_client();
-        }
-        else
-        {
-            for (size_t i = 0; i < chanel_names.size(); i++)
+            int count_exist = mapchannels.count(chanel_names[i]);
+            if (mapchannels[chanel_names[i]].user_limit)
+            if (count_exist > 0)
             {
-                int count_exist = mapchannels.count(chanel_names[i]);
-                if (count_exist > 0)
+                std::cout << "ana d5lt hna 1\n";//Dlt
+                if (mapchannels[chanel_names[i]].get_invite_only() == false) 
                 {
-                    std::cout << "ana d5lt hna 1\n";//Dlt
-                    if (mapchannels[chanel_names[i]].get_invite_only() == false) 
+                    if (mapchannels[chanel_names[i]].get_key() == chanel_keys[i])
                     {
-                        if (mapchannels[chanel_names[i]].get_key() == chanel_keys[i])
+                        if (mapchannels[chanel_names[i]].clients.find(client->get_nick()) == mapchannels[chanel_names[i]].clients.end())
                         {
-                            if (mapchannels[chanel_names[i]].clients.find(client->get_nick()) == mapchannels[chanel_names[i]].clients.end())
+                            if (mapchannels[chanel_names[i]].number_of_users >= mapchannels[chanel_names[i]].user_limit)
                             {
-                                mapchannels[chanel_names[i]].clients.insert(std::make_pair(client->get_nick(), client));
-                                client->msg = "ircserv :You are join this channel succesfully 1!\r\n";
+                                client->msg = "ircserv 471 :" + chanel_names[i] + " :Cannot join channel (+l)\r\n";
                                 client->send_msg_to_client();
                             }
                             else
                             {
-                                client->msg = "ircserv Error: this client is already exist on this channel !\r\n";
-                                client->send_msg_to_client();
+                                mapchannels[chanel_names[i]].clients.insert(std::make_pair(client->get_nick(), client));
+                                mapchannels[chanel_names[i]].number_of_users++;
+                                client->msg = "ircserv 001 :You are join this channel succesfully 1!\r\n";
+                                client->send_msg_to_client();   
                             }
                         }
                         else
                         {
-                            client->msg = client->error_msg.ERR_PASSWDMISMATCH;
+                            client->msg = "ircserv Error: this client is already exist on this channel !\r\n";
                             client->send_msg_to_client();
                         }
                     }
                     else
                     {
-                        if (mapchannels[chanel_names[i]].clients.find(client->get_nick()) == mapchannels[chanel_names[i]].clients.end())
-                            {
-                                mapchannels[chanel_names[i]].clients.insert(std::make_pair(client->get_nick(), client));
-                                client->msg = "ircserv :You are join this channel succesfully 1!\r\n";
-                                client->send_msg_to_client();
-                            }
-                            else
-                            {
-                                client->msg = "ircserv Error: this client is already exist on this channel !\r\n";
-                                client->send_msg_to_client();
-                            }
+                        client->msg = client->error_msg.ERR_PASSWDMISMATCH;
+                        client->send_msg_to_client();
                     }
                 }
                 else
                 {
-					if (chanel_names[i][0] != '#')
-					{
-						client->msg = "ircserv 403 " + client->get_nick() + " :No such channel\r\n";
-						client->send_msg_to_client();
-						return ; 
-					}
-                    Channel chnl(chanel_names[i], client);
-                    client->set_operator(true);
-                    mapchannels.insert(std::make_pair(chanel_names[i], chnl));
-                    mapchannels[chanel_names[i]].operators.push_back(client->get_nick());
-                    client->msg = "ircserv :You are join this channel succesfully 2!\r\n";
-                    client->send_msg_to_client();
-                    std::cout << "ana d5lt hna 2\n";//Dlt
-                    // mapchannels[chanel_names[i]].clients.at(client.get_nick())->set_operator(true);
-					std::cout << "chanel_name = " << chanel_names[i] << std::endl;
-					std::cout << "chanel_key = " << chanel_keys[i] << std::endl;
-                        mapchannels[chanel_names[i]].set_key(chanel_keys[i]);
-						return ;
+                    bool check = false;
+                    for (size_t j = 0; j < mapchannels[chanel_names[i]].get_invited_user().size(); j++)
+                    {
+                        if (client->get_nick() == mapchannels[chanel_names[i]].get_invited_user()[j])
+                            check = true;
+                    }
+                    if (check == true)
+                    {
+                        if (mapchannels[chanel_names[i]].clients.find(client->get_nick()) == mapchannels[chanel_names[i]].clients.end())
+                        {
+                            mapchannels[chanel_names[i]].clients.insert(std::make_pair(client->get_nick(), client));
+                            mapchannels[chanel_names[i]].number_of_users++;
+                            client->msg = "ircserv :You are join this channel succesfully 2!\r\n";
+                            client->send_msg_to_client();
+                        }
+                        else
+                        {
+                            client->msg = "ircserv Error: this client is already exist on this channel !\r\n";
+                            client->send_msg_to_client();
+                        }
+                    }
+                    if (check == false)
+                    {
+                        client->msg = "ircserv 473 :" + chanel_names[i] + " :Cannot join channel (+i)\r\n";
+                        client->send_msg_to_client();
                     }
                 }
             }
+            if (count_exist <= 0)
+            {
+                if (chanel_names[i][0] != '#')
+                {
+                    client->msg = "ircserv 403 " + chanel_names[i] + " :No such channel\r\n";
+                    client->send_msg_to_client();
+                    return ; 
+                }
+                Channel chnl(chanel_names[i], client);
+                client->set_operator(true);
+                mapchannels.insert(std::make_pair(chanel_names[i], chnl));
+                mapchannels[chanel_names[i]].number_of_users++;
+                mapchannels[chanel_names[i]].operators.push_back(client->get_nick());
+                client->msg = "ircserv :You are join this channel succesfully 3!\r\n";
+                client->send_msg_to_client();
+                std::cout << "ana d5lt hna 2\n";//Dlt
+                // mapchannels[chanel_names[i]].clients.at(client.get_nick())->set_operator(true);
+                std::cout << "chanel_name = " << chanel_names[i] << std::endl;
+                std::cout << "chanel_key = " << chanel_keys[i] << std::endl;
+                    mapchannels[chanel_names[i]].set_key(chanel_keys[i]);
+                    return ;
+            }
+        
         }
-    
-// }
+    }   
+}
+
 
 void    IrcServer::check_Invite_cmd(const std::vector<std::string> &command, Client_irc *client)
 {

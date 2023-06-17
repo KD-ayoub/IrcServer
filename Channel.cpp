@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/17 15:51:12 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/17 17:46:19 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ Channel::Channel(std::string ch_name, Client_irc *c) : name (ch_name)
     moderated = false;
     user_limit = 256;
     key = "";
+    number_of_users = 0;
     this->clients.insert(std::make_pair(c->get_nick(), c));
 }
 
