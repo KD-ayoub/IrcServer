@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/17 17:46:19 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/17 20:24:13 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,11 +96,11 @@ int Channel::broadcast(std::string message, int sender) // send message to all c
 //         return(0);
 // }
 
-// int Channel::cmd_invite(std::string nickname)   // invite client to channel
-// {
-//     this->invited_users.push_back(nickname);
-//     return(0);
-// }
+int Channel::cmd_invite(std::string nickname)   // invite client to channel
+{
+    this->invited_users.push_back(nickname);
+    return(0);
+}
 
 int Channel::set_topic(std::string top) // change channel topic
 {

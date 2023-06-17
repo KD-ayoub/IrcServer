@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 23:20:42 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/17 17:56:50 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/17 20:23:54 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ class Channel {
         // int     disconnect(Client_irc &c); // remove Client_irc from channel
         // int     disconnect(std::string nickname); // remove Client_irc from channel
         // int     cmd_kick(std::string nickname); // kick Client_irc from channel
-        // int     cmd_invite(std::string nickname); // invite Client_irc to channel
+        int         cmd_invite(std::string nickname); // invite Client_irc to channel
         int        set_topic(std::string topic); // change channel topic
         // int     cmd_names(Client_irc &sender); // send list of Client_ircs in channel
         // int     cmd_who(Client_irc &sender); // send list of Client_ircs in channel 
