@@ -6,7 +6,7 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/17 17:58:17 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/17 20:19:39 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -355,9 +355,9 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
                        }
                        else // if user is invited to channel and user exists send invite message to user
                        {
-                            mapchannels[command[2]].cmd_invite(command[1]);
+                            mapchannels[command[2]].cmd_invite(command[1]); // this is the new version
                             std::string message = ":" + client->get_nick() + " INVITE " + command[2] + " " + command[1] + "\r\n";
-                            mapclients.insert(std::make_pair(client_finder(command[1]), Client_irc())).first->second.msg = message; 
+                            mapclients[client_finder(command[1])].msg = message;
                             mapclients[client_finder(command[1])].send_msg_to_client();
                        }
                 }
