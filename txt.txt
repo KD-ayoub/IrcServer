@@ -1,0 +1,11 @@
+1- mni i5roj client in9os number_of_users f channel
+
+2-JOIN :
+	-ERR_CHANNELISFULL
+	-ERR_INVITEONLYCHAN
+	-ERR_NEEDMOREPARAMS
+	-RPL_TOPIC (not yet)
+	-ERR_BANNEDFROMCHAN  (not yet)
+	-ERR_BADCHANNELKEY  (not yet)
+	-ERR_BADCHANMASK	(not yet)
+	-ERR_TOOMANYCHANNELS	(not yet) 

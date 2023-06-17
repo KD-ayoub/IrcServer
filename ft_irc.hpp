@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/17 16:15:08 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/17 20:22:12 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,13 @@ class IrcServer
         void    RemoveCRLF(int);
         //--commands
         void    execute_command(const std::vector<std::string> &command, Client_irc *client);
+        
         void    check_Join_cmd(const std::vector<std::string> &command, Client_irc *client);
         void    check_Invite_cmd(const std::vector<std::string> &command, Client_irc *client);
+
         //////////////////////    channel commands ///////////////////////
         void    kick_command(const std::vector<std::string> &, Client_irc *);
+        int     client_finder(std::string command);
         
           
 };
