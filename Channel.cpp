@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/16 20:31:21 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/17 17:19:25 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,11 +95,11 @@ int Channel::broadcast(std::string message, int sender) // send message to all c
 //         return(0);
 // }
 
-// int Channel::cmd_invite(std::string nickname)   // invite client to channel
-// {
-//     this->invited_users.push_back(nickname);
-//     return(0);
-// }
+int Channel::cmd_invite(std::string nickname)   // invite client to channel
+{
+    this->invited_users.push_back(nickname);
+    return(0);
+}
 
 int Channel::set_topic(std::string top) // change channel topic
 {

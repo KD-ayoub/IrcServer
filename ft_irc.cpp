@@ -6,7 +6,7 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/16 21:16:38 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/17 17:58:17 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,6 +284,18 @@ void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Clien
         }
 }
 
+int IrcServer::client_finder(std::string command)
+{
+    for(std::map<int, Client_irc>::iterator it = mapclients.begin(); it != mapclients.end(); ++it)
+    {
+        if (it->second.get_nick() == command)
+        {
+            return (it->second.fd_client);
+        }
+    }
+    return -1;
+}
+
 void IrcServer::execute_command(const std::vector<std::string> &command, Client_irc *client)
 {
     //code dial lkosala ach had t5rbi9
@@ -296,7 +308,7 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
 
     /*#########################################################################################*/
 
-    else if (command[0] == "INVITE")
+    else if (command[0] == "INVITE") // <nickname> <channel>
     {
         if (command.size() < 3)
         {
@@ -343,9 +355,10 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
                        }
                        else // if user is invited to channel and user exists send invite message to user
                        {
+                            mapchannels[command[2]].cmd_invite(command[1]);
                             std::string message = ":" + client->get_nick() + " INVITE " + command[2] + " " + command[1] + "\r\n";
-                            mapclients.insert(std::make_pair(client->fd_client, Client_irc())).first->second.msg = message;
-                            mapclients[client->fd_client].send_msg_to_client();
+                            mapclients.insert(std::make_pair(client_finder(command[1]), Client_irc())).first->second.msg = message; 
+                            mapclients[client_finder(command[1])].send_msg_to_client();
                        }
                 }
             }
@@ -353,6 +366,7 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
     }
     
     /*##############################################################################*/
+
 
     else if(command[0] == "TOPIC") // TOPIC <channel> [<topic>]
     {
