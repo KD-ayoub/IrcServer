@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client_irc.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:55:05 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/15 22:02:07 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/18 21:22:18 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,16 @@
 
 void	Client_irc::set_msg_error()
 {
-	error_msg.ERR_NORECIPIENT = ":ircserv 411 * :No recipient given "+cmd+"\r\n";
-	error_msg.ERR_UNKNOWNCOMMAND = ":ircserv 421 * :"+cmd+" Unknown command\r\n";
-	error_msg.ERR_NICKNAMEINUSE = ":ircserv 433 * :"+_nick+" Nickname is already in use\r\n";
-	error_msg.ERR_NICKCOLLISION = ":ircserv ERROR * :"+_nick+" Nickname collision KILL\r\n";
-	error_msg.ERR_NEEDMOREPARAMS = ":ircserv 461 * :"+cmd+" Not enough parameters\r\n";
-	error_msg.ERR_NOTEXTTOSEND = ":ircserv 412 * :No text to send\r\n";
-	error_msg.ERR_NONICKNAMEGIVEN = ":ircserv 431 * :No nickname given\r\n";
-	error_msg.ERR_NOTREGISTERED = ":ircserv 451 * :You have not registered\r\n";
-	error_msg.ERR_ALREADYREGISTRED = ":ircserv 462 * :You may not reregister\r\n";
-	error_msg.ERR_PASSWDMISMATCH = ":ircserv 464 * :Password incorrect\r\n";
+	error_msg.ERR_NORECIPIENT = ":" + getMachineHost() + " 411 * :No recipient given "+cmd+"\r\n";
+	error_msg.ERR_UNKNOWNCOMMAND = ":" + getMachineHost() + " 421 * "  + " :" +cmd+ " Unknown command\r\n";
+	error_msg.ERR_NICKNAMEINUSE = ":" + getMachineHost() + " 433 * " + " :"+_nick+" Nickname is already in use\r\n";
+	error_msg.ERR_NICKCOLLISION = ":" + getMachineHost() + " 436 * " +  " :"+_nick+" Nickname collision KILL\r\n";
+	error_msg.ERR_NEEDMOREPARAMS = ":" + getMachineHost() + " 461 * " + " :"+cmd+" Not enough parameters\r\n";
+	error_msg.ERR_NOTEXTTOSEND = ":" + getMachineHost() + " 412 * :No text to send\r\n";
+	error_msg.ERR_NONICKNAMEGIVEN = ":" + getMachineHost() + " 431 * :No nickname given\r\n";
+	error_msg.ERR_NOTREGISTERED = ":" + getMachineHost() + " 451 * :You have not registered\r\n";
+	error_msg.ERR_ALREADYREGISTRED = ":" + getMachineHost() + " 462 * :You may not reregister\r\n";
+	error_msg.ERR_PASSWDMISMATCH = ":" + getMachineHost() + " 464 * :Password incorrect\r\n";
 }
 
 Client_irc::Client_irc(){
@@ -126,7 +126,7 @@ std::string	Client_irc::check_nick_cmd(char *buf, std::map<int, Client_irc>  &ma
 	
     if (strlen(buf) < 6)
 	{
-		msg = "ircserv ERROR :No nickname given\r\n";
+		msg = getMachineHost() + " ERROR :No nickname given\r\n";
 		send_msg_to_client();
         return ("");
 	}
@@ -137,7 +137,7 @@ std::string	Client_irc::check_nick_cmd(char *buf, std::map<int, Client_irc>  &ma
 	{
 		if (it->second.get_nick() == nick_cmd)
 		{
-			msg = "ircserv 433 :" + nick_cmd + " is already in use\r\n";
+			msg = getMachineHost() + " 433 :" + nick_cmd + " is already in use\r\n";
 			send_msg_to_client();
 			return ("");
 		}
@@ -174,7 +174,7 @@ bool	Client_irc::check_user_cmd(char *buf)
 	user_splited = split_string(user_cmd, ' ');
 	if (user_splited.size() < 4)
 	{
-		msg = "ircserv ERROR :USER :Not enough parameters\r\n";
+		msg = getMachineHost() + " ERROR :USER :Not enough parameters\r\n";
 		send_msg_to_client();
 		return(false);
 	}
@@ -202,35 +202,35 @@ bool	Client_irc::parse_registration(char *buf, std::string pwd, std::map<int, Cl
 		_pass = check_pass_cmd(buf, pwd);
 		if (_pass.empty())
 			return (false);
-		msg = "ircserv ERROR :--PASS added succesfully--\r\n";
+		msg = getMachineHost() +" :--PASS added succesfully--\r\n";
 		send_msg_to_client();
 	}
 	else if (cmd == "NICK ")
 	{
 		if (_pass.empty())
 		{
-			msg = ":ircserv ERROR :You must add PASS before !\r\n";
+			msg = getMachineHost() +" ERROR :You must add PASS before !\r\n";
 			send_msg_to_client();
 			return (false);
 		}
 		_nick = check_nick_cmd(buf, map_clients);
 		if (_nick.empty())
 			return (false);
-		msg = "ircserv ERROR :--NICK added succesfully--\r\n";
+		msg = getMachineHost() +" :--NICK added succesfully--\r\n";
 		send_msg_to_client();
 	}
 	else if (cmd == "USER ")
 	{
 		if (_nick.empty() || _pass.empty())
 		{
-			msg = "ircserv ERROR :You must add PASS && NICK before !\r\n";
+			msg = getMachineHost() + " Error :You must add PASS && NICK before !\r\n";
 			send_msg_to_client();
 			return (false);	
 		}
 		if (check_user_cmd(buf) == false)
 			return (false);
 		_user.valid = true;
-		msg = "ircserv ERROR :--USER added succesfully--\r\n";
+		msg = getMachineHost() +" :--USER added succesfully--\r\n";
 		send_msg_to_client();
 	}
 	else

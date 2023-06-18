@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/17 20:22:12 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/18 19:00:37 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <iostream>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <netdb.h> /// gethostbyname()
 #include <netdb.h>  // getaddrinfo()
 #include <unistd.h>
 #include <arpa/inet.h> //htons()
@@ -78,5 +79,6 @@ bool    checkPort(char *str);
 void    Error(const char *str);
 void    checkArguments(int ac, char **av);
 void    display_vct_str(std::vector<std::string> vct);
+std::string getMachineHost();
 
 #endif
