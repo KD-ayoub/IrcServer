@@ -6,7 +6,7 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/18 16:18:20 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/18 22:43:41 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -710,6 +710,25 @@ else if (command[0] == "LIST")
         client->send_msg_to_client();
     }
 }
+
+/*-------------------------- BOT ------------------------------*/
+
+if (command[0] == "BOT")
+{
+    while (true)
+    {
+        client->msg = "welcome to BOT of definition. . .\n***   Enter a word you want to define:  DEFINE <word> \n***   (exit) to return to server\n";
+
+        client->send_msg_to_client();
+        std::string define;
+        std::cin >> define;
+        if (define == "exit")
+            break;
+        
+            
+    }
+}
+
 
 // mapchannels["empty"].join_command(command, client);
     // if (command[0] == "KICK") {
