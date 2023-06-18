@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 23:20:42 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/17 17:33:19 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/17 20:23:54 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,8 @@ class Channel {
         bool                             op_topic; // if true, only operator can change topic
         bool                             no_msg; // if true, only operator can send message
         bool                             moderated; // if true, only users in who_speak_on_moderated can speak
-        std::size_t                      user_limit; // max number of users in channel
         std::string                      key; // password to join channel
         std::vector<std::string>         who_speak_on_moderated; // list of users who can speak on moderated channel
-              
     public:
         Channel();
         Channel(std::string name, Client_irc *c);
@@ -50,8 +48,10 @@ class Channel {
 		
         Channel &operator=(const Channel &c);
 		
-        std::vector<std::string>         operators; // list of operators
-        std::map<std::string, Client_irc*> clients; // list of clients in channel  
+        std::vector<std::string>         			operators; // list of operators
+        std::map<std::string, Client_irc*>			clients; // list of clients in channel  
+        std::size_t                                 user_limit; // max number of users in channel
+        std::size_t						    		number_of_users; 
 
         
         int        broadcast(std::string message, int sender); // send message to all Client_ircs
@@ -59,7 +59,7 @@ class Channel {
         // int     disconnect(Client_irc &c); // remove Client_irc from channel
         // int     disconnect(std::string nickname); // remove Client_irc from channel
         // int     cmd_kick(std::string nickname); // kick Client_irc from channel
-        int        cmd_invite(std::string nickname); // invite Client_irc to channel by nickname
+        int         cmd_invite(std::string nickname); // invite Client_irc to channel
         int        set_topic(std::string topic); // change channel topic
         // int     cmd_names(Client_irc &sender); // send list of Client_ircs in channel
         // int     cmd_who(Client_irc &sender); // send list of Client_ircs in channel 
