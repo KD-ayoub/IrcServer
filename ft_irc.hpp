@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/18 19:00:37 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/19 16:33:57 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ class IrcServer
         //////////////////////    channel commands ///////////////////////
         void    kick_command(const std::vector<std::string> &, Client_irc *);
         int     client_finder(std::string command);
+        std::string getChannelUsers(std::string channelname);
         
           
 };
