@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/17 20:24:13 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/19 20:34:03 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ Channel &Channel::operator=(const Channel &c)
     return (*this);
 }
 
-int Channel::broadcast(std::string message, int sender) // send message to all clients
+int Channel::broadcast(std::string message, int sender) // send message to all clients except the sender 
 {
     std::map<std::string, Client_irc*>::iterator it;
     

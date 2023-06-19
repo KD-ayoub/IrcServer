@@ -6,7 +6,7 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/18 22:43:41 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/19 20:51:43 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -711,22 +711,80 @@ else if (command[0] == "LIST")
     }
 }
 
+/*-------------------------- privmsg ------------------------------*/
+
+else if (command[0] == "PRIVMSG") // PRIVMSG <receiver>{,<receiver>} <text to be sent>
+{
+    if (command.size() < 3)
+    {
+        client->msg = "Error: PRIVMSG command requires 2 arguments\r\n";
+        client->send_msg_to_client();
+    }
+    else
+    {
+        std::vector<std::string> receivers = split_string(command[1], ',');
+        for (size_t i = 0; i < receivers.size(); i++)
+        {
+            if (receivers[i][0] == '#')
+            {
+                if (mapchannels.find(receivers[i]) == mapchannels.end())
+                {
+                    client->msg = "Error: channel doesn't exist\r\n";
+                    client->send_msg_to_client();
+                }
+                else
+                {
+                    if (mapchannels[receivers[i]].clients.find(client->get_nick()) == mapchannels[receivers[i]].clients.end())
+                    {
+                        client->msg = "Error: you are not in this channel\r\n";
+                        client->send_msg_to_client();
+                    }
+                    else
+                    {
+                        std::string message = ":" + client->get_nick() + " PRIVMSG " + receivers[i] + " :" + command[2];
+                    for (size_t j = 3; j < command.size(); j++)
+                    {
+                        message += " " + command[j] ;
+                    }
+                    message += "\r\n";
+                    std::cout << "-----------" <<message << std::endl;
+                        mapchannels[receivers[i]].broadcast(message, client->fd_client);
+                    }
+                }
+            }
+            else
+            {
+                if (mapclients.find(client_finder(receivers[i])) == mapclients.end())
+                {
+                    client->msg = "Error: user doesn't exist\r\n";
+                    client->send_msg_to_client();
+                }
+                else
+                {
+                    std::string message = ":" + client->get_nick() + " PRIVMSG " + receivers[i] + " :" + command[2] ;
+                    for (size_t j = 3; j < command.size(); j++)
+                    {
+                        message += " " + command[j] ;
+                    }
+                    message += "\r\n";
+                    mapclients[client_finder(receivers[i])].msg = message;
+                    mapclients[client_finder(receivers[i])].send_msg_to_client();
+                }
+            }
+        }
+    }
+}
+
+
 /*-------------------------- BOT ------------------------------*/
+// still on work
 
 if (command[0] == "BOT")
 {
-    while (true)
-    {
-        client->msg = "welcome to BOT of definition. . .\n***   Enter a word you want to define:  DEFINE <word> \n***   (exit) to return to server\n";
-
-        client->send_msg_to_client();
-        std::string define;
-        std::cin >> define;
-        if (define == "exit")
-            break;
         
-            
-    }
+        client->msg = "welcome to BOT of definition. . .\n***   Enter a word you want to define:  DEFINE <word> \n***   (exit) to return to server\n";
+        client->send_msg_to_client();
+
 }
 
 
