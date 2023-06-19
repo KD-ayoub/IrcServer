@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/19 16:58:33 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/19 18:08:25 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -405,6 +405,7 @@ void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Clien
                 std::cout << "-------\n";
                 chnl.clients.at(client->get_nick())->set_operator(true);
                 mapchannels.insert(std::make_pair(chanel_names[i], chnl));
+                // mapchannels[chanel_names[i]]
                 mapchannels[chanel_names[i]].number_of_users++;
                 mapchannels[chanel_names[i]].operators.push_back(client->get_nick());
                 client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " JOIN " + chanel_names[i] + "\r\n";

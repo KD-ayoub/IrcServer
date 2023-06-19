@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 23:20:42 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/17 20:23:54 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/19 17:52:15 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class Channel {
         // std::map<std::string, Client_irc> clients; // list of clients in channel  
         bool                             invite_only; // if true, only invited users can join
         std::vector<std::string>         invited_users; // list of users invited to channel
-        bool                             is_private; // if true, only invited users can join
+        // bool                             is_private; // if true, only invited users can join
         bool                             is_secret; // if true, channel is not listed in /list
         bool                             op_topic; // if true, only operator can change topic
         bool                             no_msg; // if true, only operator can send message
