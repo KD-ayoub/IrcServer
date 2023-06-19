@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/17 20:24:13 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/19 21:46:09 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ Channel::Channel(std::string ch_name, Client_irc *c) : name (ch_name)
 {
     this->owner = c->get_nick();
     this->invite_only = false;
-    is_private = false;
+    // is_private = false;
     is_secret = false;
     op_topic = false;
     no_msg = false;

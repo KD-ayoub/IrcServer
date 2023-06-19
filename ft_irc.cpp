@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/19 18:08:25 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/19 23:33:01 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -516,6 +516,8 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
         check_Invite_cmd(command, client);
     else if (command[0] == "KICK")
         kick_command(command, client);
+    // else if (command[0] == "QUIT")
+    //     check_Quit_cmd(command, client);
     /*##############################################################################*/
 
     else if(command[0] == "TOPIC") // TOPIC <channel> [<topic>]
@@ -676,8 +678,9 @@ else if (command[0] == "LIST")
 }
 else
 {
-    client->msg = ":" + getMachineHost() + " 421 * " + " :" +command[0]+ " Unknown command\r\n";
-	client->send_msg_to_client();
+    // client->msg = ":" + getMachineHost() + " 409 * " + " :" +command[0]+ " Unknown command\r\n";
+	// client->send_msg_to_client();
+	return ;
 }
 
 // mapchannels["empty"].join_command(command, client);

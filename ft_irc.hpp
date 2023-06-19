@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/19 16:33:57 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/19 19:13:39 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,10 @@ class IrcServer
         
         void    check_Join_cmd(const std::vector<std::string> &command, Client_irc *client);
         void    check_Invite_cmd(const std::vector<std::string> &command, Client_irc *client);
+        void    check_Quit_cmd(const std::vector<std::string> &command, Client_irc *client);
+        void    kick_command(const std::vector<std::string> &, Client_irc *);
 
         //////////////////////    channel commands ///////////////////////
-        void    kick_command(const std::vector<std::string> &, Client_irc *);
         int     client_finder(std::string command);
         std::string getChannelUsers(std::string channelname);
         
