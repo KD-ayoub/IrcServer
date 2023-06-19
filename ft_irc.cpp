@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/19 19:18:19 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/19 22:14:44 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -410,8 +410,8 @@ void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Clien
                 mapchannels[chanel_names[i]].operators.push_back(client->get_nick());
                 client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " JOIN " + chanel_names[i] + "\r\n";
                 client->send_msg_to_client();
-                client->msg = ":" + getMachineHost() + " MODE " + chanel_names[i] + " " + "+t" + "\r\n";
-                client->send_msg_to_client();
+                // client->msg = ":" + getMachineHost() + " 324 " + client->get_nick() + " MODE " + chanel_names[i] + " " + "+t" + "\r\n";
+                // client->send_msg_to_client();
                 client->msg = ":" + getMachineHost() + " 353 " + client->get_nick() + " = " + chanel_names[i] + " :@" + client->get_nick() + "\r\n";
                 client->send_msg_to_client();
                 client->msg = ":" + getMachineHost() + " 366 " + client->get_nick() + " " + chanel_names[i] + " :End of /NAMES list.\r\n";
@@ -576,7 +576,12 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
     
 else if (command[0] == "MODE")
 {
-    if (command.size() < 3)
+    if (command.size() == 2)
+    {
+        client->msg = ":" + getMachineHost() + " 324 " + client->get_nick() + " " + command[0] + " " + "+t" + "\r\n"; /////RPL_CHANNELMODEIS
+        client->send_msg_to_client();
+    }
+    else if (command.size() < 3)
     {
         client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :MODE command requires 2 arguments\r\n";
         client->send_msg_to_client();
