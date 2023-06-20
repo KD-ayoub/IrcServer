@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/20 16:52:32 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/20 17:06:29 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -549,7 +549,7 @@ void    IrcServer::check_Invite_cmd(const std::vector<std::string> &command, Cli
                        {
                             mapchannels[command[2]].cmd_invite(command[1]); // this is the new version
                             std::string message = ":" + client->get_nick() + "!" + command[1] + "@" + getMachineHost() + " INVITE " + command[1] + " :" + command[2] + "\r\n";
-                            /*broadcast*/ std::string message = ":" + getMachineHost() + " 341 " + client->get_nick() + " " + command[1] + " " + command[2] + "\r\n"; // //RPL_INVITING (341)
+                            /*broadcast*/ std::string messagee = ":" + getMachineHost() + " 341 " + client->get_nick() + " " + command[1] + " " + command[2] + "\r\n"; // //RPL_INVITING (341)
                             mapclients[client_finder(command[1])].msg = message;
                             mapclients[client_finder(command[1])].send_msg_to_client();
                        }
@@ -656,7 +656,9 @@ else if (command[0] == "PART")
         }
         else
         {
-            std::string message = ":" + client->get_nick() + "!@" + getMachineHost() + " PART " + command[1] + "\r\n";
+            std::string message = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " PART " + command[1] + "\r\n";
+            client->msg = message;
+            client->send_msg_to_client();
             mapchannels[command[1]].broadcast(message, client->fd_client);
             mapchannels[command[1]].clients.erase(client->get_nick());
         }
