@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/19 22:14:44 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/20 02:15:34 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -410,8 +410,8 @@ void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Clien
                 mapchannels[chanel_names[i]].operators.push_back(client->get_nick());
                 client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " JOIN " + chanel_names[i] + "\r\n";
                 client->send_msg_to_client();
-                // client->msg = ":" + getMachineHost() + " 324 " + client->get_nick() + " MODE " + chanel_names[i] + " " + "+t" + "\r\n";
-                // client->send_msg_to_client();
+                client->msg = ":" + getMachineHost() + " MODE " + chanel_names[i] + " " + "+nt" + "\r\n";
+                client->send_msg_to_client();
                 client->msg = ":" + getMachineHost() + " 353 " + client->get_nick() + " = " + chanel_names[i] + " :@" + client->get_nick() + "\r\n";
                 client->send_msg_to_client();
                 client->msg = ":" + getMachineHost() + " 366 " + client->get_nick() + " " + chanel_names[i] + " :End of /NAMES list.\r\n";
@@ -449,6 +449,24 @@ std::string IrcServer::getChannelUsers(std::string channelname)
     if (!userlist.empty())
         userlist += "@" + useroperator;
     return userlist;
+}
+
+std::string IrcServer::getChannelModes(std::string channelname)
+{
+    std::string modes = "+";
+    if (mapchannels[channelname].get_invite_only())
+        modes += "i";
+    if (mapchannels[channelname].get_op_topic())
+        modes += "t";
+    if (mapchannels[channelname].get_key() != "")
+        modes += "k";
+    if (mapchannels[channelname].user_limit != 256)
+        modes += "l";
+    if (mapchannels[channelname].operators.size() > 2)
+        modes += "o";
+    if (modes == "+")
+        modes = "";
+    return modes;
 }
 
 
@@ -578,10 +596,11 @@ else if (command[0] == "MODE")
 {
     if (command.size() == 2)
     {
-        client->msg = ":" + getMachineHost() + " 324 " + client->get_nick() + " " + command[0] + " " + "+t" + "\r\n"; /////RPL_CHANNELMODEIS
+        std::cout << "Mode command entred here....\n";
+        client->msg = ":" + getMachineHost() + " 324 " + client->get_nick() + " "  + command[1] + " " + getChannelModes(command[1]) + "\r\n"; /////RPL_CHANNELMODEIS
         client->send_msg_to_client();
     }
-    else if (command.size() < 3)
+    else if (command.size() < 2)
     {
         client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :MODE command requires 2 arguments\r\n";
         client->send_msg_to_client();
@@ -611,9 +630,9 @@ else if (command[0] == "MODE")
             {
                 addMode = false;
             }
-            else if (*it == 'o')
+            else if (*it == 'o') /// size of operators > 2
             {
-                if (addMode)
+                if (addMode) // +o
                 {
                     mapchannels[command[1]].add_operator(command[3]);
                 }
@@ -622,42 +641,49 @@ else if (command[0] == "MODE")
                     mapchannels[command[1]].remove_operator(command[3]);
                 }
             }
-            else if (*it == 'i')
+            else if (*it == 'i') /// invite_only == true
             {
-                if (addMode)
+                if (addMode) // +
                     mapchannels[command[1]].change_invite("+");
                     
                 else
                     mapchannels[command[1]].change_invite("-");
             }
-            else if (*it == 't')
+            else if (*it == 't') /// op_topic == true
             {
                 if (addMode)
                     mapchannels[command[1]].change_optopic("+");
                 else
                     mapchannels[command[1]].change_optopic("-");
             }
-            else if (*it == 'l')
+            else if (*it == 'l') /// user_limit 256 default
             {
                 if (addMode)
                 {
-                    mapchannels[command[1]].change_userlimits("+", std::stoi(command[3]) );
+                    mapchannels[command[1]].change_userlimits("+", std::atoi(command[3].c_str()));
                 }
                 else
                 {
-                    mapchannels[command[1]].change_userlimits("-", std::stoi(command[3]));
+                    mapchannels[command[1]].change_userlimits("-", std::atoi(command[3].c_str()));
                 }
             }
-            else if (*it == 'k')
+            else if (*it == 'k') /// key != ""
             {
                 if (addMode)
                 {
-                    mapchannels[command[1]].change_password("+", command[3]);
+                    mapchannels[command[1]].change_password("+", command[3]); 
                 }
                 else
                 {
-                    mapchannels[command[1]].change_password("-", command[3]);
+                    mapchannels[command[1]].change_password("-", command[3]); // ""
                 }
+            }
+            else if (command[2] == "+sn")
+            {
+                //client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :invalid mode\r\n";
+                // client->msg = ":" + getMachineHost() + " 324 " + client->get_nick() + " " + command[0] + " " + command[2] + "\r\n";
+                // client->send_msg_to_client();
+                return;
             }
             else
             {
@@ -667,8 +693,9 @@ else if (command[0] == "MODE")
             }
             ++it;
         }
-        std::string message = ":" + getMachineHost() + " 001 " + client->get_nick() + " MODE " + command[1] + " " + command[2] + "\r\n";
-        mapchannels[command[1]].broadcast(message, client->fd_client);
+        
+        // std::string message = ":" + getMachineHost() + " 001 " + client->get_nick() + " MODE " + command[1] + " " + command[2] + "\r\n";
+        // mapchannels[command[1]].broadcast(message, client->fd_client);
     }
 }
 else if (command[0] == "LIST")

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/17 20:24:13 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/19 23:57:10 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,7 +250,7 @@ int		Channel::change_userlimits(std::string sign, std::size_t limit) // change u
 {
 	std::cout<<"change user limits"<<std::endl;
 	if (sign == "-")
-		user_limit = 10000;
+		user_limit = 256;
 	else if (sign == "+")
 		user_limit = limit;
 	return (0);
