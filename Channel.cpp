@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/19 23:57:10 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/20 19:10:26 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -402,6 +402,9 @@ std::string Channel::get_topic()
     return (topic);
 }
 
+std::string Channel::get_owner(){
+    return (owner);
+}
 // std::string Channel::get_name() const
 // {
 //     return (name);

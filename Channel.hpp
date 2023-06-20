@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 23:20:42 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/20 00:19:58 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/20 19:10:58 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,7 @@ class Channel {
         
         std::string		get_key();
 	bool			get_invite_only();
+    std::string     get_owner();
 };
 
 #endif 

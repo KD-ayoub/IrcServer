@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/20 13:05:06 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/20 19:08:31 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ class IrcServer
         
         void    check_Join_cmd(const std::vector<std::string> &command, Client_irc *client);
         void    check_Invite_cmd(const std::vector<std::string> &command, Client_irc *client);
-
+        void    check_Mode_cmd(const std::vector<std::string> &command, Client_irc *client);
         //////////////////////    channel commands ///////////////////////
         void    kick_command(const std::vector<std::string> &, Client_irc *);
         int     client_finder(std::string command);
@@ -82,6 +82,7 @@ bool    checkPort(char *str);
 void    Error(const char *str);
 void    checkArguments(int ac, char **av);
 void    display_vct_str(std::vector<std::string> vct);
+long 	stringToLong(const std::string& str);
 std::string getMachineHost();
 
 #endif
