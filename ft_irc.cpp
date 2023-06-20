@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/20 16:35:25 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/20 16:43:53 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -746,7 +746,7 @@ else if (command[0] == "PRIVMSG") // PRIVMSG <receiver>{,<receiver>} <text to be
 {
     if (command.size() < 3)
     {
-        client->msg = "Error: PRIVMSG command requires 2 arguments\r\n";
+        client->msg = ":" + getMachineHost() + " 461 " + client->get_nick() + " :PRIVMSG command requires 2 arguments\r\n";
         client->send_msg_to_client();
     }
     else
@@ -758,19 +758,19 @@ else if (command[0] == "PRIVMSG") // PRIVMSG <receiver>{,<receiver>} <text to be
             {
                 if (mapchannels.find(receivers[i]) == mapchannels.end())
                 {
-                    client->msg = "Error: channel doesn't exist\r\n";
+                    client->msg = ":" + getMachineHost() + " 401 " + client->get_nick() + " " + command[1] + " :channel doesn't exist\r\n";
                     client->send_msg_to_client();
                 }
                 else
                 {
                     if (mapchannels[receivers[i]].clients.find(client->get_nick()) == mapchannels[receivers[i]].clients.end())
                     {
-                        client->msg = "Error: you are not in this channel\r\n";
+                        client->msg = ":" + getMachineHost() + " 401 " + client->get_nick() + " " + command[1] + " :you are not in this channel\r\n";
                         client->send_msg_to_client();
                     }
                     else
                     {
-                        std::string message = ":" + client->get_nick() + " PRIVMSG " + receivers[i] + " :" + command[2];
+                        std::string message = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " PRIVMSG " + command[1] + " " + command[2];
                     for (size_t j = 3; j < command.size(); j++)
                     {
                         message += " " + command[j] ;
@@ -785,12 +785,12 @@ else if (command[0] == "PRIVMSG") // PRIVMSG <receiver>{,<receiver>} <text to be
             {
                 if (mapclients.find(client_finder(receivers[i])) == mapclients.end())
                 {
-                    client->msg = "Error: user doesn't exist\r\n";
+                    client->msg = ":" + getMachineHost() + " 401 " + client->get_nick() + " " + command[1] + " :user doesn't exist\r\n";
                     client->send_msg_to_client();
                 }
                 else
                 {
-                    std::string message = ":" + client->get_nick() + " PRIVMSG " + receivers[i] + " :" + command[2] ;
+                    std::string message = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " PRIVMSG " + command[1] + " " + command[2] ;
                     for (size_t j = 3; j < command.size(); j++)
                     {
                         message += " " + command[j] ;
