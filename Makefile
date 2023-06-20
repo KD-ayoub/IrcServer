@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: akouame <akouame@student.42.fr>            +#+  +:+       +#+         #
+#    By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/13 16:11:29 by akouame           #+#    #+#              #
-#    Updated: 2023/06/16 20:39:09 by akouame          ###   ########.fr        #
+#    Updated: 2023/06/19 23:29:50 by yel-qabl         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = ircserv
 
 CC = c++
 
-FLAGS = -Wall -Wextra -Werror -std=c++98 -g
+FLAGS = -Wall -Wextra -Werror  -std=c++98 -g 
 
 RM = rm -rf
 
@@ -27,7 +27,7 @@ hdr = ft_irc.hpp client_irc.hpp ParsingChannelCommands.hpp Channel.hpp
 all : $(NAME)
 
 $(NAME) : $(obj)
-	$(CC) $(FLAGS) $(obj) -o $(NAME)
+	$(CC) -lcurl $(FLAGS) $(obj) -o $(NAME)
 
 %.o : %.cpp  $(hdr)
 	$(CC) $(FLAGS) $< -c

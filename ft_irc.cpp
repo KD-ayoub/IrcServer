@@ -6,12 +6,41 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/19 20:51:43 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/20 00:59:52 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "ft_irc.hpp"
+#include <curl/curl.h>
+
+/*---------BOT ytil function ------*/
+
+std::string extraction(const std::string &data, const std::string &part)
+{
+    std::string tag = "\"" + part + "\":\"";
+    std::size_t start = data.find(tag);
+    if (start == std::string::npos)
+    {
+        return ("");
+    }
+    start += tag.length();
+    std::size_t end = data.find("\"", start);
+    if (end == std::string::npos)
+    {
+        return ("");
+    }
+    return(data.substr(start, end - start));
+}
+
+size_t write_callback(void *content, size_t size, size_t nmemb, std::string *output)
+{
+    size_t total = size * nmemb;
+    output->append(static_cast<char*>(content), total);
+    return total;
+}
+
+/*------------------------*/
 std::map<std::string, Channel> mapchannels;
 
 IrcServer::IrcServer()
@@ -602,7 +631,7 @@ else if (command[0] == "MODE")
     }
 }
 
-/*####################################################################################*/
+/*################################## PART ##################################################*/
 
 
 
@@ -777,15 +806,128 @@ else if (command[0] == "PRIVMSG") // PRIVMSG <receiver>{,<receiver>} <text to be
 
 
 /*-------------------------- BOT ------------------------------*/
-// still on work
 
-if (command[0] == "BOT")
+
+
+else if (command[0] == "BOT")
 {
+    CURL *curl;
+    CURLcode result;
+    std::string response;
+    
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+    curl = curl_easy_init();
+    if (curl == NULL)
+    {
+        std::cout << "can't connect to api" << std::endl;
+    }
+    curl_easy_setopt(curl, CURLOPT_URL, "https://official-joke-api.appspot.com/jokes/random");
+    
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+    
+    result = curl_easy_perform(curl);
+    if (result == CURLE_OK) 
+    {
+        // std::cout << "Response data: " << std::endl;
+        // std::cout << response << std::endl;
+
+        // Extract the setup and punchline fields manually
+        std::string setup = extraction(response, "setup");
+        std::string punchline = extraction(response, "punchline");
         
-        client->msg = "welcome to BOT of definition. . .\n***   Enter a word you want to define:  DEFINE <word> \n***   (exit) to return to server\n";
+/*--------------------prinitng */
+
+    client->msg = "\033[33m" "🌞 Get ready to crack up! 🌞\r\n" ;
+    client->send_msg_to_client();
+    client->msg = "⭐️ Laughter is the best medicine! ⭐️\r\n" ;
+    client->send_msg_to_client();
+    client->msg = "🎭 It's showtime! Time for jokes! 🎭\r\n" ;
+    client->send_msg_to_client();
+    client->msg = "🎩 Prepare for a comedy extravaganza! 🎩\r\n" "\033[0m";
+    client->send_msg_to_client();
+
+
+        client->msg = "\r\n";
+        client->msg +=  "===> ";
+        client->send_msg_to_client();
+        for (size_t i = 0; i < setup.size(); i++)
+        {
+            client->msg = setup[i];
+            client->send_msg_to_client();
+            usleep(100000);
+        }
+        
+        usleep(1500000);
+        client->msg = "\r\n";
+        client->send_msg_to_client();
+        client->msg = "\r\n";
         client->send_msg_to_client();
 
-}
+        for (int i = 0; i < 6; i++)
+        {
+            client->msg = ". ";
+            client->send_msg_to_client();
+            usleep(1500000);
+        }
+
+        client->msg = "\r\n";
+        client->send_msg_to_client();
+        client->msg = "\r\n";
+        client->send_msg_to_client();
+        client->msg = "===> ";
+        client->send_msg_to_client();
+        
+        for (size_t i = 0; i < punchline.size(); i++)
+        {
+            client->msg = punchline[i];
+            client->send_msg_to_client();
+            usleep(100000);
+        }
+            usleep(1500000);
+            
+        for (int i = 0; i < 3; i++)
+        {
+            client->msg = " ha";
+            client->send_msg_to_client();
+            usleep(100000);
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            client->msg = "😂";
+            client->send_msg_to_client();
+            usleep(100000);
+        }
+        
+        client->msg = "\r\n";
+        client->send_msg_to_client();
+        client->msg = "\r\n";
+        client->send_msg_to_client();
+        
+        usleep(1000000);
+        
+        client->msg = "YOU LOVE IT!!";
+        client->send_msg_to_client();
+
+        usleep(1000000);
+
+        client->msg = "\r\n";
+        client->send_msg_to_client();
+        client->msg = "\r\n";
+        client->send_msg_to_client();
+        
+        client->msg = "TRY ANOTHER ONE 🔁\r\n";
+        client->send_msg_to_client();
+    }
+    else 
+    {
+        std::cout << "Failed to fetch data!" << std::endl;
+    }
+
+}  
+
+/*---------------------------------------------------------------*/
 
 
 // mapchannels["empty"].join_command(command, client);
