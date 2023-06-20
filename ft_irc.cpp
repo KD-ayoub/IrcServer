@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/20 18:43:32 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/20 18:55:57 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -644,10 +644,11 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
 				if (!command[3].empty())
 					mapchannels[command[1]].set_key(command[3]);
 			}
-			// else if (command[2][1] == 't')
-			// {
-				
-			// }
+			
+			else if (command[2][1] == 't')
+			{
+				mapchannels[command[1]].change_optopic("+"); // + will change the optopic boolean to true
+			}
 			else
 			{
 				client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :Invalid mode !\r\n";
@@ -688,10 +689,11 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
 			}
 			else if (command[2][1] == 'k') // remove password -k
 				mapchannels[command[1]].set_key("");
-			// else if (command[2][1] == 't')
-			// {
 				
-			// }
+			else if (command[2][1] == 't')
+			{
+				mapchannels[command[1]].change_optopic("-"); // - will change optopic boolean optopic to false
+			}
 			else
 			{
 				client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :Invalid mode !\r\n";
