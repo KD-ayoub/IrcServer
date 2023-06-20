@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/20 13:24:12 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/20 14:04:13 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -548,7 +548,8 @@ void    IrcServer::check_Invite_cmd(const std::vector<std::string> &command, Cli
                        else // if user is invited to channel and user exists send invite message to user
                        {
                             mapchannels[command[2]].cmd_invite(command[1]); // this is the new version
-                            std::string message = ":" + getMachineHost() + " 001 " + client->get_nick() + " INVITE " + command[2] + " " + command[1] + "\r\n";
+                            std::string message = ":" + client->get_nick() + "!" + command[1] + "@" + getMachineHost() + " INVITE " + command[1] + " :" + command[2] + "\r\n";
+                            std::string message = ":" + getMachineHost() + " 341 " + client->get_nick() + " " + command[1] + " " + command[2] + "\r\n"; // //RPL_INVITING (341)
                             mapclients[client_finder(command[1])].msg = message;
                             mapclients[client_finder(command[1])].send_msg_to_client();
                        }
