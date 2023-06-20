@@ -12,4 +12,5 @@
 
 
 3- invite an exesting client into the channel
-4- fix INVITE (see comments) 
+4- fix INVITE (see comments)
+5- need to be added : //ERR_USERONCHANNEL (443) ///// (client is already in the channel) 

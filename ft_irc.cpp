@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/20 14:04:13 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/20 15:08:10 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -504,20 +504,20 @@ void    IrcServer::check_Invite_cmd(const std::vector<std::string> &command, Cli
 {
      if (command.size() < 3)
         {
-            client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :INVITE command requires 2 arguments\r\n";
+            client->msg = ":" + getMachineHost() + " 461 " + client->get_nick() + " :INVITE command requires 2 arguments\r\n";
             client->send_msg_to_client();
         }
         // the following condition is to check if its an operator
         else if (!mapchannels[command[2]].is_operator(client->get_nick())) /////!!!!!!!!!!! neeed more checks
         {
-            client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :you are not an operator\r\n";
+            client->msg = ":" + getMachineHost() + " 482 " + client->get_nick() + command[2] + " :you are not an operator\r\n"; ///ERR_CHANOPRIVSNEEDED (482)
             client->send_msg_to_client();
         }
         else
         {
             if (mapchannels.find(command[2]) == mapchannels.end())
             {
-                client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :channel doesn't exist\r\n";
+                client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + command[2] +  " :channel doesn't exist\r\n"; //ERR_NOSUCHCHANNEL (403)
                 client->send_msg_to_client();
             }
             else
@@ -532,7 +532,7 @@ void    IrcServer::check_Invite_cmd(const std::vector<std::string> &command, Cli
                             break;
                        }
                 }
-
+                
                 if (mapchannels[command[2]].get_invite_only() && !isInvited) // if channel is invite only and user is not invited
                 {
                        client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :you are not invited to this channel\r\n";
@@ -549,7 +549,7 @@ void    IrcServer::check_Invite_cmd(const std::vector<std::string> &command, Cli
                        {
                             mapchannels[command[2]].cmd_invite(command[1]); // this is the new version
                             std::string message = ":" + client->get_nick() + "!" + command[1] + "@" + getMachineHost() + " INVITE " + command[1] + " :" + command[2] + "\r\n";
-                            std::string message = ":" + getMachineHost() + " 341 " + client->get_nick() + " " + command[1] + " " + command[2] + "\r\n"; // //RPL_INVITING (341)
+                            /*broadcast*/ std::string message = ":" + getMachineHost() + " 341 " + client->get_nick() + " " + command[1] + " " + command[2] + "\r\n"; // //RPL_INVITING (341)
                             mapclients[client_finder(command[1])].msg = message;
                             mapclients[client_finder(command[1])].send_msg_to_client();
                        }
