@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/19 21:46:09 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/20 17:20:46 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ Channel::Channel(std::string ch_name, Client_irc *c) : name (ch_name)
 {
     this->owner = c->get_nick();
     this->invite_only = false;
-    // is_private = false;
+    is_private = false;
     is_secret = false;
     op_topic = false;
     no_msg = false;
@@ -250,7 +250,7 @@ int		Channel::change_userlimits(std::string sign, std::size_t limit) // change u
 {
 	std::cout<<"change user limits"<<std::endl;
 	if (sign == "-")
-		user_limit = 10000;
+		user_limit = 256;
 	else if (sign == "+")
 		user_limit = limit;
 	return (0);
@@ -443,6 +443,7 @@ void    Channel::set_key(std::string    k){
 void    Channel::set_invite_only(bool   valid){
     invite_only = valid;
 }
+
 //--
 std::string Channel::get_key(){
     return (key);
@@ -450,4 +451,8 @@ std::string Channel::get_key(){
 
 bool    Channel::get_invite_only(){
     return (invite_only);
+}
+
+std::string Channel::get_owner(){
+    return (owner);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   outils.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/12 11:28:15 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/18 19:02:53 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/20 16:57:36 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,13 @@ std::string getMachineHost()
     if (gethostname(host, sizeof(host)) == -1)
         return "";
     return host;
+}
+
+long stringToLong(const std::string& str)
+{
+    std::istringstream iss(str);
+    long value;
+    if (!(iss >> value))
+        value = 0;
+    return (value);
 }

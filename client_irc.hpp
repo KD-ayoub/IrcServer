@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:47:09 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/16 18:28:17 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/20 16:23:57 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ typedef	struct	Msg_error
 	std::string	ERR_NEEDMOREPARAMS;//
 	std::string	ERR_ALREADYREGISTRED;//
 	std::string	ERR_PASSWDMISMATCH;//
-
+	std::string	ERR_NOSUCHCHANNEL;//
+	
 } Msg_error;
 //--
 class   Client_irc

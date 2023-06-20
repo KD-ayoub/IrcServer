@@ -9,3 +9,12 @@
 	-ERR_BADCHANNELKEY  (not yet)
 	-ERR_BADCHANMASK	(not yet)
 	-ERR_TOOMANYCHANNELS	(not yet) 
+
+
+3- invite an exesting client into the channel
+4- fix INVITE (see comments)
+5- need to be added : //ERR_USERONCHANNEL (443) ///// (client is already in the channel) 
+6- nned to be added : // ERR_NOTONCHANNEL (442) /// (client that preforms INVITE command does not exist in the channel)
+
+7-	MODE #CHANNEL +o client_doesn't_exist
+8-	MODE #CHANNEL
