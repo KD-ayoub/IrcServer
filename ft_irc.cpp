@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/20 16:43:53 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/20 16:45:24 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1034,7 +1034,7 @@ else if (command[0] == "MODE")
         // mapchannels[command[1]].broadcast(message, client->fd_client);
     }
 }
-else if (command[0] == "LIST")
+else if (command[0] == "SHOW")
 {
     std::map<std::string, Client_irc*>::iterator it = mapchannels[command[1]].clients.begin();
     while (it != mapchannels[command[1]].clients.end())
