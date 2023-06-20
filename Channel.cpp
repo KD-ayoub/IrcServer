@@ -6,7 +6,7 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 22:41:27 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/19 20:34:03 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/20 15:48:17 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -392,8 +392,8 @@ bool Channel::is_operator(std::string nick) // check if user is operator
         if (nick == *p)
             return (true);
     } 
-    if (nick == owner)
-        return (true);
+        if (nick == owner)
+            return (true);
     return (false);
 }
 

@@ -6,7 +6,7 @@
 /*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/20 00:59:52 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/20 17:24:15 by yel-qabl         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,7 +239,7 @@ void    IrcServer::RunServer(int sockFd)
     freeaddrinfo(this->result);
 }
 //--
-int IrcServer::client_finder(std::string command)
+int IrcServer::client_finder(std::string command) // command = nick
 {
     for(std::map<int, Client_irc>::iterator it = mapclients.begin(); it != mapclients.end(); ++it)
     {
@@ -418,18 +418,20 @@ void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Clien
 
 void    IrcServer::check_Invite_cmd(const std::vector<std::string> &command, Client_irc *client)
 {
-     if (command.size() < 3)
+    if (command.size() < 3)
         {
             client->msg = "Error: INVITE command requires 2 arguments\r\n";
             client->send_msg_to_client();
         }
-        // the following condition is to check if its an operator
-        else if (!mapchannels[command[2]].is_operator(client->get_nick())) // command[2]
+        
+        // check if the inviter is an operator 
+        
+    else if (mapchannels[command[2]].is_operator(client->get_nick()) == false) // command[2]
         {
-            client->msg = "Error: you are not an operator\r\n";
-            client->send_msg_to_client();
+           client->msg = "Error: you are not an operator\r\n";
+           client->send_msg_to_client();
         }
-        else
+    else
         {
             if (mapchannels.find(command[2]) == mapchannels.end())
             {
@@ -440,23 +442,23 @@ void    IrcServer::check_Invite_cmd(const std::vector<std::string> &command, Cli
             {
                 const std::vector<std::string> &invitedUsers = mapchannels[command[2]].get_invited_user();
                 bool isInvited = false;
-                for (std::vector<std::string>::const_iterator it = invitedUsers.begin(); it != invitedUsers.end(); ++it)
+                for (std::vector<std::string>::const_iterator it = invitedUsers.begin(); it != invitedUsers.end(); it++)
                 {
-                       if (*it == client->get_nick())
+                       if (*it == mapclients[client_finder(command[1])].get_nick())
                        {
                             isInvited = true;
                             break;
                        }
                 }
-
-                if (mapchannels[command[2]].get_invite_only() && !isInvited) // if channel is invite only and user is not invited
+                if (isInvited)
                 {
-                       client->msg = "Error: you are not invited to this channel\r\n";
+                       client->msg = "Error: user is already invited\r\n";
                        client->send_msg_to_client();
                 }
+
                 else
                 {
-                       if (mapclients.find(client->fd_client) == mapclients.end()) // if user doesn't exist
+                       if (mapclients.find(client_finder(command[1])) == mapclients.end()) // if user doesn't exist
                        {
                             client->msg = "Error: user doesn't exist\r\n";
                             client->send_msg_to_client();
@@ -482,6 +484,7 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
         check_Invite_cmd(command, client);
     else if (command[0] == "KICK")
         kick_command(command, client);
+        
     /*##############################################################################*/
 
     else if(command[0] == "TOPIC") // TOPIC <channel> [<topic>]
@@ -491,6 +494,11 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
             if(mapchannels.find(command[1]) == mapchannels.end())
             {
                 client->msg = "Error: channel doesn't exist\r\n";
+                client->send_msg_to_client();
+            }
+            else if (mapchannels[command[1]].clients.find(client->get_nick()) == mapchannels[command[1]].clients.end())
+            {
+                client->msg = "Error: you are not in this channel\r\n";
                 client->send_msg_to_client();
             }
             else
@@ -878,7 +886,7 @@ else if (command[0] == "BOT")
         client->msg = "===> ";
         client->send_msg_to_client();
         
-        for (size_t i = 0; i < punchline.size(); i++)
+        for (size_t i = 0; i < punchline.size(); i++) 
         {
             client->msg = punchline[i];
             client->send_msg_to_client();
