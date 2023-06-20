@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/20 16:45:24 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/20 16:52:32 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -668,17 +668,17 @@ else if (command[0] == "NAMES")
 {
     if (command.size() < 2)
     {
-        client->msg = "Error: NAMES command requires 1 argument\r\n";
+        client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " " + command[1] + " :NAMES command requires 1 argument\r\n";
         client->send_msg_to_client();
     }
     else if (mapchannels.find(command[1]) == mapchannels.end())
     {
-        client->msg = "Error: channel doesn't exist\r\n";
+        client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + " :channel doesn't exist\r\n";
         client->send_msg_to_client();
     }
     else
     {
-        std::string message = ":" + client->get_nick() + " NAMES " + command[1] + " :";
+        std::string message = ":" + client->get_nick() + " NAMES " + command[1] + " :"; /// stilll need syntax
         std::map<std::string, Client_irc*>::iterator it;
         for (it = mapchannels[command[1]].clients.begin(); it != mapchannels[command[1]].clients.end(); ++it)
         {
@@ -697,7 +697,7 @@ else if (command[0] == "LIST")
         std::map<std::string, Channel>::iterator it;
         for (it = mapchannels.begin(); it != mapchannels.end(); ++it)
         {
-            std::string message = ":" + client->get_nick() + " LIST " + it->first + " " + std::to_string(it->second.number_of_users) + " :";
+            std::string message = ":" + client->get_nick() + " LIST " + it->first + " " + std::to_string(it->second.number_of_users) + " :"; // still need syntax
             message += it->second.get_topic() + "\r\n";
             client->msg = message;
             client->send_msg_to_client();
@@ -707,12 +707,12 @@ else if (command[0] == "LIST")
     {
         if (mapchannels.find(command[1]) == mapchannels.end())
         {
-            client->msg = "Error: channel doesn't exist\r\n";
+            client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + " :channel doesn't exist\r\n";
             client->send_msg_to_client();
         }
         else
         {
-            std::string message = ":" + client->get_nick() + " LIST " + command[1] + " " + std::to_string(mapchannels[command[1]].number_of_users) + " :";
+            std::string message = ":" + client->get_nick() + " LIST " + command[1] + " " + std::to_string(mapchannels[command[1]].number_of_users) + " :";// still need syntax
             message += mapchannels[command[1]].get_topic() + "\r\n";
             client->msg = message;
             client->send_msg_to_client();
@@ -722,12 +722,12 @@ else if (command[0] == "LIST")
     {
         if (mapchannels.find(command[1]) == mapchannels.end())
         {
-            client->msg = "Error: channel doesn't exist\r\n";
+            client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + " :channel doesn't exist\r\n";
             client->send_msg_to_client();
         }
         else
         {
-            std::string message = ":" + client->get_nick() + " LIST " + command[1] + " " + std::to_string(mapchannels[command[1]].number_of_users) + " :";
+            std::string message = ":" + client->get_nick() + " LIST " + command[1] + " " + std::to_string(mapchannels[command[1]].number_of_users) + " :";// still need syntax
             message += mapchannels[command[1]].get_topic() + "\r\n";
             client->msg = message;
             client->send_msg_to_client();
@@ -735,7 +735,7 @@ else if (command[0] == "LIST")
     }
     else
     {
-        client->msg = "Error: LIST command requires 0, 1 or 2 arguments\r\n";
+        client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " " + command[1] + " :LIST command requires 0, 1 or 2 arguments\r\n";
         client->send_msg_to_client();
     }
 }
