@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/20 00:22:30 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/20 13:05:06 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define FT_IRC
 
 #include <iostream>
+#include <curl/curl.h> /// BOT
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netdb.h> /// gethostbyname()
