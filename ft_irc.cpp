@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/20 15:25:11 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/20 15:29:44 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -535,7 +535,7 @@ void    IrcServer::check_Invite_cmd(const std::vector<std::string> &command, Cli
                 
                 if (mapchannels[command[2]].get_invite_only() && !isInvited) // if channel is invite only and user is not invited
                 {
-                       client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :you are not invited to this channel\r\n"; 
+                       client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :you are not invited to this channel\r\n";  
                        client->send_msg_to_client();
                 }
                 else
