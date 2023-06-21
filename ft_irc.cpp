@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/21 00:56:17 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/21 01:43:43 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1082,7 +1082,7 @@ else if (command[0] == "PRIVMSG") // PRIVMSG <receiver>{,<receiver>} <text to be
                     }
                     else
                     {
-                        std::string message = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " PRIVMSG " + command[1] + " " + command[2];
+                        std::string message = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " PRIVMSG " + command[1] + " :" + command[2];
                     for (size_t j = 3; j < command.size(); j++)
                     {
                         message += " " + command[j] ;
@@ -1102,7 +1102,7 @@ else if (command[0] == "PRIVMSG") // PRIVMSG <receiver>{,<receiver>} <text to be
                 }
                 else
                 {
-                    std::string message = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " PRIVMSG " + command[1] + " " + command[2] ;
+                    std::string message = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " PRIVMSG " + command[1] + " :" + command[2] ;
                     for (size_t j = 3; j < command.size(); j++)
                     {
                         message += " " + command[j] ;

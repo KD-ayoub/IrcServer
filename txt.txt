@@ -14,4 +14,4 @@
 3- invite an exesting client into the channel
 4- fix INVITE (see comments)
 5- need to be added : //ERR_USERONCHANNEL (443) ///// (client is already in the channel) 
-6- nned to be added : // ERR_NOTONCHANNEL (442) /// (client that preforms INVITE command does not exist in the channel)
+6- nned to be added : // ERR_NOTONCHANNEL (442) /// (client that preforms INVITE command does not exist in the channel)PRIV
