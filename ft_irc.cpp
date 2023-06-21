@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/20 19:56:57 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/21 00:56:17 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -588,7 +588,7 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
     }
     else if (mapchannels.find(command[1]) == mapchannels.end())
     {
-        client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :channel doesn't exist\r\n";
+        client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + " " + command[1] + " :channel doesn't exist\r\n";
         client->send_msg_to_client();
         return ;
     }
@@ -608,7 +608,12 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
     }
     else
     {
-        if (command[2].size() != 2)
+        if (command.size() == 2)
+        {
+            client->msg = ":" + getMachineHost() + " 324 " + client->get_nick() + " " + command[1] + " " + getChannelModes(command[1]) + "\r\n";
+            client->send_msg_to_client();
+        }
+        else if (command[2].size() != 2)
         {
             client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :Invalid mode !\r\n";
             client->send_msg_to_client();
@@ -618,7 +623,12 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
         if (command[2][0] == '+') // Set  i / l / o / k / t
         {
             if (command[2][1] == 'i')
+            {
+                client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " MODE " + command[1] + " +i\r\n";
+                client->send_msg_to_client();
+                mapchannels[command[1]].broadcast(client->msg, client->fd_client);
                 mapchannels[command[1]].set_invite_only(true);
+            }
             else if (command[2][1] == 'l') // +l number
             {
                 // if  (command[3].empty())
@@ -628,11 +638,11 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
                 //     return ;
                 // }
 				long	limit = stringToLong(command[3]);
-				if (limit > 0 && limit < 1000)
+				if (limit > 0 && limit < 256)
 					mapchannels[command[1]].user_limit = limit;
 				else
 				{
-					client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :Invalid limit, (should be > 0 && < 1000) !\r\n";
+					client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :Invalid limit, (should be > 0 && < 256) !\r\n";
             		client->send_msg_to_client();
 					return ;
 				}
@@ -641,7 +651,7 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
 			{
 					if (client->get_nick() != mapchannels[command[1]].get_owner())
 					{
-						client->msg = "Sorry, but u must be an owner to set/remove operater mode\r\n";
+						client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :Sorry, but u must be an owner to set/remove operater mode\r\n";
 						client->send_msg_to_client();
 					}
 					else  // he's owner !
@@ -653,10 +663,15 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
 							return ;
 						}
 						if (mapchannels[command[1]].clients.find(command[3]) != mapchannels[command[1]].clients.end())//check client exist on the channel
+                        {
+                            client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " MODE " + command[1] + " +o\r\n";
+                            client->send_msg_to_client();
+                            mapchannels[command[1]].broadcast(client->msg, client->fd_client);
 							mapchannels[command[1]].add_operator(command[3]);
+                        }
 						else
 						{
-							client->msg = "this client doesn't exist in this channel !\r\n";
+							client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :this client doesn't exist in this channel !\r\n";
 							client->send_msg_to_client();
 						}
 					}
@@ -664,11 +679,19 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
 			else if (command[2][1] == 'k')
 			{
 				if (!command[3].empty())
+                {
+                    client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " MODE " + command[1] + " +k\r\n";
+                    client->send_msg_to_client();
+                    mapchannels[command[1]].broadcast(client->msg, client->fd_client);
 					mapchannels[command[1]].set_key(command[3]);
+                }
 			}
 			
 			else if (command[2][1] == 't')
 			{
+                client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " MODE " + command[1] + " +t\r\n";
+                client->send_msg_to_client();
+                mapchannels[command[1]].broadcast(client->msg, client->fd_client);
 				mapchannels[command[1]].change_optopic("+"); // + will change the optopic boolean to true
 			}
 			else
@@ -682,9 +705,19 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
 		else if ((command[2][0] == '-')) // Remove
 		{
 			if (command[2][1] == 'i') // -i
+            {
+                client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " MODE " + command[1] + " -i\r\n";
+                client->send_msg_to_client();
+                mapchannels[command[1]].broadcast(client->msg, client->fd_client);
                 mapchannels[command[1]].set_invite_only(false);
+            }
             else if (command[2][1] == 'l') // -l reset limit
+            {
+                client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " MODE " + command[1] + " -l\r\n";
+                client->send_msg_to_client();
+                mapchannels[command[1]].broadcast(client->msg, client->fd_client);
 				mapchannels[command[1]].user_limit = 256;
+            }
 			else if (command[2][1] == 'o') // -o "nick_name"
 			{
 				if (client->get_nick() != mapchannels[command[1]].get_owner())
@@ -701,7 +734,12 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
 						return ;
 					}
 					if (mapchannels[command[1]].clients.find(command[3]) != mapchannels[command[1]].clients.end())//check client exist on the channel
+                    {
+                        client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " MODE " + command[1] + " -o\r\n";
+                        client->send_msg_to_client();
+                        mapchannels[command[1]].broadcast(client->msg, client->fd_client);
 						mapchannels[command[1]].remove_operator(command[3]);
+                    }
 					else
 					{
 						client->msg = "this client doesn't exist in this channel !\r\n";
@@ -710,10 +748,18 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
 				}
 			}
 			else if (command[2][1] == 'k') // remove password -k
+            {
+                client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " MODE " + command[1] + " -k\r\n";
+                client->send_msg_to_client();
+                mapchannels[command[1]].broadcast(client->msg, client->fd_client);
 				mapchannels[command[1]].set_key("");
+            }
 				
 			else if (command[2][1] == 't')
 			{
+                client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " MODE " + command[1] + " -t\r\n";
+                client->send_msg_to_client();
+                mapchannels[command[1]].broadcast(client->msg, client->fd_client);
 				mapchannels[command[1]].change_optopic("-"); // - will change optopic boolean optopic to false
 			}
 			else
