@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/21 17:49:18 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/21 17:50:49 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1248,7 +1248,8 @@ else if (command[0] == "PONG")
     return ;
 else
 {
-    client->msg = "uknown command"
+    client->msg = "uknown command";
+    client->send_msg_to_client();
 }
 // mapchannels["empty"].join_command(command, client);
     // if (command[0] == "KICK") {
