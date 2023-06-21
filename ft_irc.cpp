@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/21 01:43:43 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/21 17:49:18 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -631,12 +631,6 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
             }
             else if (command[2][1] == 'l') // +l number
             {
-                // if  (command[3].empty())
-                // {
-                //     client->msg = client->error_msg.ERR_NEEDMOREPARAMS; // NOT enough parameters
-                //     client->send_msg_to_client();
-                //     return ;
-                // }
 				long	limit = stringToLong(command[3]);
 				if (limit > 0 && limit < 256)
 					mapchannels[command[1]].user_limit = limit;
@@ -649,32 +643,32 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
             }
 			else if (command[2][1] == 'o')
 			{
-					if (client->get_nick() != mapchannels[command[1]].get_owner())
-					{
-						client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :Sorry, but u must be an owner to set/remove operater mode\r\n";
-						client->send_msg_to_client();
-					}
-					else  // he's owner !
-					{
-						if (command[3].empty()) // check if +o ""
-						{
-							client->msg = client->error_msg.ERR_NEEDMOREPARAMS; // NOT enough parameters
-							client->send_msg_to_client();
-							return ;
-						}
-						if (mapchannels[command[1]].clients.find(command[3]) != mapchannels[command[1]].clients.end())//check client exist on the channel
-                        {
-                            client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " MODE " + command[1] + " +o\r\n";
-                            client->send_msg_to_client();
-                            mapchannels[command[1]].broadcast(client->msg, client->fd_client);
-							mapchannels[command[1]].add_operator(command[3]);
-                        }
-						else
-						{
-							client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :this client doesn't exist in this channel !\r\n";
-							client->send_msg_to_client();
-						}
-					}
+                if (client->get_nick() != mapchannels[command[1]].get_owner())
+                {
+                    client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :Sorry, but u must be an owner to set/remove operater mode\r\n";
+                    client->send_msg_to_client();
+                }
+                else  // he's owner !
+                {
+                    if (command[3].empty()) // check if +o ""
+                    {
+                        client->msg = client->error_msg.ERR_NEEDMOREPARAMS; // NOT enough parameters
+                        client->send_msg_to_client();
+                        return ;
+                    }
+                    if (mapchannels[command[1]].clients.find(command[3]) != mapchannels[command[1]].clients.end())//check client exist on the channel
+                    {
+                        client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " MODE " + command[1] + " +o\r\n";
+                        client->send_msg_to_client();
+                        mapchannels[command[1]].broadcast(client->msg, client->fd_client);
+                        mapchannels[command[1]].add_operator(command[3]);
+                    }
+                    else
+                    {
+                        client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :this client doesn't exist in this channel !\r\n";
+                        client->send_msg_to_client();
+                    }
+                }
 			}
 			else if (command[2][1] == 'k')
 			{
@@ -686,7 +680,6 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
 					mapchannels[command[1]].set_key(command[3]);
                 }
 			}
-			
 			else if (command[2][1] == 't')
 			{
                 client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " MODE " + command[1] + " +t\r\n";
@@ -1251,13 +1244,12 @@ else if (command[0] == "SHOW")
         it++;
     }
 }
+else if (command[0] == "PONG")
+    return ;
 else
 {
-    // client->msg = ":" + getMachineHost() + " 421 * " + " :" +command[0]+ " Unknown command\r\n";
-	// client->send_msg_to_client();
-    return ;
+    client->msg = "uknown command"
 }
-
 // mapchannels["empty"].join_command(command, client);
     // if (command[0] == "KICK") {
     //     kick_cmd(command, client);
