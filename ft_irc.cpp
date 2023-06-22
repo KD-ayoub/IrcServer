@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/22 23:32:44 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/23 00:00:13 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,10 +144,9 @@ void    IrcServer::AcceptNewConnection(int sockFd, int *numberFd)
     *numberFd+= 1;
 }
 
-int    IrcServer::RecieveIncomingData(int *numberFd, int i, int check)
+int    IrcServer::RecieveIncomingData(int *numberFd, int i, int check, std::string &append)
 {
     Client_irc &client = getClient(fds[i].fd);
-    std::string append;
     char recvbuffer[512];
     do{
         if (check == 1)
@@ -189,6 +188,7 @@ int    IrcServer::RecieveIncomingData(int *numberFd, int i, int check)
     client.set_stringtoappend(append);
     client.fd_client = fds[i].fd;
     mapclients[fds[i].fd] = client;
+	append.clear();
     std::memset(&recvbuffer, 0, sizeof(recvbuffer));
     return 1;
 }
@@ -245,6 +245,7 @@ void    IrcServer::RunServer(int sockFd)
     int numberFd = 1;
     int polfdreturned;
 	static int check;
+	std::string append;
     InitPollfd(sockFd);
     while (true)
     {
@@ -260,7 +261,7 @@ void    IrcServer::RunServer(int sockFd)
             {
                 if (fds[i].fd == sockFd)
                     AcceptNewConnection(sockFd, &numberFd);
-                else if (!RecieveIncomingData(&numberFd, i, check))
+                else if (!RecieveIncomingData(&numberFd, i, check, append))
                     break;
                 else
                 {
