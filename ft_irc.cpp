@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/22 21:39:27 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/22 23:32:44 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,25 +144,24 @@ void    IrcServer::AcceptNewConnection(int sockFd, int *numberFd)
     *numberFd+= 1;
 }
 
-int    IrcServer::RecieveIncomingData(int *numberFd, int i)
+int    IrcServer::RecieveIncomingData(int *numberFd, int i, int check)
 {
     Client_irc &client = getClient(fds[i].fd);
     std::string append;
     char recvbuffer[512];
     do{
-        int r = poll(fds, *numberFd, 0) < 0;
-        if (r == -1)
-            perror("poll");
-    for (int i = 0; i < *numberFd; i++)
-    {
-        if (*numberFd > 1023)
-            Error("Too many clients");
-        if (fds[i].revents & POLLIN)
+        if (check == 1)
+            return 0;
+        if (fds[i].revents & POLLIN & check == 0)
         {
             int recvalue = recv(fds[i].fd, &recvbuffer, sizeof(recvbuffer), 0);
             std::cout << fds[i].fd << std::endl;
             if (recvalue == -1)
                 Error("Error in recv");
+            if (recvalue >= 0)
+            {
+                check = 1;
+            }
             if (recvalue == 0)
             {
                 std::cout << "Disonnected...." << std::endl;
@@ -186,8 +185,6 @@ int    IrcServer::RecieveIncomingData(int *numberFd, int i)
             }
             append += std::string(recvbuffer, recvalue);
         }
-    }
-    
     } while (append.find("\n") == std::string::npos);
     client.set_stringtoappend(append);
     client.fd_client = fds[i].fd;
@@ -247,9 +244,11 @@ void    IrcServer::RunServer(int sockFd)
     ParsingChannelCommands parser;
     int numberFd = 1;
     int polfdreturned;
+	static int check;
     InitPollfd(sockFd);
     while (true)
     {
+		check = 0;
         polfdreturned = poll(fds, numberFd, -1);
         if (polfdreturned < 0)
             Error("Error in Poll");
@@ -261,7 +260,7 @@ void    IrcServer::RunServer(int sockFd)
             {
                 if (fds[i].fd == sockFd)
                     AcceptNewConnection(sockFd, &numberFd);
-                else if (!RecieveIncomingData(&numberFd, i))
+                else if (!RecieveIncomingData(&numberFd, i, check))
                     break;
                 else
                 {
@@ -826,7 +825,7 @@ void	IrcServer::check_List_cmd(const std::vector<std::string> &command, Client_i
 }
 void	IrcServer::check_Nick_cmd(const std::vector<std::string> &command, Client_irc *client)
 {
-	 if (command[1] == "")
+	if (command[1] == "" || command.size() < 2)
     {
         client->msg = client->error_msg.ERR_NEEDMOREPARAMS; // NOT enough parameters
         client->send_msg_to_client();
@@ -853,6 +852,17 @@ void	IrcServer::check_Nick_cmd(const std::vector<std::string> &command, Client_i
                 it_channel->second.clients.insert(std::make_pair(command[1], it->second));
                 it_channel->second.clients.erase(it);
             }
+        }
+        for (std::map<std::string, Channel>::iterator it_chnl = mapchannels.begin(); it_chnl != mapchannels.end(); it_chnl++)
+        {
+			for (size_t i = 0; i < it_chnl->second.operators.size(); i++)
+			{
+				if (it_chnl->second.operators[i] == old_nick)
+				{
+					it_chnl->second.operators.push_back(command[1]);
+					it_chnl->second.operators[i].erase();
+				}
+			}
         }
         client->set_nick(command[1]);
         client->msg = ":" + getMachineHost() + " 001 " + client->get_nick() + " :" + old_nick + " changed to " + client->get_nick() + "\r\n";
@@ -1164,9 +1174,9 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
 	else if (command[0] == "MODE")
 		check_Mode_cmd(command, client);
 	else if (command[0] == "NICK")
-	check_Nick_cmd(command, client);
+		check_Nick_cmd(command, client);
 	else if (command[0] == "PART") 
-	check_Part_cmd(command, client);
+		check_Part_cmd(command, client);
 	else if (command[0] == "NAMES")
 		check_Names_cmd(command, client);
 	else if (command[0] == "LIST")

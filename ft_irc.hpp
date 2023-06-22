@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/22 20:51:52 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/22 22:23:10 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ class IrcServer
         void    RunServer(int);
         void    InitPollfd(int);
         void    AcceptNewConnection(int , int *);
-        int     RecieveIncomingData(int *, int);
+        int     RecieveIncomingData(int *, int, int);
         void    Authentification(int);
         /////////////////////
         void    RemoveCRLF(int);
