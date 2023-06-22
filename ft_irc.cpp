@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/22 04:22:25 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/22 19:20:22 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void    IrcServer::setMapclients(const std::map<int, Client_irc> &mapcl){
 
 int    IrcServer::SetupServer()
 {
-    int sockFd, sockoptValue = 1;
+    int sockFd, sockoptValue = 1, rc;
     std::memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
@@ -108,15 +108,15 @@ int    IrcServer::SetupServer()
     }
     if ((sockFd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
         Error ("Error creating socket");
+    rc = fcntl(sockFd, F_SETFL, O_NONBLOCK);
+	if (rc < 0) {
+		std::cout << "fcntl() failed: " << strerror(errno) << '\n';
+		close(sockFd);
+		exit(EXIT_FAILURE);
+	}
     std::cout << "FD = " << sockFd << std::endl;
     if (setsockopt(sockFd, SOL_SOCKET, SO_REUSEADDR, &sockoptValue, sizeof(int)) == -1)
         Error ("Error in setsockopt()");
-    // rc = fcntl(sockFd, F_SETFL, O_NONBLOCK);
-	// if (rc < 0) {
-	// 	std::cout << "fcntl() failed: " << strerror(errno) << '\n';
-	// 	close(sockFd);
-	// 	exit(EXIT_FAILURE);
-	// }
     if (bind(sockFd, this->result->ai_addr, this->result->ai_addrlen) == -1)
         Error ("Error binding socket");
     if (listen(sockFd, SOMAXCONN) == -1)
@@ -150,33 +150,44 @@ int    IrcServer::RecieveIncomingData(int *numberFd, int i)
     std::string append;
     char recvbuffer[512];
     do{
-        
-    int recvalue = recv(fds[i].fd, &recvbuffer, sizeof(recvbuffer), 0);
-    std::cout << fds[i].fd << std::endl;
-    if (recvalue == -1)
-        Error("Error in recv");
-    if (recvalue == 0)
+        int r = poll(fds, *numberFd, 0) < 0;
+        if (r == -1)
+            perror("poll");
+    for (int i = 0; i < *numberFd; i++)
     {
-        std::cout << "Disonnected...." << std::endl;
-        *numberFd-=1;
-        close(fds[i].fd);
-        std::map<std::string, Channel>::iterator it = mapchannels.begin();
-        for(; it != mapchannels.end(); it++)
+        if (*numberFd > 1023)
+            Error("Too many clients");
+        if (fds[i].revents & POLLIN)
         {
-            if (it->second.clients.find(client.get_nick()) != it->second.clients.end())
+            int recvalue = recv(fds[i].fd, &recvbuffer, sizeof(recvbuffer), 0);
+            std::cout << fds[i].fd << std::endl;
+            if (recvalue == -1)
+                Error("Error in recv");
+            if (recvalue == 0)
             {
-                client.msg = ":" + client.get_nick() + "!" + client.get_user().username + "@" + getMachineHost() + " QUIT " + it->first + "\r\n";
-                it->second.broadcast(client.msg, client.fd_client);
-                it->second.clients.erase(client.get_nick());
-                it->second.number_of_users--;
+                std::cout << "Disonnected...." << std::endl;
+                *numberFd-=1;
+                close(fds[i].fd);
+                std::map<std::string, Channel>::iterator it = mapchannels.begin();
+                for(; it != mapchannels.end(); it++)
+                {
+                    if (it->second.clients.find(client.get_nick()) != it->second.clients.end())
+                    {
+                        client.msg = ":" + client.get_nick() + "!" + client.get_user().username + "@" + getMachineHost() + " QUIT " + it->first + "\r\n";
+                        it->second.broadcast(client.msg, client.fd_client);
+                        it->second.clients.erase(client.get_nick());
+                        it->second.number_of_users--;
+                    }
+                }
+                mapclients.erase(fds[i].fd);
+                fds[i] = fds[*numberFd];
+                std::memset(&recvbuffer, 0, sizeof(recvbuffer));
+                return 0;
             }
+            append += std::string(recvbuffer, recvalue);
         }
-        mapclients.erase(fds[i].fd);
-        fds[i] = fds[*numberFd];
-        std::memset(&recvbuffer, 0, sizeof(recvbuffer));
-        return 0;
     }
-        append += std::string(recvbuffer, recvalue);
+    
     } while (append.find("\n") == std::string::npos);
     client.set_stringtoappend(append);
     client.fd_client = fds[i].fd;
@@ -246,7 +257,7 @@ void    IrcServer::RunServer(int sockFd)
         {
             if (numberFd > 1023)
                 Error("Too many clients");
-            if (fds[i].revents && POLLIN)
+            if (fds[i].revents & POLLIN)
             {
                 if (fds[i].fd == sockFd)
                     AcceptNewConnection(sockFd, &numberFd);
