@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 23:20:42 by yel-qabl          #+#    #+#             */
-/*   Updated: 2023/06/20 18:14:47 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/20 19:10:58 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// +i +l +o +k 
+
 #ifndef CHANNEL_HPP
 #define CHANNEL_HPP
 
@@ -111,8 +111,8 @@ class Channel {
         // std::string                  channel_modes();  // return channel modes 
         
         std::string		get_key();
-	    bool			get_invite_only();
-        std::string     get_owner();
+	bool			get_invite_only();
+    std::string     get_owner();
 };
 
 #endif 

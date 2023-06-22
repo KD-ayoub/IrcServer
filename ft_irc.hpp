@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/20 16:58:09 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/21 20:08:47 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <curl/curl.h> /// BOT
 #include <sys/socket.h>
 #include <sys/types.h>
+# include <fcntl.h> /// fcntl()
 #include <netdb.h> /// gethostbyname()
 #include <netdb.h>  // getaddrinfo()
 #include <unistd.h>
@@ -69,7 +70,6 @@ class IrcServer
         void    check_Join_cmd(const std::vector<std::string> &command, Client_irc *client);
         void    check_Invite_cmd(const std::vector<std::string> &command, Client_irc *client);
         void    check_Mode_cmd(const std::vector<std::string> &command, Client_irc *client);
-
         //////////////////////    channel commands ///////////////////////
         void    kick_command(const std::vector<std::string> &, Client_irc *);
         int     client_finder(std::string command);
@@ -79,11 +79,11 @@ class IrcServer
           
 };
 
-bool    				checkPort(char *str);
-void    				Error(const char *str);
-void    				checkArguments(int ac, char **av);
-void                    display_vct_str(std::vector<std::string> vct);
-std::string 			getMachineHost();
-long 					stringToLong(const std::string& str);
+bool    checkPort(char *str);
+void    Error(const char *str);
+void    checkArguments(int ac, char **av);
+void    display_vct_str(std::vector<std::string> vct);
+long 	stringToLong(const std::string& str);
+std::string getMachineHost();
 
 #endif

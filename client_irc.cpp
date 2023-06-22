@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client_irc.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:55:05 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/20 16:23:59 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/18 21:22:18 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	Client_irc::set_msg_error()
 	error_msg.ERR_NOTREGISTERED = ":" + getMachineHost() + " 451 * :You have not registered\r\n";
 	error_msg.ERR_ALREADYREGISTRED = ":" + getMachineHost() + " 462 * :You may not reregister\r\n";
 	error_msg.ERR_PASSWDMISMATCH = ":" + getMachineHost() + " 464 * :Password incorrect\r\n";
-	error_msg.ERR_NOSUCHCHANNEL = ":" + getMachineHost() + "403 * " + cmd + " :No such channel\r\n";//
 }
 
 Client_irc::Client_irc(){
