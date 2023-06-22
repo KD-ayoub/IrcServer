@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/22 02:30:37 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/22 04:20:36 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,19 +160,15 @@ int    IrcServer::RecieveIncomingData(int *numberFd, int i)
         std::cout << "Disonnected...." << std::endl;
         *numberFd-=1;
         close(fds[i].fd);
-        std::map<std::string, Channel>::iterator it;
-        for (it = mapchannels.begin(); it != mapchannels.end(); it++)
+        std::map<std::string, Channel>::iterator it = mapchannels.begin();
+        for(; it != mapchannels.end(); it++)
         {
-            if (it->second.clients.find(client.get_nick()) != it->second.clients.end() && it->second.number_of_users > 1)
+            if (it->second.clients.find(client.get_nick()) != it->second.clients.end())
             {
+                client.msg = ":" + client.get_nick() + "!" + client.get_user().username + "@" + getMachineHost() + " QUIT " + it->first + "\r\n";
+                it->second.broadcast(client.msg, client.fd_client);
                 it->second.clients.erase(client.get_nick());
                 it->second.number_of_users--;
-            }
-            else
-            {
-                it->second.clients.erase(client.get_nick());
-                it->second.number_of_users--;
-                mapchannels.erase(it->first);
             }
         }
         mapclients.erase(fds[i].fd);
@@ -607,14 +603,12 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
         client->send_msg_to_client();
         return ;
     }
-    
     else if (mapchannels[command[1]].clients.find(client->get_nick()) == mapchannels[command[1]].clients.end())
     {
         client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :You are not in this channel\r\n";
         client->send_msg_to_client();
         return ;
     }
-    
     else if (!mapchannels[command[1]].is_operator(client->get_nick()))
     {
         client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :you are not an operator\r\n";
@@ -1301,18 +1295,42 @@ else if (command[0] == "BOT")
 /*---------------------------------------------------------------*/
 else if (command[0] == "QUIT")
 {
-    client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " QUIT " + command[1] + "\r\n";
-    std::map<std::string, Channel>::iterator it = mapchannels.begin();
-    for(; it != mapchannels.end(); it++)
-    {
-        if (it->second.clients.find(client->get_nick()) != it->second.clients.end())
-        {
-            it->second.broadcast(client->msg, client->fd_client);
-            it->second.clients.erase(client->get_nick());
-            it->second.number_of_users--;
-        }
-    }
+    return ;
+    // client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " QUIT " + command[1] + "\r\n";
+    // std::map<std::string, Channel>::iterator it = mapchannels.begin();
+    // for(; it != mapchannels.end(); it++)
+    // {
+    //     if (it->second.clients.find(client->get_nick()) != it->second.clients.end())
+    //     {
+    //         it->second.broadcast(client->msg, client->fd_client);
+    //         it->second.clients.erase(client->get_nick());
+    //         it->second.number_of_users--;
+    //     }
+    // }
 }
+// else if (command[0] == "QUIT")
+// {
+//     // this command is quit the client from the server and kick him from all channels and delete him from the mapclients
+
+//     if (command.size() == 1)
+//     {
+//         client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " QUIT\r\n";
+//         client->send_msg_to_client();
+//         // close(client->fd_client);
+//         mapclients.erase(client->fd_client);
+//     std::map<std::string, Channel>::iterator it = mapchannels.begin();
+//     for(; it != mapchannels.end(); it++)
+//     {
+//         if (it->second.clients.find(client->get_nick()) != it->second.clients.end())
+//         {
+//             it->second.broadcast(client->msg, client->fd_client);
+//             it->second.clients.erase(client->get_nick());
+//             it->second.number_of_users--;
+//         }
+//     }
+// }
+// }
+/*----------------------------------------------------------------*/
 else if (command[0] == "SHOW")
 {
     std::map<std::string, Client_irc*>::iterator it = mapchannels[command[1]].clients.begin();
