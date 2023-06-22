@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/22 04:20:36 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/22 04:22:25 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,6 +244,8 @@ void    IrcServer::RunServer(int sockFd)
             Error("Error in Poll");
         for(int i = 0; i < numberFd; i++)
         {
+            if (numberFd > 1023)
+                Error("Too many clients");
             if (fds[i].revents && POLLIN)
             {
                 if (fds[i].fd == sockFd)
