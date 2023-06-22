@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/22 19:20:22 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/22 21:39:27 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -598,12 +598,6 @@ void    IrcServer::check_Invite_cmd(const std::vector<std::string> &command, Cli
 }
 void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Client_irc *client)
 {
-    // if (command.size() == 2)
-    // {
-    //     std::cout << "Mode command entred here....\n";
-    //     client->msg = ":" + getMachineHost() + " 324 " + client->get_nick() + " "  + command[1] + " " + getChannelModes(command[1]) + "\r\n"; /////RPL_CHANNELMODEIS
-    //     client->send_msg_to_client();
-    // }
     if (command.size() < 2)
     {
         client->msg = client->error_msg.ERR_NEEDMOREPARAMS; // NOT enough parameters
@@ -622,7 +616,13 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
         client->send_msg_to_client();
         return ;
     }
-    else if (!mapchannels[command[1]].is_operator(client->get_nick()))
+    if (command.size() == 2)
+    {
+        client->msg = ":" + getMachineHost() + " 324 " + client->get_nick() + " " + command[1] + " " + getChannelModes(command[1]) + "\r\n";
+        client->send_msg_to_client();
+        return ;
+    }
+    if (!mapchannels[command[1]].is_operator(client->get_nick()))
     {
         client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :you are not an operator\r\n";
         client->send_msg_to_client();
@@ -632,11 +632,6 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
     {
         if (command[2] == "+sn")
             return ;
-        if (command.size() == 2)
-        {
-            client->msg = ":" + getMachineHost() + " 324 " + client->get_nick() + " " + command[1] + " " + getChannelModes(command[1]) + "\r\n";
-            client->send_msg_to_client();
-        }
         else if (command[2].size() != 2)
         {
             client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :Invalid mode !\r\n";
@@ -786,183 +781,52 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
            		return ;
 			}
 		}
-		
-		//--------------------------------------------------------------------------------------
-		
-        // std::string mode = command[2];
-        // bool addMode = true;
-        // std::string::iterator it = mode.begin();
-        // while (it != mode.end())
-        // {
-        //     if (*it == '+')
-        //     {
-        //         addMode = true;
-        //     }
-        //     else if (*it == '-')
-        //     {
-        //         addMode = false;
-        //     }
-        //     else if (*it == 'o') /// size of operators > 2
-        //     {
-        //         if (addMode) // +o
-        //         {
-        //             mapchannels[command[1]].add_operator(command[3]);
-        //         }
-        //         else
-        //         {
-        //             mapchannels[command[1]].remove_operator(command[3]);
-        //         }
-        //     }
-        //     else if (*it == 'i') /// invite_only == true
-        //     {
-        //         if (addMode) // +
-        //             mapchannels[command[1]].change_invite("+");
-                    
-        //         else
-        //             mapchannels[command[1]].change_invite("-");
-        //     }
-        //     else if (*it == 't') /// op_topic == true
-        //     {
-        //         if (addMode)
-        //             mapchannels[command[1]].change_optopic("+");
-        //         else
-        //             mapchannels[command[1]].change_optopic("-");
-        //     }
-        //     else if (*it == 'l') /// user_limit 256 default
-        //     {
-        //         if (addMode)
-        //         {
-        //             mapchannels[command[1]].change_userlimits("+", std::atoi(command[3].c_str()));
-        //         }
-        //         else
-        //         {
-        //             mapchannels[command[1]].change_userlimits("-", std::atoi(command[3].c_str()));
-        //         }
-        //     }
-        //     else if (*it == 'k') /// key != ""
-        //     {
-        //         if (addMode)
-        //         {
-        //             mapchannels[command[1]].change_password("+", command[3]); 
-        //         }
-        //         else
-        //         {
-        //             mapchannels[command[1]].change_password("-", command[3]); // ""
-        //         }
-        //     }
-        //     else if (command[2] == "+sn")
-        //     {
-        //         //client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :invalid mode\r\n";
-        //         // client->msg = ":" + getMachineHost() + " 324 " + client->get_nick() + " " + command[0] + " " + command[2] + "\r\n";
-        //         // client->send_msg_to_client();
-        //         return;
-        //     }
-        //     else
-        //     {
-        //         client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :invalid mode\r\n";
-        //         client->send_msg_to_client();
-        //         return;
-        //     }
-        //     ++it;
     }
-        
-        // std::string message = ":" + getMachineHost() + " 001 " + client->get_nick() + " MODE " + command[1] + " " + command[2] + "\r\n";
-        // mapchannels[command[1]].broadcast(message, client->fd_client);
 }
-void IrcServer::execute_command(const std::vector<std::string> &command, Client_irc *client)
-{
-    //code dial lkosala ach had t5rbi9
-    if (command[0] == "JOIN")
-        check_Join_cmd(command, client);
-    else if (command[0] == "INVITE")
-        check_Invite_cmd(command, client);
-    else if (command[0] == "KICK")
-        kick_command(command, client);
-    else if (command[0] == "MODE")
-        check_Mode_cmd(command, client);
-    /*##############################################################################*/
 
-    else if(command[0] == "TOPIC") // TOPIC <channel> [<topic>]
+void	IrcServer::check_List_cmd(const std::vector<std::string> &command, Client_irc *client)
+{
+	if (command.size() == 1)
     {
-       if(command.size() == 2)
+        std::map<std::string, Channel>::iterator it;
+        for (it = mapchannels.begin(); it != mapchannels.end(); ++it)
         {
-            if(mapchannels.find(command[1]) == mapchannels.end())
-            {
-                client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + " " + command[1] + " :channel doesn't exist\r\n";
-                client->send_msg_to_client();
-            }
-            else if (mapchannels[command[1]].clients.find(client->get_nick()) == mapchannels[command[1]].clients.end())
-            {
-                client->msg = ":" + getMachineHost() + " 482 " + client->get_nick() + " " + command[1] + " :you are not in this channel\r\n";
-                client->send_msg_to_client();
-            }
-            else
-            {
-                if(mapchannels[command[1]].get_op_topic() && !mapchannels[command[1]].is_operator(client->get_nick()))
-                {
-                    client->msg = ":" + getMachineHost() + " 482 " + client->get_nick() + " " + command[1] + " :you are not an operator\r\n";
-                    client->send_msg_to_client();
-                }
-                else
-                {
-                    ///show topic
-                    if (mapchannels[command[1]].get_topic().empty())
-                    {
-                        client->msg = ":" + getMachineHost() + " 331 " + client->get_nick() + " " + command[1] + " :No topic is set\r\n";
-                        client->send_msg_to_client();
-                        return ;
-                    }
-                    client->msg = ":" + getMachineHost() + " 332 " + client->get_nick() + " " + command[1] + " " + mapchannels[command[1]].get_topic() + "\r\n";
-                    client->send_msg_to_client();
-                }
-            }
+            std::string message = ":" + getMachineHost() + " 321 " + client->get_nick() + " = " + it->first + " " + getChannelUsers(it->first) + "\r\n"; // still need syntax
+            client->msg = message;
+            client->send_msg_to_client();
+            client->msg = ":" + getMachineHost() + " 322 " + client->get_nick() + " " + it->first + " " + std::to_string(it->second.number_of_users) + " " + it->second.get_topic() + "\r\n";
+            client->send_msg_to_client();
         }
-        else if(command.size() > 2)
+            client->msg = ":" + getMachineHost() + " 323 " + client->get_nick() + " " + it->first + " :End of /LIST\r\n";
+            client->send_msg_to_client();
+    }
+    else if (command.size() == 2)
+    {
+        if (mapchannels.find(command[1]) == mapchannels.end())
         {
-            if(mapchannels.find(command[1]) == mapchannels.end())
-            {
-                client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + " " + command[1] + " :channel doesn't exist\r\n";
-                client->send_msg_to_client();
-            }
-            else if (mapchannels[command[1]].clients.find(client->get_nick()) == mapchannels[command[1]].clients.end())
-            {
-                client->msg = ":" + getMachineHost() + " 482 " + client->get_nick() + " " + command[1] + " :you are not in this channel\r\n";
-                client->send_msg_to_client();
-            }
-            else
-            {
-                if(mapchannels[command[1]].get_op_topic() && !mapchannels[command[1]].is_operator(client->get_nick()))
-                {
-                    client->msg = ":" + getMachineHost() + " 482 " + client->get_nick() + " " + command[1] + " :you are not an operator\r\n";
-                    client->send_msg_to_client();
-                }
-                else
-                {
-                    ///change topic
-                    std::string new_topic = "";
-                    for (size_t i = 2; i < command.size(); i++)
-                    {
-                        new_topic += command[i] + " ";
-                    }
-                    mapchannels[command[1]].set_topic(new_topic);
-                    client->msg =":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " TOPIC " + command[1] + " " + mapchannels[command[1]].get_topic() + "\r\n";
-                    client->send_msg_to_client();
-                    mapchannels[command[1]].broadcast(client->msg, client->fd_client);
-                    /*broadcast*/
-                }
-            }
+            client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + " :channel doesn't exist\r\n";
+            client->send_msg_to_client();
         }
         else
         {
-            client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " " + command[1] + " :TOPIC command requires 1 or 2 arguments\r\n";
+            std::string message = ":" + getMachineHost() + " 321 " + client->get_nick() + " = " + command[1] + " " + getChannelUsers(command[1]) + "\r\n";;// still need syntax
+            client->msg = message;
+            client->send_msg_to_client();
+            client->msg = ":" + getMachineHost() + " 322 " + client->get_nick() + " " + command[1] + " " + std::to_string(mapchannels[command[1]].number_of_users) + " " + mapchannels[command[1]].get_topic() + "\r\n";
+            client->send_msg_to_client();
+            client->msg = ":" + getMachineHost() + " 323 " + client->get_nick() + " " + command[1] + " :End of /LIST\r\n";
             client->send_msg_to_client();
         }
     }
-    
-/*#########################################################################################*/
-else if (command[0] == "NICK")
+    else
+    {
+        client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " " + command[1] + " :LIST: Bad arguments !\r\n";
+        client->send_msg_to_client();
+    }
+}
+void	IrcServer::check_Nick_cmd(const std::vector<std::string> &command, Client_irc *client)
 {
-    if (command[1] == "")
+	 if (command[1] == "")
     {
         client->msg = client->error_msg.ERR_NEEDMOREPARAMS; // NOT enough parameters
         client->send_msg_to_client();
@@ -995,13 +859,102 @@ else if (command[0] == "NICK")
         client->send_msg_to_client();
     }
 }
-/*################################## PART ##################################################*/
-
-
-
-else if (command[0] == "PART") 
+void	IrcServer::check_Bot_cmd(const std::vector<std::string> &command, Client_irc *client)
 {
-    if (command.size() < 2)
+	(void)command;
+	CURL *curl;
+    CURLcode result;
+    std::string response;
+    
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+    curl = curl_easy_init();
+    if (curl == NULL)
+        std::cout << "can't connect to api" << std::endl;
+    curl_easy_setopt(curl, CURLOPT_URL, "https://official-joke-api.appspot.com/jokes/random");
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+    result = curl_easy_perform(curl);
+    if (result == CURLE_OK) 
+    {
+        // Extract the setup and punchline fields manually
+        std::string setup = extraction(response, "setup");
+        std::string punchline = extraction(response, "punchline");
+/*--------------------prinitng */
+        client->msg = "\033[33m" "🌞 Get ready to crack up! 🌞\r\n" ;
+        client->send_msg_to_client();
+        client->msg = "⭐️ Laughter is the best medicine! ⭐️\r\n" ;
+        client->send_msg_to_client();
+        client->msg = "🎭 It's showtime! Time for jokes! 🎭\r\n" ;
+        client->send_msg_to_client();
+        client->msg = "🎩 Prepare for a comedy extravaganza! 🎩\r\n" "\033[0m";
+        client->send_msg_to_client();
+        client->msg = "\r\n";
+        client->msg +=  "===> ";
+        client->send_msg_to_client();
+        for (size_t i = 0; i < setup.size(); i++)
+        {
+            client->msg = setup[i];
+            client->send_msg_to_client();
+            usleep(100000);
+        }
+        usleep(1500000);
+        client->msg = "\r\n";
+        client->send_msg_to_client();
+        client->msg = "\r\n";
+        client->send_msg_to_client();
+        for (int i = 0; i < 6; i++)
+        {
+            client->msg = ". ";
+            client->send_msg_to_client();
+            usleep(1500000);
+        }
+        client->msg = "\r\n";
+        client->send_msg_to_client();
+        client->msg = "\r\n";
+        client->send_msg_to_client();
+        client->msg = "===> ";
+        client->send_msg_to_client();
+        for (size_t i = 0; i < punchline.size(); i++)
+        {
+            client->msg = punchline[i];
+            client->send_msg_to_client();
+            usleep(100000);
+        }
+        usleep(1500000);  
+        for (int i = 0; i < 3; i++)
+        {
+            client->msg = " ha";
+            client->send_msg_to_client();
+            usleep(100000);
+        }
+        for (int i = 0; i < 5; i++)
+        {
+            client->msg = "😂";
+            client->send_msg_to_client();
+            usleep(100000);
+        }
+        client->msg = "\r\n";
+        client->send_msg_to_client();
+        client->msg = "\r\n";
+        client->send_msg_to_client();
+        usleep(1000000);
+        client->msg = "YOU LOVE IT!!";
+        client->send_msg_to_client();
+        usleep(1000000);
+        client->msg = "\r\n";
+        client->send_msg_to_client();
+        client->msg = "\r\n";
+        client->send_msg_to_client();
+        client->msg = "TRY ANOTHER ONE 🔁\r\n";
+        client->send_msg_to_client();
+    }
+    else 
+        std::cout << "Failed to fetch data!" << std::endl;
+}
+
+void	IrcServer::check_Part_cmd(const std::vector<std::string> &command, Client_irc *client)
+{
+	 if (command.size() < 2)
     {
         client->msg = ":" + getMachineHost() + " 461 " + client->get_nick() + " PART :command requires 1 argument\r\n"; //// ERR_NEEDMOREPARAMS (461)
         client->send_msg_to_client();
@@ -1036,10 +989,9 @@ else if (command[0] == "PART")
     }
 }
 
-
-else if (command[0] == "NAMES")
+void	IrcServer::check_Names_cmd(const std::vector<std::string> &command, Client_irc *client)
 {
-    if (command.size() < 2)
+	if (command.size() < 2)
     {
         client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " " + command[1] + " :NAMES command requires 1 argument\r\n";
         client->send_msg_to_client();
@@ -1058,71 +1010,9 @@ else if (command[0] == "NAMES")
     }
 }
 
-else if (command[0] == "LIST")
+void	IrcServer::check_Privmsg_cmd(const std::vector<std::string> &command, Client_irc *client)
 {
-    if (command.size() == 1)
-    {
-        std::map<std::string, Channel>::iterator it;
-        for (it = mapchannels.begin(); it != mapchannels.end(); ++it)
-        {
-            std::string message = ":" + getMachineHost() + " 321 " + client->get_nick() + " = " + it->first + " " + getChannelUsers(it->first) + "\r\n"; // still need syntax
-            // std::string message = ":" + getMachineHost() + " 321 " + client->get_nick() + " " + it->first + " :" + std::to_string(it->second.number_of_users) + " :"; // still need syntax
-            // message += it->second.get_topic() + "\r\n";
-            client->msg = message;
-            client->send_msg_to_client();
-            //<client> <channel> <client count> :<topic>
-            client->msg = ":" + getMachineHost() + " 322 " + client->get_nick() + " " + it->first + " " + std::to_string(it->second.number_of_users) + " " + it->second.get_topic() + "\r\n";
-            client->send_msg_to_client();
-        }
-            client->msg = ":" + getMachineHost() + " 323 " + client->get_nick() + " " + it->first + " :End of /LIST\r\n";
-            client->send_msg_to_client();
-    }
-    else if (command.size() == 2)
-    {
-        if (mapchannels.find(command[1]) == mapchannels.end())
-        {
-            client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + " :channel doesn't exist\r\n";
-            client->send_msg_to_client();
-        }
-        else
-        {
-            std::string message = ":" + getMachineHost() + " 321 " + client->get_nick() + " = " + command[1] + " " + getChannelUsers(command[1]) + "\r\n";;// still need syntax
-            // message += mapchannels[command[1]].get_topic() + "\r\n";
-            client->msg = message;
-            client->send_msg_to_client();
-            client->msg = ":" + getMachineHost() + " 322 " + client->get_nick() + " " + command[1] + " " + std::to_string(mapchannels[command[1]].number_of_users) + " " + mapchannels[command[1]].get_topic() + "\r\n";
-            client->send_msg_to_client();
-            client->msg = ":" + getMachineHost() + " 323 " + client->get_nick() + " " + command[1] + " :End of /LIST\r\n";
-            client->send_msg_to_client();
-        }
-    }
-    // else if (command.size() == 3)
-    // {
-    //     if (mapchannels.find(command[1]) == mapchannels.end())
-    //     {
-    //         client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + " :channel doesn't exist\r\n";
-    //         client->send_msg_to_client();
-    //     }
-    //     else
-    //     {
-    //         std::string message = ":" + getMachineHost() + " 321 " + client->get_nick() + " " + command[1] + " " + getChannelUsers(it->first) + "\r\n";// still need syntax
-    //         // message += mapchannels[command[1]].get_topic() + "\r\n";
-    //         client->msg = message;
-    //         client->send_msg_to_client();
-    //     }
-    // }
-    else
-    {
-        client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " " + command[1] + " :LIST command requires 0, 1 or 2 arguments\r\n";
-        client->send_msg_to_client();
-    }
-}
-
-/*-------------------------- privmsg ------------------------------*/
-
-else if (command[0] == "PRIVMSG") // PRIVMSG <receiver>{,<receiver>} <text to be sent>
-{
-    if (command.size() < 3)
+	if (command.size() < 3)
     {
         client->msg = ":" + getMachineHost() + " 461 " + client->get_nick() + " :PRIVMSG command requires 2 arguments\r\n";
         client->send_msg_to_client();
@@ -1148,7 +1038,7 @@ else if (command[0] == "PRIVMSG") // PRIVMSG <receiver>{,<receiver>} <text to be
                     }
                     else
                     {
-                        std::string message = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " PRIVMSG " + command[1] + " :" + command[2];
+                        std::string message = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " PRIVMSG " + command[1] + " " + command[2];
                     for (size_t j = 3; j < command.size(); j++)
                     {
                         message += " " + command[j] ;
@@ -1168,7 +1058,7 @@ else if (command[0] == "PRIVMSG") // PRIVMSG <receiver>{,<receiver>} <text to be
                 }
                 else
                 {
-                    std::string message = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " PRIVMSG " + command[1] + " :" + command[2] ;
+                    std::string message = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " PRIVMSG " + command[1] + " " + command[2] ;
                     for (size_t j = 3; j < command.size(); j++)
                     {
                         message += " " + command[j] ;
@@ -1183,193 +1073,118 @@ else if (command[0] == "PRIVMSG") // PRIVMSG <receiver>{,<receiver>} <text to be
 }
 
 
-/*-------------------------- BOT ------------------------------*/
-
-
-
-else if (command[0] == "BOT")
+void	IrcServer::check_Topic_cmd(const std::vector<std::string> &command, Client_irc *client)
 {
-    CURL *curl;
-    CURLcode result;
-    std::string response;
-    
-    curl_global_init(CURL_GLOBAL_DEFAULT);
-    curl = curl_easy_init();
-    if (curl == NULL)
-    {
-        std::cout << "can't connect to api" << std::endl;
-    }
-    curl_easy_setopt(curl, CURLOPT_URL, "https://official-joke-api.appspot.com/jokes/random");
-    
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-    
-    result = curl_easy_perform(curl);
-    if (result == CURLE_OK) 
-    {
-        // std::cout << "Response data: " << std::endl;
-        // std::cout << response << std::endl;
-
-        // Extract the setup and punchline fields manually
-        std::string setup = extraction(response, "setup");
-        std::string punchline = extraction(response, "punchline");
-        
-/*--------------------prinitng */
-
-    client->msg = "\033[33m" "🌞 Get ready to crack up! 🌞\r\n" ;
-    client->send_msg_to_client();
-    client->msg = "⭐️ Laughter is the best medicine! ⭐️\r\n" ;
-    client->send_msg_to_client();
-    client->msg = "🎭 It's showtime! Time for jokes! 🎭\r\n" ;
-    client->send_msg_to_client();
-    client->msg = "🎩 Prepare for a comedy extravaganza! 🎩\r\n" "\033[0m";
-    client->send_msg_to_client();
-
-
-        client->msg = "\r\n";
-        client->msg +=  "===> ";
-        client->send_msg_to_client();
-        for (size_t i = 0; i < setup.size(); i++)
-        {
-            client->msg = setup[i];
-            client->send_msg_to_client();
-            usleep(100000);
-        }
-        
-        usleep(1500000);
-        client->msg = "\r\n";
-        client->send_msg_to_client();
-        client->msg = "\r\n";
-        client->send_msg_to_client();
-
-        for (int i = 0; i < 6; i++)
-        {
-            client->msg = ". ";
-            client->send_msg_to_client();
-            usleep(1500000);
-        }
-
-        client->msg = "\r\n";
-        client->send_msg_to_client();
-        client->msg = "\r\n";
-        client->send_msg_to_client();
-        client->msg = "===> ";
-        client->send_msg_to_client();
-        
-        for (size_t i = 0; i < punchline.size(); i++)
-        {
-            client->msg = punchline[i];
-            client->send_msg_to_client();
-            usleep(100000);
-        }
-            usleep(1500000);
-            
-        for (int i = 0; i < 3; i++)
-        {
-            client->msg = " ha";
-            client->send_msg_to_client();
-            usleep(100000);
-        }
-
-        for (int i = 0; i < 5; i++)
-        {
-            client->msg = "😂";
-            client->send_msg_to_client();
-            usleep(100000);
-        }
-        
-        client->msg = "\r\n";
-        client->send_msg_to_client();
-        client->msg = "\r\n";
-        client->send_msg_to_client();
-        
-        usleep(1000000);
-        
-        client->msg = "YOU LOVE IT!!";
-        client->send_msg_to_client();
-
-        usleep(1000000);
-
-        client->msg = "\r\n";
-        client->send_msg_to_client();
-        client->msg = "\r\n";
-        client->send_msg_to_client();
-        
-        client->msg = "TRY ANOTHER ONE 🔁\r\n";
-        client->send_msg_to_client();
-    }
-    else 
-    {
-        std::cout << "Failed to fetch data!" << std::endl;
-    }
-
-}  
-
-/*---------------------------------------------------------------*/
-else if (command[0] == "QUIT")
-{
-    return ;
-    // client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " QUIT " + command[1] + "\r\n";
-    // std::map<std::string, Channel>::iterator it = mapchannels.begin();
-    // for(; it != mapchannels.end(); it++)
-    // {
-    //     if (it->second.clients.find(client->get_nick()) != it->second.clients.end())
-    //     {
-    //         it->second.broadcast(client->msg, client->fd_client);
-    //         it->second.clients.erase(client->get_nick());
-    //         it->second.number_of_users--;
-    //     }
-    // }
+	if(command.size() == 2)
+	{
+		if(mapchannels.find(command[1]) == mapchannels.end())
+		{
+			client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + " " + command[1] + " :channel doesn't exist\r\n";
+			client->send_msg_to_client();
+		}
+		else if (mapchannels[command[1]].clients.find(client->get_nick()) == mapchannels[command[1]].clients.end())
+		{
+			client->msg = ":" + getMachineHost() + " 482 " + client->get_nick() + " " + command[1] + " :you are not in this channel\r\n";
+			client->send_msg_to_client();
+		}
+		else
+		{
+			if(mapchannels[command[1]].get_op_topic() && !mapchannels[command[1]].is_operator(client->get_nick()))
+			{
+				client->msg = ":" + getMachineHost() + " 482 " + client->get_nick() + " " + command[1] + " :you are not an operator\r\n";
+				client->send_msg_to_client();
+			}
+			else
+			{
+				///show topic
+				if (mapchannels[command[1]].get_topic().empty())
+				{
+					client->msg = ":" + getMachineHost() + " 331 " + client->get_nick() + " " + command[1] + " :No topic is set\r\n";
+					client->send_msg_to_client();
+					return ;
+				}
+				client->msg = ":" + getMachineHost() + " 332 " + client->get_nick() + " " + command[1] + " " + mapchannels[command[1]].get_topic() + "\r\n";
+				client->send_msg_to_client();
+			}
+		}
+	}
+	else if(command.size() > 2)
+	{
+		if(mapchannels.find(command[1]) == mapchannels.end())
+		{
+			client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + " " + command[1] + " :channel doesn't exist\r\n";
+			client->send_msg_to_client();
+		}
+		else if (mapchannels[command[1]].clients.find(client->get_nick()) == mapchannels[command[1]].clients.end())
+		{
+			client->msg = ":" + getMachineHost() + " 482 " + client->get_nick() + " " + command[1] + " :you are not in this channel\r\n";
+			client->send_msg_to_client();
+		}
+		else
+		{
+			if(mapchannels[command[1]].get_op_topic() && !mapchannels[command[1]].is_operator(client->get_nick()))
+			{
+				client->msg = ":" + getMachineHost() + " 482 " + client->get_nick() + " " + command[1] + " :you are not an operator\r\n";
+				client->send_msg_to_client();
+			}
+			else
+			{
+				///change topic
+				std::string new_topic = "";
+				for (size_t i = 2; i < command.size(); i++)
+				{
+					new_topic += command[i] + " ";
+				}
+				mapchannels[command[1]].set_topic(new_topic);
+				client->msg =":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " TOPIC " + command[1] + " " + mapchannels[command[1]].get_topic() + "\r\n";
+				client->send_msg_to_client();
+				mapchannels[command[1]].broadcast(client->msg, client->fd_client);
+				/*broadcast*/
+			}
+		}
+	}
+	else
+	{
+		client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " " + command[1] + " :TOPIC command requires 1 or 2 arguments\r\n";
+		client->send_msg_to_client();
+	}
 }
-// else if (command[0] == "QUIT")
-// {
-//     // this command is quit the client from the server and kick him from all channels and delete him from the mapclients
-
-//     if (command.size() == 1)
-//     {
-//         client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " QUIT\r\n";
-//         client->send_msg_to_client();
-//         // close(client->fd_client);
-//         mapclients.erase(client->fd_client);
-//     std::map<std::string, Channel>::iterator it = mapchannels.begin();
-//     for(; it != mapchannels.end(); it++)
-//     {
-//         if (it->second.clients.find(client->get_nick()) != it->second.clients.end())
-//         {
-//             it->second.broadcast(client->msg, client->fd_client);
-//             it->second.clients.erase(client->get_nick());
-//             it->second.number_of_users--;
-//         }
-//     }
-// }
-// }
-/*----------------------------------------------------------------*/
-else if (command[0] == "SHOW")
+	
+/*#########################################################################################*/
+	
+void IrcServer::execute_command(const std::vector<std::string> &command, Client_irc *client)
 {
-    std::map<std::string, Client_irc*>::iterator it = mapchannels[command[1]].clients.begin();
-    while (it != mapchannels[command[1]].clients.end())
-    {
-        client->msg = it->second->get_nick() + "\r\n";
-        client->send_msg_to_client();
-        it++;
-    }
-}
-else if (command[0] == "PONG")
-    return ;
-else
-{
-    client->msg = ":" + getMachineHost() + " 401 " + client->get_nick() + " " + command[1] + " :uknown command\r\n";
-    client->send_msg_to_client();
-    return ;
-}
-// mapchannels["empty"].join_command(command, client);
-    // if (command[0] == "KICK") {
-    //     kick_cmd(command, client);
-    // } else if (command[0] == "INVITE") {
-    //     Channel::cmd_invite(command[1]);
-    // } else if (command[0] == "TOPIC") {
-    //     Channel::cmd_topic(command[1]);
-    // } else if (command[0] == "MODE") 
-    // {
-    // }
+	//code dial lkosala ach had t5rbi9
+	if (command[0] == "JOIN")
+		check_Join_cmd(command, client);
+	else if (command[0] == "INVITE")
+		check_Invite_cmd(command, client);
+	else if (command[0] == "KICK")
+		kick_command(command, client);
+	else if (command[0] == "MODE")
+		check_Mode_cmd(command, client);
+	else if (command[0] == "NICK")
+	check_Nick_cmd(command, client);
+	else if (command[0] == "PART") 
+	check_Part_cmd(command, client);
+	else if (command[0] == "NAMES")
+		check_Names_cmd(command, client);
+	else if (command[0] == "LIST")
+		check_List_cmd(command, client);
+	else if (command[0] == "PRIVMSG") // PRIVMSG <receiver>{,<receiver>} <text to be sent>
+		check_Privmsg_cmd(command, client);
+	else if (command[0] == "BOT")
+		check_Bot_cmd(command, client);
+	else if (command[0] == "TOPIC")
+		check_Topic_cmd(command, client);
+	else if (command[0] == "QUIT")
+		return ;
+	else if (command[0] == "PONG")
+		return ;
+	else
+	{
+		client->msg = ":" + getMachineHost() + " 401 " + client->get_nick() + " " + command[1] + " :uknown command\r\n";
+		client->send_msg_to_client();
+		return ;
+	}
 }
