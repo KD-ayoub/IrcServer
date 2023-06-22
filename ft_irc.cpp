@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/21 18:50:26 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/22 02:30:37 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,12 @@ int    IrcServer::SetupServer()
     std::cout << "FD = " << sockFd << std::endl;
     if (setsockopt(sockFd, SOL_SOCKET, SO_REUSEADDR, &sockoptValue, sizeof(int)) == -1)
         Error ("Error in setsockopt()");
+    // rc = fcntl(sockFd, F_SETFL, O_NONBLOCK);
+	// if (rc < 0) {
+	// 	std::cout << "fcntl() failed: " << strerror(errno) << '\n';
+	// 	close(sockFd);
+	// 	exit(EXIT_FAILURE);
+	// }
     if (bind(sockFd, this->result->ai_addr, this->result->ai_addrlen) == -1)
         Error ("Error binding socket");
     if (listen(sockFd, SOMAXCONN) == -1)
@@ -617,6 +623,8 @@ void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Clien
     }
     else
     {
+        if (command[2] == "+sn")
+            return ;
         if (command.size() == 2)
         {
             client->msg = ":" + getMachineHost() + " 324 " + client->get_nick() + " " + command[1] + " " + getChannelModes(command[1]) + "\r\n";
@@ -902,7 +910,7 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
                 }
             }
         }
-        else if(command.size() == 3)
+        else if(command.size() > 2)
         {
             if(mapchannels.find(command[1]) == mapchannels.end())
             {
@@ -924,10 +932,16 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
                 else
                 {
                     ///change topic
-                    mapchannels[command[1]].set_topic(command[2]);
+                    std::string new_topic = "";
+                    for (size_t i = 2; i < command.size(); i++)
+                    {
+                        new_topic += command[i] + " ";
+                    }
+                    mapchannels[command[1]].set_topic(new_topic);
                     client->msg =":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " TOPIC " + command[1] + " " + mapchannels[command[1]].get_topic() + "\r\n";
-                    /*broadcast*/
                     client->send_msg_to_client();
+                    mapchannels[command[1]].broadcast(client->msg, client->fd_client);
+                    /*broadcast*/
                 }
             }
         }
@@ -939,6 +953,41 @@ void IrcServer::execute_command(const std::vector<std::string> &command, Client_
     }
     
 /*#########################################################################################*/
+else if (command[0] == "NICK")
+{
+    if (command[1] == "")
+    {
+        client->msg = client->error_msg.ERR_NEEDMOREPARAMS; // NOT enough parameters
+        client->send_msg_to_client();
+        return ;
+    }
+    else
+    {
+        for(std::map<int, Client_irc>::iterator it = mapclients.begin(); it != mapclients.end(); it++)
+        {
+            if (it->second.get_nick() == command[1])
+            {
+                client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :is already in use\r\n";
+                client->send_msg_to_client();
+                return ;
+            }
+        }
+        std::string    old_nick = client->get_nick();
+        for (std::map<std::string, Channel>::iterator it_channel = mapchannels.begin(); it_channel != mapchannels.end(); it_channel++)
+        {
+            if (it_channel->second.clients.find(old_nick) != it_channel->second.clients.end())
+            {
+                it_channel->second.clients.find(old_nick)->second->set_nick(command[1]);
+                std::map<std::string, Client_irc*>::iterator it = it_channel->second.clients.find(old_nick);
+                it_channel->second.clients.insert(std::make_pair(command[1], it->second));
+                it_channel->second.clients.erase(it);
+            }
+        }
+        client->set_nick(command[1]);
+        client->msg = ":" + getMachineHost() + " 001 " + client->get_nick() + " :" + old_nick + " changed to " + client->get_nick() + "\r\n";
+        client->send_msg_to_client();
+    }
+}
 /*################################## PART ##################################################*/
 
 
@@ -995,14 +1044,9 @@ else if (command[0] == "NAMES")
     }
     else
     {
-        std::string message = ":" + client->get_nick() + " NAMES " + command[1] + " :"; /// stilll need syntax
-        std::map<std::string, Client_irc*>::iterator it;
-        for (it = mapchannels[command[1]].clients.begin(); it != mapchannels[command[1]].clients.end(); ++it)
-        {
-            message += it->first + " ";
-        }
-        message += "\r\n";
-        client->msg = message;
+        client->msg = ":" + getMachineHost() + " 353 " + client->get_nick() + " = " + command[1] + " " + getChannelUsers(command[1]) + "\r\n"; /// stilll need syntax
+        client->send_msg_to_client();
+        client->msg = ":" + getMachineHost() + " 366 " + client->get_nick() + " " + command[1] + " :End of /NAMES list.\r\n";
         client->send_msg_to_client();
     }
 }
@@ -1014,11 +1058,17 @@ else if (command[0] == "LIST")
         std::map<std::string, Channel>::iterator it;
         for (it = mapchannels.begin(); it != mapchannels.end(); ++it)
         {
-            std::string message = ":" + client->get_nick() + " LIST " + it->first + " " + std::to_string(it->second.number_of_users) + " :"; // still need syntax
-            message += it->second.get_topic() + "\r\n";
+            std::string message = ":" + getMachineHost() + " 321 " + client->get_nick() + " = " + it->first + " " + getChannelUsers(it->first) + "\r\n"; // still need syntax
+            // std::string message = ":" + getMachineHost() + " 321 " + client->get_nick() + " " + it->first + " :" + std::to_string(it->second.number_of_users) + " :"; // still need syntax
+            // message += it->second.get_topic() + "\r\n";
             client->msg = message;
             client->send_msg_to_client();
+            //<client> <channel> <client count> :<topic>
+            client->msg = ":" + getMachineHost() + " 322 " + client->get_nick() + " " + it->first + " " + std::to_string(it->second.number_of_users) + " " + it->second.get_topic() + "\r\n";
+            client->send_msg_to_client();
         }
+            client->msg = ":" + getMachineHost() + " 323 " + client->get_nick() + " " + it->first + " :End of /LIST\r\n";
+            client->send_msg_to_client();
     }
     else if (command.size() == 2)
     {
@@ -1029,27 +1079,31 @@ else if (command[0] == "LIST")
         }
         else
         {
-            std::string message = ":" + client->get_nick() + " LIST " + command[1] + " " + std::to_string(mapchannels[command[1]].number_of_users) + " :";// still need syntax
-            message += mapchannels[command[1]].get_topic() + "\r\n";
+            std::string message = ":" + getMachineHost() + " 321 " + client->get_nick() + " = " + command[1] + " " + getChannelUsers(command[1]) + "\r\n";;// still need syntax
+            // message += mapchannels[command[1]].get_topic() + "\r\n";
             client->msg = message;
+            client->send_msg_to_client();
+            client->msg = ":" + getMachineHost() + " 322 " + client->get_nick() + " " + command[1] + " " + std::to_string(mapchannels[command[1]].number_of_users) + " " + mapchannels[command[1]].get_topic() + "\r\n";
+            client->send_msg_to_client();
+            client->msg = ":" + getMachineHost() + " 323 " + client->get_nick() + " " + command[1] + " :End of /LIST\r\n";
             client->send_msg_to_client();
         }
     }
-    else if (command.size() == 3)
-    {
-        if (mapchannels.find(command[1]) == mapchannels.end())
-        {
-            client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + " :channel doesn't exist\r\n";
-            client->send_msg_to_client();
-        }
-        else
-        {
-            std::string message = ":" + client->get_nick() + " LIST " + command[1] + " " + std::to_string(mapchannels[command[1]].number_of_users) + " :";// still need syntax
-            message += mapchannels[command[1]].get_topic() + "\r\n";
-            client->msg = message;
-            client->send_msg_to_client();
-        }
-    }
+    // else if (command.size() == 3)
+    // {
+    //     if (mapchannels.find(command[1]) == mapchannels.end())
+    //     {
+    //         client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + " :channel doesn't exist\r\n";
+    //         client->send_msg_to_client();
+    //     }
+    //     else
+    //     {
+    //         std::string message = ":" + getMachineHost() + " 321 " + client->get_nick() + " " + command[1] + " " + getChannelUsers(it->first) + "\r\n";// still need syntax
+    //         // message += mapchannels[command[1]].get_topic() + "\r\n";
+    //         client->msg = message;
+    //         client->send_msg_to_client();
+    //     }
+    // }
     else
     {
         client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " " + command[1] + " :LIST command requires 0, 1 or 2 arguments\r\n";

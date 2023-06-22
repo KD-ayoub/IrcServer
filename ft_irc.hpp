@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/20 19:08:31 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/21 20:08:47 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <curl/curl.h> /// BOT
 #include <sys/socket.h>
 #include <sys/types.h>
+# include <fcntl.h> /// fcntl()
 #include <netdb.h> /// gethostbyname()
 #include <netdb.h>  // getaddrinfo()
 #include <unistd.h>
