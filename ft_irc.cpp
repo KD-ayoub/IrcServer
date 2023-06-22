@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/23 00:00:13 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/23 00:32:16 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -291,52 +291,40 @@ int IrcServer::client_finder(std::string command)
 //--
 void    IrcServer::kick_command(const std::vector<std::string> &command, Client_irc *client)
 {
+    // to do : check if the user is an operator, if the user is in the channel, if teh user exists 
     if (command.size() < 3)
     {
-        client->cmd = "KICK";
-        client->msg = client->error_msg.ERR_NEEDMOREPARAMS;
+        client->msg = ":" + getMachineHost() + " 461 " + client->get_nick() + " :KICK command requires 2 arguments\r\n";
         client->send_msg_to_client();
-        // client->msg = ":" + getMachineHost() + " 001 " + client->get_nick()+ " :KICK :Not enough parameters <channel> <nick> [comment]\r\n";
-        // client->send_msg_to_client();
-        return ;
     }
-    if (mapchannels.find(command[1]) != mapchannels.end())
+    else if (mapchannels.find(command[1]) == mapchannels.end())
     {
-        for(std::map<std::string, Client_irc*>::iterator it = mapchannels[command[1]].clients.begin(); it != mapchannels[command[1]].clients.end(); it++)
-        { 
-            if (it->second->get_nick() == command[2])
-            {
-                // std::cout << "(kick) = " << client->get_operator() << std::endl;
-                if (client->get_operator())
-                {
-                    client->msg = ":" + getMachineHost() + " 001 " + client->get_nick() + " :KICK " + it->second->get_nick() + " from " + command[1] + "\r\n";
-                    client->send_msg_to_client();
-                    it->second->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :You have been kicked\r\n"; /*!!////////!!!!!!!!! segmentationfault sometimes /////////////////*/
-                    it->second->send_msg_to_client();
-                    mapchannels.at(command[1]).clients.erase(it->second->get_nick());
-                    return ;
-                }
-                else if (mapchannels[command[1]].clients.find(client->get_nick()) == mapchannels[command[1]].clients.end())
-                {
-                    client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :You are not in this channel\r\n";
-                    client->send_msg_to_client();
-                    return ;
-                }
-                else
-                {
-                    client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :You are not an operator\r\n";
-                    client->send_msg_to_client();
-                    return ;
-                }
-            }
-        }
-        client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :client not found in this channel\r\n";
+        client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + command[1] + " :channel doesn't exist\r\n"; //ERR_NOSUCHCHANNEL (403)
+        client->send_msg_to_client();
+    }
+    // the following condition is to check if its an operator
+    else if (mapchannels[command[1]].clients.find(client->get_nick()) == mapchannels[command[1]].clients.end())
+    {
+        client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :You are not in this channel\r\n";
+        client->send_msg_to_client();
+        
+    }
+    else if (mapchannels[command[1]].is_operator(client->get_nick()) == false) // command[1]
+    {
+        client->msg = ":" + getMachineHost() + " 482 " + client->get_nick() + command[1] + " :you are not an operator\r\n"; ///ERR_CHANOPRIVSNEEDED (482)
+        client->send_msg_to_client();
+    }
+    else if(mapchannels[command[1]].clients.find(command[2]) == mapchannels[command[1]].clients.end())
+    {
+        client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :user is not in this channel\r\n";
         client->send_msg_to_client();
     }
     else
     {
-        client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :Channel doesn't exist\r\n";
-        client->send_msg_to_client();
+        std::string message = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " KICK " + command[1] + " " + command[2] + " :" + command[3] + "\r\n";
+        mapchannels[command[1]].broadcast(message, client->fd_client);
+        mapchannels[command[1]].clients.erase(command[2]);
+        mapchannels[command[1]].number_of_users--;
     }
 }
 
