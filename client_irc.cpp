@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client_irc.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:55:05 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/18 21:22:18 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/24 00:01:45 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,6 @@ void    Client_irc::setup_user()
 	
 	user_cmd = _commands[2];
     
-	std::cout << "command [2] = " << _commands[2] <<std::endl;
 	user_splited = split_string(user_cmd, ' ');
 	user_splited[4].insert(0, 1, ':');
 	_commands[2].clear();

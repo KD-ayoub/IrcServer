@@ -6,13 +6,15 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/22 23:59:19 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/23 23:46:42 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_IRC
 #define FT_IRC
 
+
+#include "ParsingChannelCommands.hpp"
 #include <iostream>
 #include <curl/curl.h> /// BOT
 #include <sys/socket.h>
@@ -24,7 +26,6 @@
 #include <arpa/inet.h> //htons()
 #include <sys/select.h> // select()
 #include <sys/poll.h> // poll()
-#include "ParsingChannelCommands.hpp"
 #include "client_irc.hpp"
 #include "Channel.hpp"
 
