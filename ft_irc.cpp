@@ -3,18 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/23 03:15:43 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/23 04:15:50 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_irc.hpp"
 
 std::map<std::string, Channel> mapchannels;
-
-
 
 IrcServer::IrcServer()
 {
@@ -32,8 +30,6 @@ IrcServer::~IrcServer()
 {
 
 }
-
-/*---------BOT ytil function ------*/
 
 std::string extraction(const std::string &data, const std::string &part)
 {
@@ -207,7 +203,6 @@ void    IrcServer::RemoveCRLF(int i)
     mapclients[fds[i].fd] = client;
 }
 
-
 void    IrcServer::Authentification(int i)
 {
     if (mapclients.at(fds[i].fd).get_registered())
@@ -268,8 +263,7 @@ void    IrcServer::RunServer(int sockFd)
                 {
                     RemoveCRLF(i);
 					Authentification(i);
-                }
-    
+                }    
             }
         }
     }
@@ -288,7 +282,6 @@ int IrcServer::client_finder(std::string command)
     }
     return -1;
 }
-
 //--
 void    IrcServer::kick_command(const std::vector<std::string> &command, Client_irc *client)
 {
@@ -322,13 +315,12 @@ void    IrcServer::kick_command(const std::vector<std::string> &command, Client_
     }
     else
     {
-        std::string message = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " KICK " + command[1] + " " + command[2] + " :" + command[3] + "\r\n";
+        std::string message = ":" + client->get_nick() + "!~" + client->get_user().username + "@" + getMachineHost() + " KICK " + command[1] + " " + command[2] + " :" + command[3] + "\r\n";
         mapchannels[command[1]].broadcast(message, client->fd_client);
         mapchannels[command[1]].clients.erase(command[2]);
         mapchannels[command[1]].number_of_users--;
     }
 }
-
 
 void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Client_irc *client)
 {
@@ -366,7 +358,6 @@ void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Clien
                     client->send_msg_to_client();
                     return ;
                 }
-                // std::cout << "ana d5lt hna 1\n";//Dlt
                 if (mapchannels[chanel_names[i]].get_invite_only() == false) 
                 {
                     if (mapchannels[chanel_names[i]].get_key() == chanel_keys[i])
@@ -377,7 +368,6 @@ void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Clien
                             mapchannels[chanel_names[i]].number_of_users++;
                             client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " JOIN " + chanel_names[i] + "\r\n";
                             client->send_msg_to_client();
-                                //"ircserv 001 :You are join this channel succesfully 1!\r\n";
                             mapchannels[chanel_names[i]].broadcast(client->msg, client->fd_client);
                             client->msg = ":" + getMachineHost() + " 353 " + client->get_nick() + " @ " + chanel_names[i] + " " + getChannelUsers(chanel_names[i]) + "\r\n";
                             client->send_msg_to_client();
@@ -386,7 +376,6 @@ void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Clien
                         }
                         else
                         {
-                            // std::cout << "mok\n\n";
                             client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :this client is already exist on this channel !\r\n";
                             client->send_msg_to_client();
                         }
@@ -413,13 +402,11 @@ void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Clien
                             mapchannels[chanel_names[i]].number_of_users++;
                             client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " JOIN " + chanel_names[i] + "\r\n";
                             client->send_msg_to_client();
-                             //"ircserv :You are join this channel succesfully 2!\r\n";
                             mapchannels[chanel_names[i]].broadcast(client->msg,  client->fd_client);
                             client->msg = ":" + getMachineHost() + " 353 " + client->get_nick() + " @ " + chanel_names[i] + " " + getChannelUsers(chanel_names[i]) + "\r\n";
                             client->send_msg_to_client();
                             client->msg = ":" + getMachineHost() + " 366 " + client->get_nick() + " " + chanel_names[i] + " :End of /NAMES list.\r\n";
                             client->send_msg_to_client();
-
                         }
                         else
                         {
@@ -448,7 +435,6 @@ void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Clien
                 std::cout << "-------\n";
                 chnl.clients.at(client->get_nick())->set_operator(true);
                 mapchannels.insert(std::make_pair(chanel_names[i], chnl));
-                // mapchannels[chanel_names[i]]
                 mapchannels[chanel_names[i]].number_of_users++;
                 mapchannels[chanel_names[i]].operators.push_back(client->get_nick());
                 client->msg = ":" + client->get_nick() + "!" + client->get_user().username + "@" + getMachineHost() + " JOIN " + chanel_names[i] + "\r\n";
@@ -459,12 +445,6 @@ void    IrcServer::check_Join_cmd(const std::vector<std::string> &command, Clien
                 client->send_msg_to_client();
                 client->msg = ":" + getMachineHost() + " 366 " + client->get_nick() + " " + chanel_names[i] + " :End of /NAMES list.\r\n";
                 client->send_msg_to_client();
-                // :irc.example.com MODE #test +nt
-                // :irc.example.com 353 dan = #test :@dan
-                // :irc.example.com 366 dan #test :End of /NAMES list.
-                //client->msg = "ircserv :You are join this channel succesfully 3!\r\n";
-                // client->send_msg_to_client();
-                // mapchannels[chanel_names[i]].clients.at(client.get_nick())->set_operator(true);
                 std::cout << "ana d5lt hna 2\n";//Dlt
                 std::cout << "chanel_name = " << chanel_names[i] << std::endl;
                 std::cout << "chanel_key = " << chanel_keys[i] << std::endl;
@@ -512,78 +492,76 @@ std::string IrcServer::getChannelModes(std::string channelname)
     return modes;
 }
 
-
 void    IrcServer::check_Invite_cmd(const std::vector<std::string> &command, Client_irc *client)
 {
      if (command.size() < 3)
-        {
-            client->msg = ":" + getMachineHost() + " 461 " + client->get_nick() + " :INVITE command requires 2 arguments\r\n";
-            client->send_msg_to_client();
-        }
+    {
+        client->msg = ":" + getMachineHost() + " 461 " + client->get_nick() + " :INVITE command requires 2 arguments\r\n";
+        client->send_msg_to_client();
+    }
     else if (mapchannels.find(command[2]) == mapchannels.end())
-        {
-            client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + command[2] + " :channel doesn't exist\r\n"; //ERR_NOSUCHCHANNEL (403)
-            client->send_msg_to_client();
-        }
+    {
+        client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + command[2] + " :channel doesn't exist\r\n"; //ERR_NOSUCHCHANNEL (403)
+        client->send_msg_to_client();
+    }
         // the following condition is to check if its an operator
     else if (mapchannels[command[2]].clients.find(client->get_nick()) == mapchannels[command[2]].clients.end())
-        {
-            client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :You are not in this channel\r\n";
-            client->send_msg_to_client();
-            
-        }
+    {
+        client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :You are not in this channel\r\n";
+        client->send_msg_to_client();            
+    }
     else if (mapchannels[command[2]].is_operator(client->get_nick()) == false) // command[2]
-        {
-            client->msg = ":" + getMachineHost() + " 482 " + client->get_nick() + command[2] + " :you are not an operator\r\n"; ///ERR_CHANOPRIVSNEEDED (482)
-            client->send_msg_to_client();
-        }
+    {
+        client->msg = ":" + getMachineHost() + " 482 " + client->get_nick() + command[2] + " :you are not an operator\r\n"; ///ERR_CHANOPRIVSNEEDED (482)
+        client->send_msg_to_client();
+    }
     else if(mapchannels[command[2]].clients.find(command[1]) != mapchannels[command[2]].clients.end())
+    {
+        client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :user is already in this channel\r\n";
+        client->send_msg_to_client();
+    }
+    else
+    {
+        if (mapchannels.find(command[2]) == mapchannels.end())
         {
-            client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :user is already in this channel\r\n";
+            client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + command[2] +  " :channel doesn't exist\r\n"; //ERR_NOSUCHCHANNEL (403)
             client->send_msg_to_client();
         }
-    else
+        else
         {
-            if (mapchannels.find(command[2]) == mapchannels.end())
+            const std::vector<std::string> &invitedUsers = mapchannels[command[2]].get_invited_user();
+            bool isInvited = false;
+            for (std::vector<std::string>::const_iterator it = invitedUsers.begin(); it != invitedUsers.end(); it++)
             {
-                client->msg = ":" + getMachineHost() + " 403 " + client->get_nick() + command[2] +  " :channel doesn't exist\r\n"; //ERR_NOSUCHCHANNEL (403)
+                if (*it == mapclients[client_finder(command[1])].get_nick())
+                {
+                    isInvited = true;
+                    break;
+                }
+            }
+            if (isInvited)
+            {
+                client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :you are not invited to this channel\r\n";  
                 client->send_msg_to_client();
             }
             else
             {
-                const std::vector<std::string> &invitedUsers = mapchannels[command[2]].get_invited_user();
-                bool isInvited = false;
-                for (std::vector<std::string>::const_iterator it = invitedUsers.begin(); it != invitedUsers.end(); it++)
-                {
-                       if (*it == mapclients[client_finder(command[1])].get_nick())
-                       {
-                            isInvited = true;
-                            break;
-                       }
-                }
-                if (isInvited)
-                {
-                       client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :you are not invited to this channel\r\n";  
-                       client->send_msg_to_client();
-                }
-                else
-                {
-                       if (mapclients.find(client_finder(command[1])) == mapclients.end()) // if user doesn't exist
-                       {
-                            client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :user doesn't exist\r\n";
-                            client->send_msg_to_client();
-                       }
-                       else // if user is invited to channel and user exists send invite message to user
-                       {
-                            mapchannels[command[2]].cmd_invite(command[1]); // this is the new version
-                            std::string message = ":" + client->get_nick() + "!" + command[1] + "@" + getMachineHost() + " INVITE " + command[1] + " :" + command[2] + "\r\n";
-                            /*broadcast*/ std::string messagee = ":" + getMachineHost() + " 341 " + client->get_nick() + " " + command[1] + " " + command[2] + "\r\n"; // //RPL_INVITING (341)
-                            mapclients[client_finder(command[1])].msg = message;
-                            mapclients[client_finder(command[1])].send_msg_to_client();
-                       }
-                }
+                    if (mapclients.find(client_finder(command[1])) == mapclients.end()) // if user doesn't exist
+                    {
+                        client->msg = ":" + getMachineHost() + " 400 " + client->get_nick() + " :user doesn't exist\r\n";
+                        client->send_msg_to_client();
+                    }
+                    else // if user is invited to channel and user exists send invite message to user
+                    {
+                        mapchannels[command[2]].cmd_invite(command[1]); // this is the new version
+                        std::string message = ":" + client->get_nick() + "!" + command[1] + "@" + getMachineHost() + " INVITE " + command[1] + " :" + command[2] + "\r\n";
+                        /*broadcast*/ std::string messagee = ":" + getMachineHost() + " 341 " + client->get_nick() + " " + command[1] + " " + command[2] + "\r\n"; // //RPL_INVITING (341)
+                        mapclients[client_finder(command[1])].msg = message;
+                        mapclients[client_finder(command[1])].send_msg_to_client();
+                    }
             }
         }
+    }
 }
 void    IrcServer::check_Mode_cmd(const std::vector<std::string> &command, Client_irc *client)
 {
