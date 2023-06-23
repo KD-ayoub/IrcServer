@@ -6,7 +6,7 @@
 /*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/23 04:15:50 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/23 06:24:34 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -833,7 +833,7 @@ void	IrcServer::check_Nick_cmd(const std::vector<std::string> &command, Client_i
 			}
         }
         client->set_nick(command[1]);
-        client->msg = ":" + getMachineHost() + " 001 " + client->get_nick() + " :" + old_nick + " changed to " + client->get_nick() + "\r\n";
+        client->msg = ":" + old_nick + "!~" + client->get_user().username  + " NICK :" + client->get_nick() + "\r\n";
         client->send_msg_to_client();
     }
 }
