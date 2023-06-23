@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 18:03:29 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/23 00:32:16 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/23 03:15:43 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,21 +151,22 @@ int    IrcServer::RecieveIncomingData(int *numberFd, int i, int check, std::stri
     do{
         if (check == 1)
             return 0;
-        if (fds[i].revents & POLLIN & check == 0)
+        if (fds[i].revents & POLLIN)
         {
             int recvalue = recv(fds[i].fd, &recvbuffer, sizeof(recvbuffer), 0);
             std::cout << fds[i].fd << std::endl;
             if (recvalue == -1)
                 Error("Error in recv");
             if (recvalue >= 0)
-            {
                 check = 1;
-            }
             if (recvalue == 0)
             {
                 std::cout << "Disonnected...." << std::endl;
                 *numberFd-=1;
                 close(fds[i].fd);
+                fds[i].events = 0;
+                fds[i].revents = 0;
+                fds[i].fd = 0;
                 std::map<std::string, Channel>::iterator it = mapchannels.begin();
                 for(; it != mapchannels.end(); it++)
                 {
@@ -188,7 +189,7 @@ int    IrcServer::RecieveIncomingData(int *numberFd, int i, int check, std::stri
     client.set_stringtoappend(append);
     client.fd_client = fds[i].fd;
     mapclients[fds[i].fd] = client;
-	append.clear();
+    append.clear();
     std::memset(&recvbuffer, 0, sizeof(recvbuffer));
     return 1;
 }
