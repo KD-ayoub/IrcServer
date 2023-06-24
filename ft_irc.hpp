@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_irc.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
+/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/03 17:53:49 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/23 23:46:42 by akouame          ###   ########.fr       */
+/*   Updated: 2023/06/24 12:11:14 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_IRC
 #define FT_IRC
 
-
-#include "ParsingChannelCommands.hpp"
+#include <vector>
+#include <map>
 #include <iostream>
 #include <curl/curl.h> /// BOT
 #include <sys/socket.h>
@@ -92,6 +92,11 @@ void    Error(const char *str);
 void    checkArguments(int ac, char **av);
 void    display_vct_str(std::vector<std::string> vct);
 long 	stringToLong(const std::string& str);
+void            SplitString(std::string, std::vector<std::string> &, int);
+std::string     TrimString(std::string);
+std::string Rtrim(const std::string &str);
+std::string Ltrim(const std::string &str);
+int             countCmd(std::string str);
 std::string getMachineHost();
 
 #endif

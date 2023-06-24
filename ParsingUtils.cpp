@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ParsingUtils.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yel-qabl <yel-qabl@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 16:59:19 by akadi             #+#    #+#             */
-/*   Updated: 2023/06/14 21:24:08 by yel-qabl         ###   ########.fr       */
+/*   Updated: 2023/06/24 12:10:02 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ParsingChannelCommands.hpp"
+#include "ft_irc.hpp"
 
 int countCmd(std::string str)
 {

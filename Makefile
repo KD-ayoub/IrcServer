@@ -6,7 +6,7 @@
 #    By: akadi <akadi@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/13 16:11:29 by akouame           #+#    #+#              #
-#    Updated: 2023/06/20 13:05:37 by akadi            ###   ########.fr        #
+#    Updated: 2023/06/24 12:11:58 by akadi            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,11 +18,11 @@ FLAGS = -Wall -Wextra -Werror -std=c++98 -g
 
 RM = rm -rf
 
-src = main.cpp ft_irc.cpp checkArguments.cpp outils.cpp client_irc.cpp ParsingChannelCommands.cpp ParsingUtils.cpp Channel.cpp
+src = main.cpp ft_irc.cpp checkArguments.cpp outils.cpp client_irc.cpp ParsingUtils.cpp Channel.cpp
 
 obj = $(src:.cpp=.o)
 
-hdr = ft_irc.hpp client_irc.hpp ParsingChannelCommands.hpp Channel.hpp
+hdr = ft_irc.hpp client_irc.hpp Channel.hpp
 
 all : $(NAME)
 

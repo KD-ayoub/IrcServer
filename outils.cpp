@@ -6,7 +6,7 @@
 /*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/12 11:28:15 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/20 19:08:08 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/24 12:08:54 by akadi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,3 +49,4 @@ long stringToLong(const std::string& str)
         value = 0;
     return (value);
 }
+
