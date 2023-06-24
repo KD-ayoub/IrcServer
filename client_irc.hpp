@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client_irc.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akadi <akadi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: akouame <akouame@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 14:47:09 by akouame           #+#    #+#             */
-/*   Updated: 2023/06/12 20:53:57 by akadi            ###   ########.fr       */
+/*   Updated: 2023/06/16 18:28:17 by akouame          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,8 @@
 #include <string>
 #include <vector>
 #include <sstream>
-
-#define ERR_NORECIPIENT	":No recipient given (<command>)"
-#define ERR_NOTEXTTOSEND	":No text to send"
-#define ERR_UNKNOWNCOMMAND	"<command> :Unknown command\n"
-#define ERR_NONICKNAMEGIVEN	":No nickname given"
-#define	ERR_NICKNAMEINUSE "<nick> :Nickname is already in use"
-#define	ERR_NICKCOLLISION	"<nick> :Nickname collision KILL"
-#define	ERR_NOTREGISTERED	":You have not registered"
-#define	ERR_NEEDMOREPARAMS	"<command> :Not enough parameters"
-#define	ERR_ALREADYREGISTRED	 ":You may not reregister"
-#define	ERR_PASSWDMISMATCH	":Password incorrect"
-
+#include <iostream>
+#include <string>
 #include "ft_irc.hpp"
 
 typedef struct User_parameters
@@ -38,17 +28,40 @@ typedef struct User_parameters
 	std::string	realname;
 	bool	valid;
 } User_parameters;
+//--
+typedef	struct	Msg_error
+{
+	std::string	ERR_NORECIPIENT;//
+	std::string	ERR_NOTEXTTOSEND;//
+	std::string	ERR_UNKNOWNCOMMAND;//
+	std::string	ERR_NONICKNAMEGIVEN;//
+	std::string	ERR_NICKNAMEINUSE;//
+	std::string	ERR_NICKCOLLISION;//
+	std::string	ERR_NOTREGISTERED;//
+	std::string	ERR_NEEDMOREPARAMS;//
+	std::string	ERR_ALREADYREGISTRED;//
+	std::string	ERR_PASSWDMISMATCH;//
 
+} Msg_error;
+//--
 class   Client_irc
 {
-	std::string	_pass;
-	std::string	_nick;
-	User_parameters	_user;
-	bool	registred;
+	private:
+		std::string						_pass;
+		std::string						_nick;
+		bool							_operator;
+		User_parameters					_user;
+		bool							registered;
+		std::vector<std::string> 		_commands;
 	
 	public:
-		int	fd_client;
-		char	*msg;
+		std::string 					_stringtoappend;
+		int 							size_cmds;
+		std::string						buffer;
+		int								fd_client;
+		std::string						cmd;
+		std::string						msg;
+		Msg_error						error_msg;
 		//--
 		Client_irc();
 		Client_irc(int fd_clt);
@@ -57,21 +70,32 @@ class   Client_irc
 		void	set_pass(std::string pwd);
 		void	set_nick(std::string nck);
 		void	set_user(User_parameters usr);
-		void	set_registred(bool valid);
+		void	set_registered(bool valid);
+		void	set_stringtoappend(std::string);
+		void	set_commands(const std::vector<std::string> &);
+		void	set_msg_error();
+		void	set_operator(bool);
 		//--
-		std::string	get_pass();
-		std::string	get_nick();
-		User_parameters	get_user();
-		bool	get_registred();
+		std::string					get_pass();
+		std::string					get_nick();
+		std::string 				get_stringtoappend();
+		User_parameters				get_user();
+		bool						get_registered();
+		int							get_size_cmds();
+		std::vector<std::string>	&get_commands();
+		bool						get_operator(); 
 		//--
-		std::string	check_pass_cmd(char *buf, std::string pwd);
-		std::string	check_nick_cmd(char *buf);
-		bool	check_user_cmd(char *buf);
+		std::string		check_pass_cmd(char *buf, std::string pwd);
+		std::string		check_nick_cmd(char *buf, std::map<int, Client_irc> &map_clients);
+		bool			check_user_cmd(char *buf);
+		void	setup_user();
 		//--
-		bool	parse_registration(char *buf, std::string pwd);
+		bool	parse_registration(char *buf, std::string pwd, std::map<int, Client_irc> &map_clients);
 		//--
-		void	send_msg_to_client(const char *msg);
+		void	send_msg_to_client();
+		//--
 };
+//--outils
 std::vector<std::string> split_string(const std::string &str, char delimiter);
 
 
